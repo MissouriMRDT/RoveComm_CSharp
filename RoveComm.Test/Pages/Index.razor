@@ -1,0 +1,327 @@
+﻿@page "/"
+
+@implements IAsyncDisposable
+@inject RoveCommService _RoveCommService
+@inject ILogger<Index> _Logger
+@using RoveComm
+@using Microsoft.AspNetCore.Components.Forms
+@using System.ComponentModel.DataAnnotations
+
+<PageTitle>RoveComm Test</PageTitle>
+
+<h1>RoveComm Test</h1>
+
+<EditForm Model="@Model" OnValidSubmit="@OnSubmit">
+    <fieldset>
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <legend>Destination</legend>
+        <div>
+            <label>
+                Destination:
+                <InputText @bind-Value="@Model.IP" />
+            </label>
+        </div>
+        <div>
+            <label>
+                Send TCP:
+                <InputCheckbox @bind-Value="@Model.Reliable" />
+            </label>
+        </div>
+    </fieldset>
+    <fieldset>
+        <legend>Packet Config</legend>
+        <div>
+            <label>
+                Data ID:
+                <InputNumber @bind-Value="@Model.DataID" />
+            </label>
+        </div>
+        <div>
+            <label>
+                Data Type:
+                <InputSelect @bind-Value="@Model.DataType">
+                    @foreach (var typestr in Enum.GetValues(typeof(RoveCommDataType)))
+                    {
+                        <option value="@typestr">@typestr</option>
+                    }
+                </InputSelect>
+            </label>
+        </div>
+        @if (Model.DataType == RoveCommDataType.CHAR)
+        {
+            <div>
+                <label>
+                    Enter String:
+                    <InputText @bind-Value="Model.Data[0].Value"/>
+                </label>
+            </div>
+        }
+        else
+        {
+            <div>
+                <label>
+                    Data Count:
+                    <InputNumber @bind-Value="@Model.DataCount" />
+                </label>
+            </div>
+            <div>
+                <label>
+                    Enter Data:
+                    @foreach (var element in Model.Data)
+                    {
+                        <InputText @bind-Value="@element.Value" />
+                    }
+                </label>
+            </div>
+        }
+        @if (_dataInvalidError)
+        {
+            <h3>Failed to parse input. Check data format!</h3>
+        }
+    </fieldset>
+    <fieldset>
+        <legend>Select DataID from Manifest</legend>
+        <div>
+            <label>
+                Board Name:
+                <InputSelect @bind-Value="@SelectedBoard">
+                    @foreach (var (boardName, _) in RoveCommManifest.Boards)
+                    {
+                        <option value="@boardName">@boardName</option>
+                    }
+                </InputSelect>
+            </label>
+        </div>
+        <div>
+            <label>
+                Packet Name:
+                <InputSelect @bind-Value="@SelectedPacket">
+                    @foreach (var (packetName, _) in RoveCommManifest.Boards[SelectedBoard].Commands)
+                    {
+                        <option value="@packetName">@packetName</option>
+                    }
+                    @foreach (var (packetName, _) in RoveCommManifest.Boards[SelectedBoard].Telemetry)
+                    {
+                        <option value="@packetName">@packetName</option>
+                    }
+                    @foreach (var (packetName, _) in RoveCommManifest.Boards[SelectedBoard].Errors)
+                    {
+                        <option value="@packetName">@packetName</option>
+                    }
+                </InputSelect>
+            </label>
+        </div>
+    </fieldset>
+    <div>
+        <button type="submit">Send Packet</button>
+    </div>
+</EditForm>
+
+<table>
+    <tr>
+        <th>DataID</th>
+        <th>DataType</th>
+        <th>DataCount</th>
+        <th>Data</th>
+    </tr>
+    @foreach (var packet in _packets)
+    {
+        <tr>
+            <td>@packet.DataID</td>
+            <td>@packet.DataType</td>
+            <td>@packet.DataCount</td>
+            <td>@packet.DataStr</td>
+        </tr>
+    }
+</table>
+
+@code
+{
+    public class StringContainer
+    {
+        public string Value;
+        public StringContainer(string value)
+        {
+            Value = value;
+        }
+    }
+    public class SendConfig
+    {
+        [Required]
+        [RegularExpression(@"^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$", ErrorMessage = "Invalid IP format.")]
+        public string IP { get; set; } = "127.0.0.1";
+        [Required]
+        public bool Reliable { get; set; }
+        [Required]
+        [Range(1, short.MaxValue, ErrorMessage = "Invalid Data ID.")]
+        public int DataID { get; set; }
+
+        private int _dataCount = 1;
+        [Required]
+        [Range(1, 256, ErrorMessage = "Too many elements!")]
+        public int DataCount
+        {
+            get => _dataCount;
+            set
+            {
+                int oldCount = _dataCount;
+                _dataCount = Math.Clamp(value, 1, 256);
+                if (_dataCount < oldCount)
+                {
+                    Data.RemoveRange(_dataCount, oldCount - _dataCount);
+                }
+                else if (_dataCount > oldCount)
+                {
+                    Data.AddRange(Enumerable.Repeat(new StringContainer("0"), _dataCount - oldCount));
+                }
+            }
+        }
+        [Required]
+        public RoveCommDataType DataType { get; set; }
+
+        public List<StringContainer> Data = new() { new StringContainer("0") };
+    }
+    SendConfig Model = new();
+
+    string _selectedBoard = RoveCommManifest.Boards.First().Key;
+    string _selectedPacket = RoveCommManifest.Boards.First().Value.Commands.First().Key;
+
+    public string SelectedBoard
+    {
+        get => _selectedBoard;
+        set
+        {
+            _selectedBoard = value;
+            if (RoveCommManifest.Boards[value].Commands.Count() > 0)
+            {
+                _selectedPacket = RoveCommManifest.Boards[value].Commands.First().Key;
+            }
+            ApplyManifestSettings();
+        }
+    }
+    public string SelectedPacket
+    {
+        get => _selectedPacket;
+        set
+        {
+            _selectedPacket = value;
+            ApplyManifestSettings();
+        }
+    }
+
+    private bool _dataInvalidError = false;
+
+    private record struct TableRow(int DataID, string DataType, int DataCount, string DataStr);
+    private readonly List<TableRow> _packets = [];
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Subscribe to all DataIDs for each type.
+        _RoveCommService.On<sbyte>(0, AddPacket);
+        _RoveCommService.On<byte>(0, AddPacket);
+        _RoveCommService.On<short>(0, AddPacket);
+        _RoveCommService.On<ushort>(0, AddPacket);
+        _RoveCommService.On<int>(0, AddPacket);
+        _RoveCommService.On<uint>(0, AddPacket);
+        _RoveCommService.On<float>(0, AddPacket);
+        _RoveCommService.On<double>(0, AddPacket);
+        _RoveCommService.On<char>(0, AddPacket);
+
+        ApplyManifestSettings();
+
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task AddPacket<T>(RoveCommPacket<T> packet)
+    {
+        _packets.Add(new TableRow(
+            packet.DataID,
+            Enum.GetName(packet.DataType) ?? "?",
+            packet.DataCount,
+            string.Join(", ", packet.Data)
+        ));
+        await InvokeAsync(StateHasChanged);
+    }
+
+    public async Task OnSubmit(EditContext ctx)
+    {
+        bool valid = ctx.Validate();
+        if (valid)
+        {
+            try
+            {
+                await SendPacket();
+                _dataInvalidError = false;
+            }
+            catch (Exception e)
+            {
+                _Logger.LogError("Invalid data format: {}", e.Message);
+                _dataInvalidError = true;
+            }
+        }
+    }
+
+    public async Task SendPacket()
+    {
+        switch (Model.DataType)
+        {
+            case RoveCommDataType.INT8_T:
+                await _RoveCommService.SendAsync<sbyte>(Model.DataID, Model.Data.Select((s) => sbyte.Parse(s.Value)).ToList(),
+                                                        Model.IP, reliable: Model.Reliable); break;
+            case RoveCommDataType.UINT8_T:
+                await _RoveCommService.SendAsync<byte>(Model.DataID, Model.Data.Select((s) => byte.Parse(s.Value)).ToList(),
+                                                            Model.IP, reliable: Model.Reliable); break;
+            case RoveCommDataType.INT16_T:
+                await _RoveCommService.SendAsync<short>(Model.DataID, Model.Data.Select((s) => short.Parse(s.Value)).ToList(),
+                                                            Model.IP, reliable: Model.Reliable); break;
+            case RoveCommDataType.UINT16_T:
+                await _RoveCommService.SendAsync<ushort>(Model.DataID, Model.Data.Select((s) => ushort.Parse(s.Value)).ToList(),
+                                                            Model.IP, reliable: Model.Reliable); break;
+            case RoveCommDataType.INT32_T:
+                await _RoveCommService.SendAsync<int>(Model.DataID, Model.Data.Select((s) => int.Parse(s.Value)).ToList(),
+                                                            Model.IP, reliable: Model.Reliable); break;
+            case RoveCommDataType.UINT32_T:
+                await _RoveCommService.SendAsync<uint>(Model.DataID, Model.Data.Select((s) => uint.Parse(s.Value)).ToList(),
+                                                            Model.IP, reliable: Model.Reliable); break;
+            case RoveCommDataType.FLOAT:
+                await _RoveCommService.SendAsync<float>(Model.DataID, Model.Data.Select((s) => float.Parse(s.Value)).ToList(),
+                                                            Model.IP, reliable: Model.Reliable); break;
+            case RoveCommDataType.DOUBLE:
+                await _RoveCommService.SendAsync<double>(Model.DataID, Model.Data.Select((s) => double.Parse(s.Value)).ToList(),
+                                                            Model.IP, reliable: Model.Reliable); break;
+            case RoveCommDataType.CHAR:
+                await _RoveCommService.SendAsync<char>(Model.DataID, Model.Data.First().Value.ToCharArray().ToList(),
+                                                            Model.IP, reliable: Model.Reliable); break;
+        }
+    }
+
+    public void ApplyManifestSettings()
+    {
+        RoveCommUtils.FindDataIDByName(_selectedBoard, _selectedPacket, out var board, out var packet);
+        if (board is not null && packet is not null)
+        {
+            Model.DataID = packet.DataID;
+            Model.DataType = packet.DataType;
+            Model.DataCount = packet.DataCount;
+        }
+        // For testing, just use the generic send method since RoveComm will attempt to send the packet to CoreBoard.
+        // await _RoveCommService.SendAsync<float>("Core", "DriveLeftRight", [5.5f, 5.5f]);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _RoveCommService.Clear<sbyte>(AddPacket);
+        _RoveCommService.Clear<byte>(AddPacket);
+        _RoveCommService.Clear<short>(AddPacket);
+        _RoveCommService.Clear<ushort>(AddPacket);
+        _RoveCommService.Clear<int>(AddPacket);
+        _RoveCommService.Clear<uint>(AddPacket);
+        _RoveCommService.Clear<float>(AddPacket);
+        _RoveCommService.Clear<double>(AddPacket);
+        _RoveCommService.Clear<char>(AddPacket);
+
+        await Task.CompletedTask;
+    }
+}
+

@@ -1,0 +1,43 @@
+﻿body {
+    background-color: yellow;
+    color: magenta;
+    font-family: 'Comic Sans MS'
+}
+
+div {
+    padding: 0.2em;
+}
+
+.invalid {
+    border: 2px solid red;
+}
+
+fieldset {
+    border: solid lime;
+}
+
+button {
+    border: 5px inset lime;
+    font-size: 2rem;
+}
+
+button:hover {
+    cursor: pointer;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    background-color: orange;
+    width: 100%;
+}
+
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: cyan;
+}
