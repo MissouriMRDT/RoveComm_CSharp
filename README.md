@@ -1,7 +1,7 @@
-# RoveComm C# #
+# RoveComm C# Repo #
 
 RoveComm is the communication protocol used by the Mars Rover Design Team (MRDT) at Missouri University of Science and 
-Technology (Missouri S&T). Several implementations exist for RoveComm. This implementation is to be used with the 
+Technology (Missouri S&T). Several implementations exist for RoveComm. This implementation was made to be used with the 
 [new BaseStation](https://github.com/MissouriMRDT/Basestation_Software_Blazor) written in Blazor.
 
 # In This Repo
@@ -10,7 +10,8 @@ The repo conains a Visual Studio 2022 solution `RoveComm_CSharp.sln`. The soluti
 
 ## RoveComm
 
-This contains the source code for the ![](rovecomm.png) [RoveComm NuGet Package]().
+This contains the source code for the ![](rovecomm.png) [RoveComm NuGet Package](https://github.com/MissouriMRDT/RoveComm_CSharp/pkgs/nuget/RoveComm).
+For more information on RoveComm integration, look [here](RoveComm/README.md).
 
 ## RoveComm.Test
 

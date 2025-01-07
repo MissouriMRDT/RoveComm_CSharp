@@ -115,6 +115,7 @@
     </fieldset>
     <div>
         <button type="submit">Send Packet</button>
+        <button type="button" onclick="@ClearTable">Clear Log</button>
     </div>
 </EditForm>
 
@@ -227,6 +228,14 @@
         _RoveCommService.On<float>(0, AddPacket);
         _RoveCommService.On<double>(0, AddPacket);
         _RoveCommService.On<char>(0, AddPacket);
+                _RoveCommService.On<float>(
+                    "Core",
+                    "DriveSpeeds",
+                    async (packet) => {
+                        Console.WriteLine(string.Join(", ", packet.Data));
+                        await InvokeAsync(StateHasChanged);
+                    }
+                );
 
         ApplyManifestSettings();
 
@@ -242,6 +251,10 @@
             string.Join(", ", packet.Data)
         ));
         await InvokeAsync(StateHasChanged);
+    }
+    public void ClearTable()
+    {
+        _packets.Clear();
     }
 
     public async Task OnSubmit(EditContext ctx)

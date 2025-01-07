@@ -8,6 +8,7 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <license type="expression">MIT</license>
     <icon>rovecomm.png</icon>
+    <readme>README.md</readme>
     <projectUrl>https://github.com/MissouriMRDT/RoveComm_CSharp</projectUrl>
     <description>RoveComm implementation for the .NET Core.</description>
     <releaseNotes>Migrated RoveComm to separate repo.</releaseNotes>
