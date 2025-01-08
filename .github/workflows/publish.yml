@@ -37,7 +37,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          dotnet nuget push "output/RoveComm.**.nupkg" \
+          ls -l output
+
+          dotnet nuget push "./output/RoveComm.*.nupkg" \
             --source "https://nuget.pkg.github.com/MissouriMRDT/index.json" \
             --api-key $GITHUB_TOKEN
 
@@ -45,6 +47,6 @@ jobs:
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
-          dotnet nuget push "output/RoveComm.**.nupkg" \
+          dotnet nuget push "./output/RoveComm.*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
             --api-key $NUGET_API_KEY
