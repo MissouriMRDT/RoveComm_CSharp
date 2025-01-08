@@ -10,8 +10,11 @@ The repo conains a Visual Studio 2022 solution `RoveComm_CSharp.sln`. The soluti
 
 ## RoveComm
 
-This contains the source code for the ![](images/rovecomm.png) [RoveComm NuGet Package](https://github.com/MissouriMRDT/RoveComm_CSharp/pkgs/nuget/RoveComm).
-For more information on RoveComm installation and usage, look [here](RoveComm/README.md).
+This contains the source code for the ![](RoveComm/rovecomm.png) **RoveComm NuGet Package**.
+
+The package is hosted on the [NuGet Registry](https://www.nuget.org/packages/RoveComm) and on
+[GitHub Packages](https://github.com/MissouriMRDT/RoveComm_CSharp/pkgs/nuget/RoveComm), though extra steps are required
+to use it from there. For more information on RoveComm installation and usage, look [here](RoveComm/README.md).
 
 ## RoveComm.Test
 
