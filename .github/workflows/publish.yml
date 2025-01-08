@@ -1,0 +1,49 @@
+name: Publish NuGet Package
+
+on:
+  push:
+    branches:
+      - development
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: Publish NuGet Package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --configuration Release
+
+      - name: Pack NuGet Package
+        run: dotnet pack --configuration Release --output ./output
+
+      - name: Publish to GitHub Packages
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          dotnet nuget push "./output/*.nupkg" \
+            --source "github" \
+            --api-key $GITHUB_TOKEN \
+            --no-symbols
+        working-directory: ./output
+
+      - name: Publish to NuGet.org
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
+        run: |
+          dotnet nuget push "./output/*.nupkg" \
+            --source "https://api.nuget.org/v3/index.json" \
+            --api-key $NUGET_API_KEY
+        working-directory: ./output
