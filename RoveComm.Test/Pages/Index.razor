@@ -228,14 +228,6 @@
         _RoveCommService.On<float>(0, AddPacket);
         _RoveCommService.On<double>(0, AddPacket);
         _RoveCommService.On<char>(0, AddPacket);
-                _RoveCommService.On<float>(
-                    "Core",
-                    "DriveSpeeds",
-                    async (packet) => {
-                        Console.WriteLine(string.Join(", ", packet.Data));
-                        await InvokeAsync(StateHasChanged);
-                    }
-                );
 
         ApplyManifestSettings();
 
