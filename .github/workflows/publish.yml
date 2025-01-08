@@ -34,19 +34,24 @@ jobs:
         run: dotnet pack ./RoveComm/RoveComm.csproj --configuration Release --output ./output
 
       - name: Publish to GitHub Packages
+        id: publish_github
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          ls -l output
-
           dotnet nuget push "./output/RoveComm.*.nupkg" \
-            --source "https://nuget.pkg.github.com/MissouriMRDT/index.json" \
-            --api-key $GITHUB_TOKEN
+            --source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            --symbol-source "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json" \
+            --api-key $GITHUB_TOKEN \
+            --skip-duplicate
 
       - name: Publish to NuGet.org
+        id: publish_nuget
+        if: steps.publish_github.conclusion != 'cancelled'
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY }}
         run: |
           dotnet nuget push "./output/RoveComm.*.nupkg" \
             --source "https://api.nuget.org/v3/index.json" \
-            --api-key $NUGET_API_KEY
+            --symbol-source "https://nuget.smbsrc.net/" \
+            --api-key $NUGET_API_KEY \
+            --skip-duplicate
