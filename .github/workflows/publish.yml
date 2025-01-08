@@ -25,13 +25,13 @@ jobs:
           dotnet-version: '8.0'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore ./RoveComm/RoveComm.csproj
 
       - name: Build project
-        run: dotnet build --configuration Release
+        run: dotnet build ./RoveComm/RoveComm.csproj --configuration Release
 
       - name: Pack NuGet Package
-        run: dotnet pack --configuration Release --output ./output
+        run: dotnet pack ./RoveComm/RoveComm.csproj --configuration Release --output ./output
 
       - name: Publish to GitHub Packages
         env:
