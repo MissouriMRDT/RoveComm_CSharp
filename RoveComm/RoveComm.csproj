@@ -7,14 +7,14 @@
     <Authors>missourimrdt</Authors>
     <Description>Implementation of RoveComm for .NET Core.</Description>
     <PackageIcon>rovecomm.png</PackageIcon>
-    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/MissouriMRDT/RoveComm_CSharp.git</PackageProjectUrl>
+    <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/MissouriMRDT/RoveComm_CSharp.git</RepositoryUrl>
     <PackageTags>MRDT;RoveComm</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
-    <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <ItemGroup>
