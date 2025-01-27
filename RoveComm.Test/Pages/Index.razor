@@ -3,13 +3,25 @@
 @implements IAsyncDisposable
 @inject RoveCommService _RoveCommService
 @inject ILogger<Index> _Logger
-@using RoveComm
 @using Microsoft.AspNetCore.Components.Forms
 @using System.ComponentModel.DataAnnotations
 
 <PageTitle>RoveComm Test</PageTitle>
 
-<h1>RoveComm Test</h1>
+<div display="inline-block">
+    <img src="images/r.gif"/>
+    <img src="images/o.gif"/>
+    <img src="images/v.gif"/>
+    <img src="images/e.gif"/>
+    <img src="images/c.gif" />
+    <img src="images/o.gif" />
+    <img src="images/m.gif"/>
+    <img src="images/m.gif" />
+</div>
+
+<div style="float:right">
+    <img src="images/alien.gif" />
+</div>
 
 <EditForm Model="@Model" OnValidSubmit="@OnSubmit">
     <fieldset>
