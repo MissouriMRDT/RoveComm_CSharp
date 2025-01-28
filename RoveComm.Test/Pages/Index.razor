@@ -288,28 +288,28 @@
                                                         Model.IP, reliable: Model.Reliable); break;
             case RoveCommDataType.UINT8_T:
                 await _RoveCommService.SendAsync<byte>(Model.DataID, Model.Data.Select((s) => byte.Parse(s.Value)).ToList(),
-                                                            Model.IP, reliable: Model.Reliable); break;
+                                                       Model.IP, reliable: Model.Reliable); break;
             case RoveCommDataType.INT16_T:
                 await _RoveCommService.SendAsync<short>(Model.DataID, Model.Data.Select((s) => short.Parse(s.Value)).ToList(),
-                                                            Model.IP, reliable: Model.Reliable); break;
+                                                        Model.IP, reliable: Model.Reliable); break;
             case RoveCommDataType.UINT16_T:
                 await _RoveCommService.SendAsync<ushort>(Model.DataID, Model.Data.Select((s) => ushort.Parse(s.Value)).ToList(),
-                                                            Model.IP, reliable: Model.Reliable); break;
+                                                         Model.IP, reliable: Model.Reliable); break;
             case RoveCommDataType.INT32_T:
                 await _RoveCommService.SendAsync<int>(Model.DataID, Model.Data.Select((s) => int.Parse(s.Value)).ToList(),
-                                                            Model.IP, reliable: Model.Reliable); break;
+                                                      Model.IP, reliable: Model.Reliable); break;
             case RoveCommDataType.UINT32_T:
                 await _RoveCommService.SendAsync<uint>(Model.DataID, Model.Data.Select((s) => uint.Parse(s.Value)).ToList(),
-                                                            Model.IP, reliable: Model.Reliable); break;
+                                                       Model.IP, reliable: Model.Reliable); break;
             case RoveCommDataType.FLOAT:
                 await _RoveCommService.SendAsync<float>(Model.DataID, Model.Data.Select((s) => float.Parse(s.Value)).ToList(),
-                                                            Model.IP, reliable: Model.Reliable); break;
+                                                        Model.IP, reliable: Model.Reliable); break;
             case RoveCommDataType.DOUBLE:
                 await _RoveCommService.SendAsync<double>(Model.DataID, Model.Data.Select((s) => double.Parse(s.Value)).ToList(),
-                                                            Model.IP, reliable: Model.Reliable); break;
+                                                         Model.IP, reliable: Model.Reliable); break;
             case RoveCommDataType.CHAR:
                 await _RoveCommService.SendAsync<char>(Model.DataID, Model.Data.First().Value.ToCharArray().ToList(),
-                                                            Model.IP, reliable: Model.Reliable); break;
+                                                       Model.IP, reliable: Model.Reliable); break;
         }
     }
 

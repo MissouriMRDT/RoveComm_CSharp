@@ -134,12 +134,7 @@ public static class RoveCommManifest
             {{
 {",\n".join((f"""\
                 // {packet_desc["comments"]}
-                ["{command}"] = new RoveCommPacketDesc
-                (
-                    {packet_desc["dataId"]},
-                    {packet_desc["dataCount"]},
-                    {data_type_lookup[packet_desc["dataType"]]}
-                )"""
+                ["{command}"] = new RoveCommPacketDesc({packet_desc["dataId"]}, {packet_desc["dataCount"]}, {data_type_lookup[packet_desc["dataType"]]})"""
             for command, packet_desc in board_desc[json_type].items()))}
             }}"""
         for json_type, packet_type in packet_type_lookup.items()
