@@ -282,7 +282,9 @@ public static class RoveCommManifest
                 // [X, Roll] (1-calibrate, 0-no action) (bitmasked)
                 ["CalibrateEncoder"] = new RoveCommPacketDesc(8016, 2, RoveCommDataType.UINT8_T),
                 // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (0-override off, 1-override on) (bitmasked)
-                ["SoftLimitOverride"] = new RoveCommPacketDesc(8017, 10, RoveCommDataType.UINT16_T)
+                ["SoftLimitOverride"] = new RoveCommPacketDesc(8017, 10, RoveCommDataType.UINT16_T),
+                // Shut off all motors (set decipercents to 0 and disable closed loop)
+                ["EStop"] = new RoveCommPacketDesc(8018, 1, RoveCommDataType.UINT8_T)
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
