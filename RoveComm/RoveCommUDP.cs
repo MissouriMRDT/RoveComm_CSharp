@@ -67,7 +67,7 @@ public class RoveCommUDP : IDisposable
                     // Read packets and trigger callbacks.
                     await ReceiveAndCallback(cancelToken);
                     // Don't hog the async queue.
-                    await Task.Delay(RoveCommConsts.UpdateRate);
+                    // await Task.Delay(RoveCommConsts.UpdateRate);
                 }
             }
             catch (Exception e)
