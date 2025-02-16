@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * NOTICE! 
+ * This file is auto generated and will be overwritten if edited
+ * and committed. To make changes, edit the manifest.json file or
+ * edit parser.py if it is a formatting issue.
+ ******************************************************************************/
+
 namespace RoveComm;
 
 public static class RoveCommConsts
@@ -301,48 +308,46 @@ public static class RoveCommManifest
                 ["WatchdogStatus"] = new RoveCommPacketDesc(8200, 1, RoveCommDataType.UINT8_T)
             }
         ),
-        ["ScienceActuation"] = new RoveCommBoardDesc
+        ["Auger"] = new RoveCommBoardDesc
         (
             ip: "192.168.2.108",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
                 // Motor decipercent [-1000, 1000]
-                ["ScoopAxis_OpenLoop"] = new RoveCommPacketDesc(9000, 1, RoveCommDataType.INT16_T),
-                // Motor decipercent [-1000, 1000]
-                ["SensorAxis_OpenLoop"] = new RoveCommPacketDesc(9001, 1, RoveCommDataType.INT16_T),
+                ["AugerAxis_OpenLoop"] = new RoveCommPacketDesc(9000, 1, RoveCommDataType.INT16_T),
                 // Absolute position (in)
-                ["ScoopAxis_SetPosition"] = new RoveCommPacketDesc(9002, 1, RoveCommDataType.FLOAT),
-                // Absolute position (in)
-                ["SensorAxis_SetPosition"] = new RoveCommPacketDesc(9003, 1, RoveCommDataType.FLOAT),
+                ["AugerAxis_SetPosition"] = new RoveCommPacketDesc(9001, 1, RoveCommDataType.FLOAT),
                 // (in)
-                ["ScoopAxis_IncrementPosition"] = new RoveCommPacketDesc(9004, 1, RoveCommDataType.FLOAT),
-                // (in)
-                ["SensorAxis_IncrementPosition"] = new RoveCommPacketDesc(9005, 1, RoveCommDataType.FLOAT),
-                // [ScoopAxis+, ScoopAxis-, SensorAxis+, SensorAxis-] (0-override off, 1-override on) (bitmasked)
-                ["LimitSwitchOverride"] = new RoveCommPacketDesc(9006, 1, RoveCommDataType.UINT8_T),
+                ["AugerAxis_IncrementPosition"] = new RoveCommPacketDesc(9002, 1, RoveCommDataType.FLOAT),
+                // [AugerAxis+, AugerAxis-] (0-override off, 1-override on) (bitmasked)
+                ["LimitSwitchOverride"] = new RoveCommPacketDesc(9003, 1, RoveCommDataType.UINT8_T),
+                // Request calibration of the AugerAxis encoder
+                ["CalibrateEncoder"] = new RoveCommPacketDesc(9004, 1, RoveCommDataType.UINT8_T),
                 // Motor decipercent [-1000, 1000]
-                ["Auger"] = new RoveCommPacketDesc(9007, 1, RoveCommDataType.INT16_T),
-                // [0-180] (degrees)
-                ["Microscope"] = new RoveCommPacketDesc(9008, 1, RoveCommDataType.UINT8_T),
+                ["Auger"] = new RoveCommPacketDesc(9005, 1, RoveCommDataType.INT16_T),
                 // [0-override off, 1-override on]
-                ["WatchdogOverride"] = new RoveCommPacketDesc(9010, 1, RoveCommDataType.UINT8_T),
-                // [ScoopAxis, SensorAxis, Proboscis] (1-calibrate, 0-no action) (bitmasked)
-                ["CalibrateEncoder"] = new RoveCommPacketDesc(9011, 1, RoveCommDataType.UINT8_T),
-                // Request the humidity of the instrument
-                ["RequestHumidity"] = new RoveCommPacketDesc(9012, 1, RoveCommDataType.UINT8_T),
+                ["WatchdogOverride"] = new RoveCommPacketDesc(9006, 1, RoveCommDataType.UINT8_T),
+                // Request a reading of the temperature at the end of the auger
+                ["RequestTemperature"] = new RoveCommPacketDesc(9007, 1, RoveCommDataType.UINT8_T),
+                // Request a reading of the humidity at the end of the auger
+                ["RequestHumidity"] = new RoveCommPacketDesc(9008, 1, RoveCommDataType.UINT8_T),
+                // Ultraviolet LED on AutoFluorescence (0-off, 1-on)
+                ["UVLED"] = new RoveCommPacketDesc(9009, 1, RoveCommDataType.UINT8_T),
                 // [Pan, Tilt](degrees -180-180)
-                ["AugerGimbalIncrement"] = new RoveCommPacketDesc(9013, 2, RoveCommDataType.INT16_T)
+                ["AugerGimbalIncrement"] = new RoveCommPacketDesc(9010, 2, RoveCommDataType.INT16_T)
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [ScoopAxis, SensorAxis] (in)
-                ["Positions"] = new RoveCommPacketDesc(9100, 2, RoveCommDataType.FLOAT),
-                // [ScoopAxis+, ScoopAxis-, SensorAxis+, SensorAxis-] (0-off, 1-on) (bitmasked)
-                ["LimitSwitchTriggered"] = new RoveCommPacketDesc(9101, 1, RoveCommDataType.UINT8_T),
-                // [Humidity] (relative humidity %)
-                ["Humidity"] = new RoveCommPacketDesc(9102, 1, RoveCommDataType.FLOAT),
+                // [AugerAxis] (in)
+                ["Position"] = new RoveCommPacketDesc(9100, 1, RoveCommDataType.FLOAT),
                 // (in/s)
-                ["AugerSpeed"] = new RoveCommPacketDesc(9103, 1, RoveCommDataType.FLOAT)
+                ["AugerSpeed"] = new RoveCommPacketDesc(9101, 1, RoveCommDataType.FLOAT),
+                // [AugerAxis+, AugerAxis-] (0-off, 1-on) (bitmasked)
+                ["LimitSwitchTriggered"] = new RoveCommPacketDesc(9102, 1, RoveCommDataType.UINT8_T),
+                // [Temperature] (degrees C)
+                ["Temperature"] = new RoveCommPacketDesc(9103, 1, RoveCommDataType.FLOAT),
+                // [Humidity] (relative humidity %)
+                ["Humidity"] = new RoveCommPacketDesc(9104, 1, RoveCommDataType.FLOAT)
             },
             errors: new Dictionary<string, RoveCommPacketDesc>
             {
@@ -492,40 +497,47 @@ public static class RoveCommManifest
 
             }
         ),
-        ["Instruments"] = new RoveCommBoardDesc
+        ["Raman"] = new RoveCommBoardDesc
         (
             ip: "192.168.3.105",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [Green, White] [1-Enabled, 0-Disabled] (bitmasked)
-                ["EnableLEDs"] = new RoveCommPacketDesc(16000, 1, RoveCommDataType.UINT8_T),
+                // Motor decipercent [-1000, 1000]
+                ["InstrumentsAxis_OpenLoop"] = new RoveCommPacketDesc(16000, 1, RoveCommDataType.INT16_T),
+                // Absolute position (in)
+                ["InstrumentsAxis_SetPosition"] = new RoveCommPacketDesc(16001, 1, RoveCommDataType.FLOAT),
+                // (in)
+                ["InstrumentsAxis_IncrementPosition"] = new RoveCommPacketDesc(16002, 1, RoveCommDataType.FLOAT),
+                // [InstrumentsAxis+, InstrumentsAxis-] (0-override off, 1-override on) (bitmasked)
+                ["LimitSwitchOverride"] = new RoveCommPacketDesc(16003, 1, RoveCommDataType.UINT8_T),
+                // Request calibration of the InstrumentsAxis encoder
+                ["CalibrateEncoder"] = new RoveCommPacketDesc(16004, 1, RoveCommDataType.UINT8_T),
+                // [0-override off, 1-override on]
+                ["WatchdogOverride"] = new RoveCommPacketDesc(16005, 1, RoveCommDataType.UINT8_T),
+                // [0-disable, 1-enable]
+                ["Laser"] = new RoveCommPacketDesc(16006, 1, RoveCommDataType.UINT8_T),
                 // Start a Raman reading, with the provided integration time (milliseconds)
-                ["RequestRamanReading"] = new RoveCommPacketDesc(16001, 1, RoveCommDataType.UINT32_T),
-                // Start a Reflectance reading, with the provided integration time (milliseconds)
-                ["RequestReflectanceReading"] = new RoveCommPacketDesc(16002, 1, RoveCommDataType.UINT32_T),
-                // Request the temperature of the instrument
-                ["RequestTemperature"] = new RoveCommPacketDesc(16003, 1, RoveCommDataType.UINT8_T)
+                ["RequestRamanReading"] = new RoveCommPacketDesc(16007, 1, RoveCommDataType.UINT32_T)
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Raman CCD elements 1-500
-                ["RamanReading_Part1"] = new RoveCommPacketDesc(16100, 500, RoveCommDataType.UINT16_T),
-                // Raman CCD elements 501-1000
-                ["RamanReading_Part2"] = new RoveCommPacketDesc(16101, 500, RoveCommDataType.UINT16_T),
-                // Raman CCD elements 1001-1500
-                ["RamanReading_Part3"] = new RoveCommPacketDesc(16102, 500, RoveCommDataType.UINT16_T),
-                // Raman CCD elements 1501-2000
-                ["RamanReading_Part4"] = new RoveCommPacketDesc(16103, 500, RoveCommDataType.UINT16_T),
-                // Raman CCD elements 2001-2048
-                ["RamanReading_Part5"] = new RoveCommPacketDesc(16104, 48, RoveCommDataType.UINT16_T),
-                // Reflectance CCD elements 1-288
-                ["ReflectanceReading"] = new RoveCommPacketDesc(16105, 288, RoveCommDataType.UINT8_T),
-                // [Temperature] (degrees C)
-                ["Temperature"] = new RoveCommPacketDesc(16106, 1, RoveCommDataType.INT8_T)
+                // [InstrumentsAxis] (in)
+                ["Position"] = new RoveCommPacketDesc(16100, 1, RoveCommDataType.FLOAT),
+                // [InstrumentsAxis+, InstrumentsAxis-] (0-off, 1-on) (bitmasked)
+                ["LimitSwitchTriggered"] = new RoveCommPacketDesc(16101, 1, RoveCommDataType.UINT8_T),
+                // Raman CCD elements 1-512
+                ["RamanReading_Part1"] = new RoveCommPacketDesc(16102, 512, RoveCommDataType.UINT16_T),
+                // Raman CCD elements 513-1024
+                ["RamanReading_Part2"] = new RoveCommPacketDesc(16103, 512, RoveCommDataType.UINT16_T),
+                // Raman CCD elements 1025-1536
+                ["RamanReading_Part3"] = new RoveCommPacketDesc(16104, 512, RoveCommDataType.UINT16_T),
+                // Raman CCD elements 1537-2048
+                ["RamanReading_Part4"] = new RoveCommPacketDesc(16105, 512, RoveCommDataType.UINT16_T)
             },
             errors: new Dictionary<string, RoveCommPacketDesc>
             {
-
+                // (1-Watchdog timeout, 0-OK)
+                ["WatchdogStatus"] = new RoveCommPacketDesc(16200, 1, RoveCommDataType.UINT8_T)
             }
         ),
         ["RoveSoSimulator"] = new RoveCommBoardDesc

@@ -28,6 +28,13 @@ def main() -> None:
 
     with open(file_path, "w") as file:
         file.write("""\
+/*******************************************************************************
+ * NOTICE! 
+ * This file is auto generated and will be overwritten if edited
+ * and committed. To make changes, edit the manifest.json file or
+ * edit parser.py if it is a formatting issue.
+ ******************************************************************************/
+
 namespace RoveComm;
 """)
         file.write("""
