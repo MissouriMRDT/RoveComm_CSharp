@@ -37,8 +37,8 @@
     </None>
   </ItemGroup>
 
-  <Target Name="BeforeBuild2" BeforeTargets="Build">
-    <Exec Command="cd ../tools/ &amp;&amp; python.exe parser.py" />
-  </Target>
+  <!--<Target Name="BeforeBuild2" BeforeTargets="Build">
+    <Exec Command="cd ../tools/ &amp;&amp; python parser.py" />
+  </Target>-->
 
 </Project>
