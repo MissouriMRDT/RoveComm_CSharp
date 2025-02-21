@@ -21,10 +21,10 @@ public class RoveCommPacket<T>
     public RoveCommDataType DataType { get; init; }
     public List<T> Data { get; set; }
 
-    public RoveCommPacket(int dataId, List<T> data)
+    public RoveCommPacket(int dataId, IEnumerable<T> data)
     {
         DataID = dataId;
-        Data = data;
+        Data = new List<T>(data);
         DataType = RoveCommUtils.DataTypeFromType(typeof(T));
     }
 

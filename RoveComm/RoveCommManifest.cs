@@ -45,17 +45,17 @@ public class RoveCommBoardDesc
     public string IP { get; init; }
     public IReadOnlyDictionary<string, RoveCommPacketDesc> Commands { get; init; }
     public IReadOnlyDictionary<string, RoveCommPacketDesc> Telemetry { get; init; }
-    public IReadOnlyDictionary<string, RoveCommPacketDesc> Errors { get; init; }
+    public IReadOnlyDictionary<string, RoveCommPacketDesc> Error { get; init; }
 
     public RoveCommBoardDesc(string ip,
                              IReadOnlyDictionary<string, RoveCommPacketDesc>? commands = null,
                              IReadOnlyDictionary<string, RoveCommPacketDesc>? telemetry = null,
-                             IReadOnlyDictionary<string, RoveCommPacketDesc>? errors = null)
+                             IReadOnlyDictionary<string, RoveCommPacketDesc>? error = null)
     {
         IP = ip;
         Commands = commands ?? new Dictionary<string, RoveCommPacketDesc>();
         Telemetry = telemetry ?? new Dictionary<string, RoveCommPacketDesc>();
-        Errors = errors ?? new Dictionary<string, RoveCommPacketDesc>();
+        Error = error ?? new Dictionary<string, RoveCommPacketDesc>();
     }
 }
 
@@ -142,7 +142,7 @@ public static class RoveCommManifest
                 // [xAxis, yAxis, zAxis] Accel in m/s^2
                 ["AccelerometerData"] = new RoveCommPacketDesc(3102, 3, RoveCommDataType.FLOAT)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
@@ -180,7 +180,7 @@ public static class RoveCommManifest
                 // [Motor, Core, Aux, Network] (bitmasked) [1-Enabled, 0-Disabled]
                 ["BusStatus"] = new RoveCommPacketDesc(4105, 1, RoveCommDataType.UINT8_T)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // Higher current draw than the battery can support. Rover will Reboot automatically
                 ["PackOvercurrent"] = new RoveCommPacketDesc(4200, 1, RoveCommDataType.UINT8_T),
@@ -214,7 +214,7 @@ public static class RoveCommManifest
                 // [horizontal_accur, vertical_accur, heading_accur, fix_type, is_differentia] [meters, meters, degrees, ublox_navpvt fix type (http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html), boolean]
                 ["AccuracyData"] = new RoveCommPacketDesc(6105, 5, RoveCommDataType.FLOAT)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // 
                 ["GPSLockError"] = new RoveCommPacketDesc(6200, 1, RoveCommDataType.UINT8_T)
@@ -243,7 +243,7 @@ public static class RoveCommManifest
                 // [Heading] [0, 360)
                 ["CompassAngle"] = new RoveCommPacketDesc(7100, 1, RoveCommDataType.FLOAT)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // (1-Watchdog timeout, 0-OK)
                 ["WatchdogStatus"] = new RoveCommPacketDesc(7200, 1, RoveCommDataType.UINT8_T)
@@ -302,7 +302,7 @@ public static class RoveCommManifest
                 // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, Pitch] (0-off, 1-on) (bitmasked)
                 ["LimitSwitchTriggered"] = new RoveCommPacketDesc(8102, 1, RoveCommDataType.UINT16_T)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // (1-Watchdog timeout, 0-OK)
                 ["WatchdogStatus"] = new RoveCommPacketDesc(8200, 1, RoveCommDataType.UINT8_T)
@@ -349,7 +349,7 @@ public static class RoveCommManifest
                 // [Humidity] (relative humidity %)
                 ["Humidity"] = new RoveCommPacketDesc(9104, 1, RoveCommDataType.FLOAT)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // (1-Watchdog timeout, 0-OK)
                 ["WatchdogStatus"] = new RoveCommPacketDesc(9200, 1, RoveCommDataType.UINT8_T),
@@ -362,9 +362,9 @@ public static class RoveCommManifest
             ip: "192.168.3.100",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
-                // 
+                // Start Autonomy_Software
                 ["StartAutonomy"] = new RoveCommPacketDesc(11000, 1, RoveCommDataType.UINT8_T),
-                // 
+                // Return Autonomy_Software to Idle state
                 ["DisableAutonomy"] = new RoveCommPacketDesc(11001, 1, RoveCommDataType.UINT8_T),
                 // [Lat, Lon]
                 ["AddPositionLeg"] = new RoveCommPacketDesc(11002, 2, RoveCommDataType.DOUBLE),
@@ -372,14 +372,16 @@ public static class RoveCommManifest
                 ["AddMarkerLeg"] = new RoveCommPacketDesc(11003, 4, RoveCommDataType.DOUBLE),
                 // [Lat, Lon, ObjectRadius (meters)]
                 ["AddObjectLeg"] = new RoveCommPacketDesc(11004, 3, RoveCommDataType.DOUBLE),
-                // [Lat, Lon, ObstacleRadius (meters)]
-                ["AddObstacle"] = new RoveCommPacketDesc(11008, 3, RoveCommDataType.DOUBLE),
-                // 
+                // Clear queued positions, markers, and objects waypoints.
                 ["ClearWaypoints"] = new RoveCommPacketDesc(11005, 1, RoveCommDataType.UINT8_T),
                 // A multiplier from 0.0 to 1.0 that will scale the max power effort of Autonomy
                 ["SetMaxSpeed"] = new RoveCommPacketDesc(11006, 1, RoveCommDataType.FLOAT),
                 // [Enum (AUTONOMYLOG), Enum (AUTONOMYLOG), Enum (AUTONOMYLOG)] {Console, File, RoveComm}
-                ["SetLoggingLevels"] = new RoveCommPacketDesc(11007, 3, RoveCommDataType.UINT8_T)
+                ["SetLoggingLevels"] = new RoveCommPacketDesc(11007, 3, RoveCommDataType.UINT8_T),
+                // [Lat, Lon, ObstacleRadius (meters)]
+                ["AddObstacle"] = new RoveCommPacketDesc(11008, 3, RoveCommDataType.DOUBLE),
+                // Clear queued permanent obstacles.
+                ["ClearObstacles"] = new RoveCommPacketDesc(11009, 1, RoveCommDataType.UINT8_T)
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
@@ -390,7 +392,7 @@ public static class RoveCommManifest
                 // String version of most current error log
                 ["CurrentLog"] = new RoveCommPacketDesc(11102, 255, RoveCommDataType.CHAR)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
@@ -416,7 +418,7 @@ public static class RoveCommManifest
                 // Picture has been taken.
                 ["PictureTaken1"] = new RoveCommPacketDesc(12102, 1, RoveCommDataType.UINT8_T)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // Camera has errored and stopped streaming. [0] is ID of camera as an integer (not bitmask).
                 ["CameraUnavailable"] = new RoveCommPacketDesc(12200, 1, RoveCommDataType.UINT8_T)
@@ -437,7 +439,7 @@ public static class RoveCommManifest
                 // Picture has been taken.
                 ["PictureTaken2"] = new RoveCommPacketDesc(13100, 1, RoveCommDataType.UINT8_T)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
@@ -475,7 +477,7 @@ public static class RoveCommManifest
                 // Picture has been taken.
                 ["PictureTaken1"] = new RoveCommPacketDesc(14102, 1, RoveCommDataType.UINT8_T)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // Camera has errored and stopped streaming. [0] is ID of camera as an integer (not bitmask).
                 ["CameraUnavailable"] = new RoveCommPacketDesc(14200, 1, RoveCommDataType.UINT8_T)
@@ -492,7 +494,7 @@ public static class RoveCommManifest
             {
 
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
@@ -534,7 +536,7 @@ public static class RoveCommManifest
                 // Raman CCD elements 1537-2048
                 ["RamanReading_Part4"] = new RoveCommPacketDesc(16105, 512, RoveCommDataType.UINT16_T)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // (1-Watchdog timeout, 0-OK)
                 ["WatchdogStatus"] = new RoveCommPacketDesc(16200, 1, RoveCommDataType.UINT8_T)
@@ -552,7 +554,7 @@ public static class RoveCommManifest
                 // Ultrasonic sensor distance reading in centimeters (cm). Value ranges from 0.00 to 500.00 cm
                 ["Ultrasonic1"] = new RoveCommPacketDesc(99100, 2, RoveCommDataType.FLOAT)
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }

@@ -139,12 +139,12 @@ public class RoveCommService : IHostedService
     /// <param name="port">The port to send to.</param>
     /// <param name="reliable">Send over TCP if true, send over UDP if false.</param>
     /// <returns>True if the packet was sent successfully.</returns>
-    public bool Send<T>(int dataId, List<T> data, string ip, int port, bool reliable = false)
+    public bool Send<T>(int dataId, IEnumerable<T> data, string ip, int port, bool reliable = false)
     {
         var packet = new RoveCommPacket<T>(dataId, data);
         return reliable ? TCP.Send(packet, ip, port) : UDP.Send(packet, ip, port);
     }
-    public bool Send<T>(int dataId, List<T> data, string ip, bool reliable = false)
+    public bool Send<T>(int dataId, IEnumerable<T> data, string ip, bool reliable = false)
     {
         var packet = new RoveCommPacket<T>(dataId, data);
         return reliable ? TCP.Send(packet, ip) : UDP.Send(packet, ip);
@@ -159,12 +159,12 @@ public class RoveCommService : IHostedService
     /// <param name="port">The port to send to.</param>
     /// <param name="reliable">Send over TCP if true, send over UDP if false.</param>
     /// <returns>True if the packet was sent successfully.</returns>
-    public async Task<bool> SendAsync<T>(int dataId, List<T> data, string ip, int port, bool reliable = false, CancellationToken cancelToken = default)
+    public async Task<bool> SendAsync<T>(int dataId, IEnumerable<T> data, string ip, int port, bool reliable = false, CancellationToken cancelToken = default)
     {
         var packet = new RoveCommPacket<T>(dataId, data);
         return reliable ? await TCP.SendAsync(packet, ip, port, cancelToken) : await UDP.SendAsync(packet, ip, port, cancelToken);
     }
-    public async Task<bool> SendAsync<T>(int dataId, List<T> data, string ip, bool reliable = false, CancellationToken cancelToken = default)
+    public async Task<bool> SendAsync<T>(int dataId, IEnumerable<T> data, string ip, bool reliable = false, CancellationToken cancelToken = default)
     {
         var packet = new RoveCommPacket<T>(dataId, data);
         return reliable ? await TCP.SendAsync(packet, ip, cancelToken) : await UDP.SendAsync(packet, ip, cancelToken);
@@ -181,7 +181,7 @@ public class RoveCommService : IHostedService
     /// <exception cref="RoveCommException">
     /// Thrown if the packet descriptor was not found in the Manifest or did not match the Manifest's schema.
     /// </exception>
-    public bool Send<T>(string boardName, string commandName, List<T> data, bool reliable = false)
+    public bool Send<T>(string boardName, string commandName, IEnumerable<T> data, bool reliable = false)
     {
         RoveCommUtils.FindDataIDByName(boardName, commandName, out var boardDesc, out var packetDesc);
         if (boardDesc is null)
@@ -199,7 +199,8 @@ public class RoveCommService : IHostedService
             throw new RoveCommException($"Failed to send RoveCommPacket: {handlerType} does not match type of {commandName} ({packetDesc.DataType}).");
         }
 
-        if (data.Count != packetDesc.DataCount)
+        var dataList = data.ToList();
+        if (dataList.Count != packetDesc.DataCount)
         {
             throw new RoveCommException($"Failed to send RoveCommPacket: incorrect data size to fill {commandName}.");
         }
@@ -218,7 +219,7 @@ public class RoveCommService : IHostedService
     /// <exception cref="RoveCommException">
     /// Thrown if the packet descriptor was not found in the Manifest or did not match the Manifest's schema.
     /// </exception>
-    public async Task<bool> SendAsync<T>(string boardName, string commandName, List<T> data, bool reliable = false, CancellationToken cancelToken = default)
+    public async Task<bool> SendAsync<T>(string boardName, string commandName, IEnumerable<T> data, bool reliable = false, CancellationToken cancelToken = default)
     {
         RoveCommUtils.FindDataIDByName(boardName, commandName, out var boardDesc, out var packetDesc);
         if (boardDesc is null)
@@ -236,12 +237,13 @@ public class RoveCommService : IHostedService
             throw new RoveCommException($"Failed to send RoveCommPacket: {handlerType} does not match type of {commandName} ({packetDesc.DataType}).");
         }
 
-        if (data.Count != packetDesc.DataCount)
+        var dataList = data.ToList();
+        if (dataList.Count != packetDesc.DataCount)
         {
             throw new RoveCommException($"Failed to send RoveCommPacket: incorrect data size to fill {commandName}.");
         }
 
-        return await SendAsync(packetDesc.DataID, data, boardDesc.IP, reliable, cancelToken);
+        return await SendAsync(packetDesc.DataID, dataList, boardDesc.IP, reliable, cancelToken);
     }
 
     /// <summary>

@@ -19,10 +19,12 @@ data_type_lookup = {
 packet_type_lookup = {
     "Commands"  : "commands",
     "Telemetry" : "telemetry",
-    "Error"     : "errors",
+    "Error"     : "error",
 }
 
 def main() -> None:
+    print("Generating RoveComm Manifest...")
+
     with open(json_path, "r") as file:
         manifest = json.load(file)
 
@@ -80,17 +82,17 @@ public class RoveCommBoardDesc
     public string IP { get; init; }
     public IReadOnlyDictionary<string, RoveCommPacketDesc> Commands { get; init; }
     public IReadOnlyDictionary<string, RoveCommPacketDesc> Telemetry { get; init; }
-    public IReadOnlyDictionary<string, RoveCommPacketDesc> Errors { get; init; }
+    public IReadOnlyDictionary<string, RoveCommPacketDesc> Error { get; init; }
 
     public RoveCommBoardDesc(string ip,
                              IReadOnlyDictionary<string, RoveCommPacketDesc>? commands = null,
                              IReadOnlyDictionary<string, RoveCommPacketDesc>? telemetry = null,
-                             IReadOnlyDictionary<string, RoveCommPacketDesc>? errors = null)
+                             IReadOnlyDictionary<string, RoveCommPacketDesc>? error = null)
     {
         IP = ip;
         Commands = commands ?? new Dictionary<string, RoveCommPacketDesc>();
         Telemetry = telemetry ?? new Dictionary<string, RoveCommPacketDesc>();
-        Errors = errors ?? new Dictionary<string, RoveCommPacketDesc>();
+        Error = error ?? new Dictionary<string, RoveCommPacketDesc>();
     }
 }
 """)
@@ -151,6 +153,7 @@ public static class RoveCommManifest
     }};
 }}
 """)
+    print("Done.")
 
 if __name__ == "__main__":
     main()

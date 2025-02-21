@@ -128,7 +128,7 @@ public static class RoveCommUtils
             && (
                    boardDesc.Commands.TryGetValue(packetName, out packetDesc)
                 || boardDesc.Telemetry.TryGetValue(packetName, out packetDesc)
-                || boardDesc.Errors.TryGetValue(packetName, out packetDesc)
+                || boardDesc.Error.TryGetValue(packetName, out packetDesc)
             );
     }
 
@@ -163,7 +163,7 @@ public static class RoveCommUtils
                     return true;
                 }
             }
-            foreach (var (pname, pdesc) in bdesc.Errors)
+            foreach (var (pname, pdesc) in bdesc.Error)
             {
                 if (pdesc.DataID == dataId)
                 {
@@ -252,10 +252,10 @@ public static class RoveCommUtils
             throw new RoveCommException("Failed to parse RoveCommPacket: max packet size exceeded.");
         }
         // Packet create new packet to write to.
-        RoveCommPacket<T> packet = new RoveCommPacket<T>(header.DataID, header.DataCount);
+        RoveCommPacket<T> packet = new(header.DataID, header.DataCount);
 
         // Create a slice to the data portion of the packet.
-        var dataBuf = data.Slice(RoveCommConsts.HeaderSize);
+        var dataBuf = data[RoveCommConsts.HeaderSize..];
         // We might have received a packet that isn't as long as it claims to be.
         if (dataBuf.Length != dataSize)
         {
@@ -383,7 +383,7 @@ public static class RoveCommUtils
         // Pack header in network byte order.
         PackHeader(dest, packet.GetHeader());
         // Create a slice to the data portion of the data buffer.
-        var dataBuf = dest.Slice(RoveCommConsts.HeaderSize);
+        var dataBuf = dest[RoveCommConsts.HeaderSize..];
         // Pack data in network byte order.
         switch (packet.Data)
         {
