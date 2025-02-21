@@ -283,23 +283,23 @@ public static class RoveCommManifest
                 // [0-override off, 1-override on] (bitmasked)
                 ["WatchdogOverride"] = new RoveCommPacketDesc(8013, 1, RoveCommDataType.UINT8_T),
                 // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P] (0-override off, 1-override on) (bitmasked)
-                ["LimitSwitchOverride"] = new RoveCommPacketDesc(8014, 9, RoveCommDataType.UINT16_T),
+                ["LimitSwitchOverride"] = new RoveCommPacketDesc(8014, 1, RoveCommDataType.UINT16_T),
                 // [X, J2, J3, J4, P, R] (0-override off, 1-override on) (bitmasked)
-                ["ClosedLoopOverride"] = new RoveCommPacketDesc(8015, 6, RoveCommDataType.UINT8_T),
+                ["ClosedLoopOverride"] = new RoveCommPacketDesc(8015, 1, RoveCommDataType.UINT8_T),
                 // [X, Roll] (1-calibrate, 0-no action) (bitmasked)
-                ["CalibrateEncoder"] = new RoveCommPacketDesc(8016, 2, RoveCommDataType.UINT8_T),
+                ["CalibrateEncoder"] = new RoveCommPacketDesc(8016, 1, RoveCommDataType.UINT8_T),
                 // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (0-override off, 1-override on) (bitmasked)
-                ["SoftLimitOverride"] = new RoveCommPacketDesc(8017, 10, RoveCommDataType.UINT16_T),
+                ["SoftLimitOverride"] = new RoveCommPacketDesc(8017, 1, RoveCommDataType.UINT16_T),
                 // Shut off all motors (set decipercents to 0 and disable closed loop)
                 ["EStop"] = new RoveCommPacketDesc(8018, 1, RoveCommDataType.UINT8_T)
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [X, Y1, Y2, Z, Pitch, Roll1, Roll2] (in, in, in, in, deg, deg, deg)
-                ["Positions"] = new RoveCommPacketDesc(8100, 7, RoveCommDataType.FLOAT),
-                // [X, Y, Z, P, R] (in, in, in, deg, deg)
-                ["Coordinates"] = new RoveCommPacketDesc(8101, 5, RoveCommDataType.FLOAT),
-                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, Pitch] (0-off, 1-on) (bitmasked)
+                // [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
+                ["Positions"] = new RoveCommPacketDesc(8100, 6, RoveCommDataType.FLOAT),
+                // [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
+                ["Coordinates"] = new RoveCommPacketDesc(8101, 6, RoveCommDataType.FLOAT),
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P] (0-off, 1-on) (bitmasked)
                 ["LimitSwitchTriggered"] = new RoveCommPacketDesc(8102, 1, RoveCommDataType.UINT16_T)
             },
             error: new Dictionary<string, RoveCommPacketDesc>
