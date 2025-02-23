@@ -430,7 +430,7 @@ public static class RoveCommManifest
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
                 // Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
-                ["TakePicture"] = new RoveCommPacketDesc(13001, 1, RoveCommDataType.UINT8_T),
+                ["TakePicture"] = new RoveCommPacketDesc(13001, 2, RoveCommDataType.UINT8_T),
                 // Stop the current camera stream. [0] is the camera to stop streaming. [1] is whether to restart the stream.
                 ["ToggleStream2"] = new RoveCommPacketDesc(13002, 2, RoveCommDataType.UINT8_T)
             },

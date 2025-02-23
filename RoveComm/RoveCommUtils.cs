@@ -400,7 +400,7 @@ public static class RoveCommUtils
                 {
                     for (int i = 0; i < packet.DataCount; i++)
                     {
-                        dataBuf[0] = packetData[0];
+                        dataBuf[i] = packetData[i];
                     }
                     break;
                 }
