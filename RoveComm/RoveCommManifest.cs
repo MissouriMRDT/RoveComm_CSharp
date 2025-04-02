@@ -390,7 +390,9 @@ public static class RoveCommManifest
                 // 
                 ["ReachedGoal"] = new RoveCommPacketDesc(11101, 1, RoveCommDataType.UINT8_T),
                 // String version of most current error log
-                ["CurrentLog"] = new RoveCommPacketDesc(11102, 255, RoveCommDataType.CHAR)
+                ["CurrentLog"] = new RoveCommPacketDesc(11102, 255, RoveCommDataType.CHAR),
+                // [Thread Enum ID, FPS Value]
+                ["ThreadFPS"] = new RoveCommPacketDesc(11103, 2, RoveCommDataType.UINT32_T)
             },
             error: new Dictionary<string, RoveCommPacketDesc>
             {
