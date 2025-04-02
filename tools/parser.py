@@ -1,8 +1,5 @@
 import json
-
-rovecomm_version = 3
-file_path = "../RoveComm/RoveCommManifest.cs"
-json_path = "../data/RoveComm/manifest.json"
+import generate_boards
 
 data_type_lookup = {
     "INT8_T"    : "RoveCommDataType.INT8_T",
@@ -19,24 +16,20 @@ data_type_lookup = {
 packet_type_lookup = {
     "Commands"  : "commands",
     "Telemetry" : "telemetry",
-    "Error"     : "error",
+    "Error"     : "errors",
 }
 
-def main() -> None:
-    print("Generating RoveComm Manifest...")
+rovecomm_version = 3
+manifest_file_path = "RoveComm/RoveCommManifest.cs"
+methods_file_path = "RoveComm/RoveCommBoards.cs"
+json_path = "data/RoveComm/manifest.json"
 
+def main() -> None:
     with open(json_path, "r") as file:
         manifest = json.load(file)
 
-    with open(file_path, "w") as file:
+    with open(manifest_file_path, "w") as file:
         file.write("""\
-/*******************************************************************************
- * NOTICE! 
- * This file is auto generated and will be overwritten if edited
- * and committed. To make changes, edit the manifest.json file or
- * edit parser.py if it is a formatting issue.
- ******************************************************************************/
-
 namespace RoveComm;
 """)
         file.write("""
@@ -82,17 +75,17 @@ public class RoveCommBoardDesc
     public string IP { get; init; }
     public IReadOnlyDictionary<string, RoveCommPacketDesc> Commands { get; init; }
     public IReadOnlyDictionary<string, RoveCommPacketDesc> Telemetry { get; init; }
-    public IReadOnlyDictionary<string, RoveCommPacketDesc> Error { get; init; }
+    public IReadOnlyDictionary<string, RoveCommPacketDesc> Errors { get; init; }
 
     public RoveCommBoardDesc(string ip,
                              IReadOnlyDictionary<string, RoveCommPacketDesc>? commands = null,
                              IReadOnlyDictionary<string, RoveCommPacketDesc>? telemetry = null,
-                             IReadOnlyDictionary<string, RoveCommPacketDesc>? error = null)
+                             IReadOnlyDictionary<string, RoveCommPacketDesc>? errors = null)
     {
         IP = ip;
         Commands = commands ?? new Dictionary<string, RoveCommPacketDesc>();
         Telemetry = telemetry ?? new Dictionary<string, RoveCommPacketDesc>();
-        Error = error ?? new Dictionary<string, RoveCommPacketDesc>();
+        Errors = errors ?? new Dictionary<string, RoveCommPacketDesc>();
     }
 }
 """)
@@ -143,7 +136,12 @@ public static class RoveCommManifest
             {{
 {",\n".join((f"""\
                 // {packet_desc["comments"]}
-                ["{command}"] = new RoveCommPacketDesc({packet_desc["dataId"]}, {packet_desc["dataCount"]}, {data_type_lookup[packet_desc["dataType"]]})"""
+                ["{command}"] = new RoveCommPacketDesc
+                (
+                    {packet_desc["dataId"]},
+                    {packet_desc["dataCount"]},
+                    {data_type_lookup[packet_desc["dataType"]]}
+                )"""
             for command, packet_desc in board_desc[json_type].items()))}
             }}"""
         for json_type, packet_type in packet_type_lookup.items()
@@ -153,7 +151,8 @@ public static class RoveCommManifest
     }};
 }}
 """)
-    print("Done.")
+    
+    generate_boards.run(manifest, methods_file_path)
 
 if __name__ == "__main__":
     main()
