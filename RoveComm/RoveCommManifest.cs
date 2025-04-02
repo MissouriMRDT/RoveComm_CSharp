@@ -38,17 +38,17 @@ public class RoveCommBoardDesc
     public string IP { get; init; }
     public IReadOnlyDictionary<string, RoveCommPacketDesc> Commands { get; init; }
     public IReadOnlyDictionary<string, RoveCommPacketDesc> Telemetry { get; init; }
-    public IReadOnlyDictionary<string, RoveCommPacketDesc> Errors { get; init; }
+    public IReadOnlyDictionary<string, RoveCommPacketDesc> Error { get; init; }
 
     public RoveCommBoardDesc(string ip,
                              IReadOnlyDictionary<string, RoveCommPacketDesc>? commands = null,
                              IReadOnlyDictionary<string, RoveCommPacketDesc>? telemetry = null,
-                             IReadOnlyDictionary<string, RoveCommPacketDesc>? errors = null)
+                             IReadOnlyDictionary<string, RoveCommPacketDesc>? error = null)
     {
         IP = ip;
         Commands = commands ?? new Dictionary<string, RoveCommPacketDesc>();
         Telemetry = telemetry ?? new Dictionary<string, RoveCommPacketDesc>();
-        Errors = errors ?? new Dictionary<string, RoveCommPacketDesc>();
+        Error = error ?? new Dictionary<string, RoveCommPacketDesc>();
     }
 }
 
@@ -220,7 +220,7 @@ public static class RoveCommManifest
                     RoveCommDataType.FLOAT
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
@@ -318,7 +318,7 @@ public static class RoveCommManifest
                     RoveCommDataType.UINT8_T
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // Higher current draw than the battery can support. Rover will Reboot automatically
                 ["PackOvercurrent"] = new RoveCommPacketDesc
@@ -402,7 +402,7 @@ public static class RoveCommManifest
                     RoveCommDataType.FLOAT
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // 
                 ["GPSLockError"] = new RoveCommPacketDesc
@@ -461,7 +461,7 @@ public static class RoveCommManifest
                     RoveCommDataType.FLOAT
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // (1-Watchdog timeout, 0-OK)
                 ["WatchdogStatus"] = new RoveCommPacketDesc
@@ -635,7 +635,7 @@ public static class RoveCommManifest
                     RoveCommDataType.UINT16_T
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // (1-Watchdog timeout, 0-OK)
                 ["WatchdogStatus"] = new RoveCommPacketDesc
@@ -767,7 +767,7 @@ public static class RoveCommManifest
                     RoveCommDataType.FLOAT
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // (1-Watchdog timeout, 0-OK)
                 ["WatchdogStatus"] = new RoveCommPacketDesc
@@ -892,7 +892,7 @@ public static class RoveCommManifest
                     RoveCommDataType.UINT32_T
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
@@ -948,7 +948,7 @@ public static class RoveCommManifest
                     RoveCommDataType.UINT8_T
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // Camera has errored and stopped streaming. [0] is ID of camera as an integer (not bitmask).
                 ["CameraUnavailable"] = new RoveCommPacketDesc
@@ -989,7 +989,7 @@ public static class RoveCommManifest
                     RoveCommDataType.UINT8_T
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
@@ -1087,7 +1087,7 @@ public static class RoveCommManifest
                     RoveCommDataType.UINT8_T
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // Camera has errored and stopped streaming. [0] is ID of camera as an integer (not bitmask).
                 ["CameraUnavailable"] = new RoveCommPacketDesc
@@ -1109,7 +1109,7 @@ public static class RoveCommManifest
             {
 
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
@@ -1221,7 +1221,7 @@ public static class RoveCommManifest
                     RoveCommDataType.UINT16_T
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
                 // (1-Watchdog timeout, 0-OK)
                 ["WatchdogStatus"] = new RoveCommPacketDesc
@@ -1249,7 +1249,7 @@ public static class RoveCommManifest
                     RoveCommDataType.FLOAT
                 )
             },
-            errors: new Dictionary<string, RoveCommPacketDesc>
+            error: new Dictionary<string, RoveCommPacketDesc>
             {
 
             }
