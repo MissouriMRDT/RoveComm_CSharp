@@ -1174,6 +1174,13 @@ public static class RoveCommManifest
                     16007,
                     1,
                     RoveCommDataType.UINT32_T
+                ),
+                // [Pan, Tilt](degrees -180-180)
+                ["RamanGimbalIncrement"] = new RoveCommPacketDesc
+                (
+                    16008,
+                    2,
+                    RoveCommDataType.INT16_T
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>

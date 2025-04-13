@@ -768,17 +768,18 @@ public static class Autonomy
 		Critical = 8,
 	}
 	public enum AUTONOMYTHREADS {
-		MainProcess = 0,
-		MainCam = 1,
-		LeftCam = 2,
-		RightCam = 3,
-		GroundCam = 4,
-		MainDetector = 5,
-		LeftDetector = 6,
-		RightDetector = 7,
-		StateMachine = 8,
-		RoveCommUDP = 9,
-		RoveCommTCP = 10,
+		NotSet = 0,
+		MainProcess = 1,
+		MainCam = 2,
+		LeftCam = 3,
+		RightCam = 4,
+		GroundCam = 5,
+		MainDetector = 6,
+		LeftDetector = 7,
+		RightDetector = 8,
+		StateMachine = 9,
+		RoveCommUDP = 10,
+		RoveCommTCP = 11,
 	}
 }
 
@@ -1028,6 +1029,17 @@ public static class Raman
 	public static void RequestRamanReading(RoveCommService service, uint arg1) 
     {
         _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+    }
+     
+    /// <summary>
+    /// [Pan, Tilt](degrees -180-180)
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="Pan"></param>
+	/// <param name="Tilt"></param>
+	public static void RamanGimbalIncrement(RoveCommService service, short Pan, short Tilt) 
+    {
+        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Pan, Tilt], reliable: false));
     }
 }
 
