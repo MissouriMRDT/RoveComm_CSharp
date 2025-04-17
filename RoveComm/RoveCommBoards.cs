@@ -787,17 +787,6 @@ public static class Camera1
 {
      
     /// <summary>
-    /// Change which camera a feed is looking at. [0] is the feed, [1] is the camera to view.
-    /// </summary> 
-    /// <param name="service">The RoveComm service to use.</param>
-    /// <param name="arg1"></param>
-	/// <param name="arg2"></param>
-	public static void ChangeCameras(RoveCommService service, byte arg1, byte arg2) 
-    {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
-    }
-     
-    /// <summary>
     /// Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>
@@ -814,7 +803,7 @@ public static class Camera1
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="arg1"></param>
 	/// <param name="arg2"></param>
-	public static void ToggleStream1(RoveCommService service, byte arg1, byte arg2) 
+	public static void ToggleStream(RoveCommService service, byte arg1, byte arg2) 
     {
         _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
     }
@@ -840,7 +829,7 @@ public static class Camera2
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="arg1"></param>
 	/// <param name="arg2"></param>
-	public static void ToggleStream2(RoveCommService service, byte arg1, byte arg2) 
+	public static void ToggleStream(RoveCommService service, byte arg1, byte arg2) 
     {
         _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
     }
