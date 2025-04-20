@@ -11,7 +11,7 @@ public static class Core
 	/// <param name="RightSpeed"></param>
 	public static void DriveLeftRight(RoveCommService service, float LeftSpeed, float RightSpeed) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [LeftSpeed, RightSpeed], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "DriveLeftRight", [LeftSpeed, RightSpeed], reliable: false));
     }
      
     /// <summary>
@@ -26,7 +26,7 @@ public static class Core
 	/// <param name="RR"></param>
 	public static void DriveIndividual(RoveCommService service, float LF, float LM, float LR, float RF, float RM, float RR) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [LF, LM, LR, RF, RM, RR], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "DriveIndividual", [LF, LM, LR, RF, RM, RR], reliable: false));
     }
      
     /// <summary>
@@ -36,7 +36,7 @@ public static class Core
     /// <param name="arg1"></param>
 	public static void WatchdogOverride(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "WatchdogOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -46,7 +46,7 @@ public static class Core
     /// <param name="Tilt"></param>
 	public static void LeftDriveGimbalIncrement(RoveCommService service, short Tilt) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Tilt], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "LeftDriveGimbalIncrement", [Tilt], reliable: false));
     }
      
     /// <summary>
@@ -56,7 +56,7 @@ public static class Core
     /// <param name="Tilt"></param>
 	public static void RightDriveGimbalIncrement(RoveCommService service, short Tilt) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Tilt], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "RightDriveGimbalIncrement", [Tilt], reliable: false));
     }
      
     /// <summary>
@@ -67,7 +67,7 @@ public static class Core
 	/// <param name="Tilt"></param>
 	public static void LeftMainGimbalIncrement(RoveCommService service, short Pan, short Tilt) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Pan, Tilt], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "LeftMainGimbalIncrement", [Pan, Tilt], reliable: false));
     }
      
     /// <summary>
@@ -78,7 +78,7 @@ public static class Core
 	/// <param name="Tilt"></param>
 	public static void RightMainGimbalIncrement(RoveCommService service, short Pan, short Tilt) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Pan, Tilt], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "RightMainGimbalIncrement", [Pan, Tilt], reliable: false));
     }
      
     /// <summary>
@@ -88,7 +88,7 @@ public static class Core
     /// <param name="Tilt"></param>
 	public static void BackDriveGimbalIncrement(RoveCommService service, short Tilt) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Tilt], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "BackDriveGimbalIncrement", [Tilt], reliable: false));
     }
      
     /// <summary>
@@ -100,7 +100,7 @@ public static class Core
 	/// <param name="B"></param>
 	public static void LEDRGB(RoveCommService service, byte R, byte G, byte B) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [R, G, B], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "LEDRGB", [R, G, B], reliable: false));
     }
      
     /// <summary>
@@ -110,7 +110,7 @@ public static class Core
     /// <param name="Pattern"></param>
 	public static void LEDPatterns(RoveCommService service, byte Pattern) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Pattern], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "LEDPatterns", [Pattern], reliable: false));
     }
      
     /// <summary>
@@ -120,7 +120,7 @@ public static class Core
     /// <param name="arg1"></param>
 	public static void StateDisplay(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "StateDisplay", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -130,7 +130,7 @@ public static class Core
     /// <param name="arg1"></param>
 	public static void Brightness(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "Brightness", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -140,7 +140,7 @@ public static class Core
     /// <param name="arg1"></param>
 	public static void SetWatchdogMode(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "SetWatchdogMode", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -150,7 +150,7 @@ public static class Core
     /// <param name="args"></param>
 	public static void LEDText(RoveCommService service, char[] args) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [args], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Core", "LEDText", [args], reliable: false));
     }
 
 	public enum DISPLAYSTATE {
@@ -179,7 +179,7 @@ public static class PMS
     /// <param name="arg1"></param>
 	public static void EStop(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("PMS", "EStop", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -189,7 +189,7 @@ public static class PMS
     /// <param name="arg1"></param>
 	public static void Suicide(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("PMS", "Suicide", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -199,7 +199,7 @@ public static class PMS
     /// <param name="arg1"></param>
 	public static void Reboot(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("PMS", "Reboot", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -209,7 +209,7 @@ public static class PMS
     /// <param name="arg1"></param>
 	public static void EnableBus(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("PMS", "EnableBus", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -219,7 +219,7 @@ public static class PMS
     /// <param name="arg1"></param>
 	public static void DisableBus(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("PMS", "DisableBus", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -229,7 +229,7 @@ public static class PMS
     /// <param name="arg1"></param>
 	public static void SetBus(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("PMS", "SetBus", [arg1], reliable: false));
     }
 }
 
@@ -243,7 +243,7 @@ public static class SignalStack
     /// <param name="arg1"></param>
 	public static void OpenLoop(RoveCommService service, short arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("SignalStack", "OpenLoop", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -253,7 +253,7 @@ public static class SignalStack
     /// <param name="Heading"></param>
 	public static void SetAngleTarget(RoveCommService service, float Heading) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Heading], reliable: false));
+        _ = Task.Run(() => service.SendAsync("SignalStack", "SetAngleTarget", [Heading], reliable: false));
     }
      
     /// <summary>
@@ -266,7 +266,7 @@ public static class SignalStack
 	/// <param name="BasestationLong"></param>
 	public static void SetGPSTarget(RoveCommService service, double RoverLat, double RoverLong, double BasestationLat, double BasestationLong) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [RoverLat, RoverLong, BasestationLat, BasestationLong], reliable: false));
+        _ = Task.Run(() => service.SendAsync("SignalStack", "SetGPSTarget", [RoverLat, RoverLong, BasestationLat, BasestationLong], reliable: false));
     }
      
     /// <summary>
@@ -276,7 +276,7 @@ public static class SignalStack
     /// <param name="arg1"></param>
 	public static void WatchdogOverride(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("SignalStack", "WatchdogOverride", [arg1], reliable: false));
     }
 }
 
@@ -295,7 +295,7 @@ public static class Arm
 	/// <param name="R"></param>
 	public static void SetIndividualSpeeds(RoveCommService service, short X, short J2, short J3, short J4, short P, short R) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [X, J2, J3, J4, P, R], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SetIndividualSpeeds", [X, J2, J3, J4, P, R], reliable: false));
     }
      
     /// <summary>
@@ -306,7 +306,7 @@ public static class Arm
 	/// <param name="Decipercent"></param>
 	public static void SetJointSpeed(RoveCommService service, short JointID, short Decipercent) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [JointID, Decipercent], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SetJointSpeed", [JointID, Decipercent], reliable: false));
     }
      
     /// <summary>
@@ -321,7 +321,7 @@ public static class Arm
 	/// <param name="R"></param>
 	public static void SetIndividualTargetAngles(RoveCommService service, float X, float J2, float J3, float J4, float P, float R) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [X, J2, J3, J4, P, R], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SetIndividualTargetAngles", [X, J2, J3, J4, P, R], reliable: false));
     }
      
     /// <summary>
@@ -332,7 +332,7 @@ public static class Arm
 	/// <param name="Position"></param>
 	public static void SetJointTargetAngle(RoveCommService service, float JointID, float Position) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [JointID, Position], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SetJointTargetAngle", [JointID, Position], reliable: false));
     }
      
     /// <summary>
@@ -347,7 +347,7 @@ public static class Arm
 	/// <param name="R"></param>
 	public static void IncrementIndividualTargetAngles(RoveCommService service, float X, float J2, float J3, float J4, float P, float R) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [X, J2, J3, J4, P, R], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "IncrementIndividualTargetAngles", [X, J2, J3, J4, P, R], reliable: false));
     }
      
     /// <summary>
@@ -358,7 +358,7 @@ public static class Arm
 	/// <param name="Angle"></param>
 	public static void IncrementJointTargetAngle(RoveCommService service, float JointID, float Angle) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [JointID, Angle], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "IncrementJointTargetAngle", [JointID, Angle], reliable: false));
     }
      
     /// <summary>
@@ -373,7 +373,7 @@ public static class Arm
 	/// <param name="R"></param>
 	public static void SetIKPosition(RoveCommService service, float X, float Y, float Z, float J4, float P, float R) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [X, Y, Z, J4, P, R], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SetIKPosition", [X, Y, Z, J4, P, R], reliable: false));
     }
      
     /// <summary>
@@ -388,7 +388,7 @@ public static class Arm
 	/// <param name="R"></param>
 	public static void IncrementIKPosition(RoveCommService service, float X, float Y, float Z, float J4, float P, float R) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [X, Y, Z, J4, P, R], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "IncrementIKPosition", [X, Y, Z, J4, P, R], reliable: false));
     }
      
     /// <summary>
@@ -400,7 +400,7 @@ public static class Arm
 	/// <param name="R"></param>
 	public static void SetLockModePosition(RoveCommService service, float J4, float P, float R) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [J4, P, R], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SetLockModePosition", [J4, P, R], reliable: false));
     }
      
     /// <summary>
@@ -412,7 +412,7 @@ public static class Arm
 	/// <param name="R"></param>
 	public static void IncrementLockModePosition(RoveCommService service, float J4, float P, float R) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [J4, P, R], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "IncrementLockModePosition", [J4, P, R], reliable: false));
     }
      
     /// <summary>
@@ -422,7 +422,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void Laser(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "Laser", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -432,7 +432,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void Solenoid(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "Solenoid", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -442,7 +442,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void SetGripperSpeed(RoveCommService service, short arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SetGripperSpeed", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -452,7 +452,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void WatchdogOverride(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "WatchdogOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -462,7 +462,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void LimitSwitchOverride(RoveCommService service, ushort arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "LimitSwitchOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -472,7 +472,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void ClosedLoopOverride(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "ClosedLoopOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -482,7 +482,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void CalibrateEncoder(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "CalibrateEncoder", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -492,7 +492,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void SoftLimitOverride(RoveCommService service, ushort arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SoftLimitOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -502,7 +502,7 @@ public static class Arm
     /// <param name="arg1"></param>
 	public static void EStop(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "EStop", [arg1], reliable: false));
     }
 
 	public enum Joints {
@@ -525,7 +525,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void AugerAxis_OpenLoop(RoveCommService service, short arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "AugerAxis_OpenLoop", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -535,7 +535,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void AugerAxis_SetPosition(RoveCommService service, float arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "AugerAxis_SetPosition", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -545,7 +545,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void AugerAxis_IncrementPosition(RoveCommService service, float arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "AugerAxis_IncrementPosition", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -555,7 +555,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void LimitSwitchOverride(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "LimitSwitchOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -565,7 +565,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void CalibrateEncoder(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "CalibrateEncoder", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -575,7 +575,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void RunAuger(RoveCommService service, short arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "Auger", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -585,7 +585,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void WatchdogOverride(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "WatchdogOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -595,7 +595,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void RequestTemperature(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "RequestTemperature", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -605,7 +605,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void RequestHumidity(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "RequestHumidity", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -615,7 +615,7 @@ public static class Auger
     /// <param name="arg1"></param>
 	public static void UVLED(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "UVLED", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -626,7 +626,7 @@ public static class Auger
 	/// <param name="Tilt"></param>
 	public static void AugerGimbalIncrement(RoveCommService service, short Pan, short Tilt) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Pan, Tilt], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "AugerGimbalIncrement", [Pan, Tilt], reliable: false));
     }
 }
 
@@ -640,7 +640,7 @@ public static class Autonomy
     /// <param name="arg1"></param>
 	public static void StartAutonomy(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "StartAutonomy", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -650,7 +650,7 @@ public static class Autonomy
     /// <param name="arg1"></param>
 	public static void DisableAutonomy(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "DisableAutonomy", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -661,7 +661,7 @@ public static class Autonomy
 	/// <param name="Lon"></param>
 	public static void AddPositionLeg(RoveCommService service, double Lat, double Lon) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Lat, Lon], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "AddPositionLeg", [Lat, Lon], reliable: false));
     }
      
     /// <summary>
@@ -674,7 +674,7 @@ public static class Autonomy
 	/// <param name="MarkerRadius"></param>
 	public static void AddMarkerLeg(RoveCommService service, double Lat, double Lon, double MarkerID, double MarkerRadius) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Lat, Lon, MarkerID, MarkerRadius], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "AddMarkerLeg", [Lat, Lon, MarkerID, MarkerRadius], reliable: false));
     }
      
     /// <summary>
@@ -686,7 +686,7 @@ public static class Autonomy
 	/// <param name="ObjectRadius"></param>
 	public static void AddObjectLeg(RoveCommService service, double Lat, double Lon, double ObjectRadius) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Lat, Lon, ObjectRadius], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "AddObjectLeg", [Lat, Lon, ObjectRadius], reliable: false));
     }
      
     /// <summary>
@@ -696,7 +696,7 @@ public static class Autonomy
     /// <param name="arg1"></param>
 	public static void ClearWaypoints(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "ClearWaypoints", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -706,7 +706,7 @@ public static class Autonomy
     /// <param name="arg1"></param>
 	public static void SetMaxSpeed(RoveCommService service, float arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "SetMaxSpeed", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -718,7 +718,7 @@ public static class Autonomy
 	/// <param name="arg3"></param>
 	public static void SetLoggingLevels(RoveCommService service, byte arg1, byte arg2, byte arg3) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2, arg3], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "SetLoggingLevels", [arg1, arg2, arg3], reliable: false));
     }
      
     /// <summary>
@@ -730,7 +730,7 @@ public static class Autonomy
 	/// <param name="ObstacleRadius"></param>
 	public static void AddObstacle(RoveCommService service, double Lat, double Lon, double ObstacleRadius) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Lat, Lon, ObstacleRadius], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "AddObstacle", [Lat, Lon, ObstacleRadius], reliable: false));
     }
      
     /// <summary>
@@ -740,7 +740,7 @@ public static class Autonomy
     /// <param name="arg1"></param>
 	public static void ClearObstacles(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "ClearObstacles", [arg1], reliable: false));
     }
 
 	public enum AUTONOMYSTATE {
@@ -768,23 +768,33 @@ public static class Autonomy
 		Critical = 8,
 	}
 	public enum AUTONOMYTHREADS {
-		NotSet = 0,
-		MainProcess = 1,
-		MainCam = 2,
-		LeftCam = 3,
-		RightCam = 4,
-		GroundCam = 5,
-		MainDetector = 6,
-		LeftDetector = 7,
-		RightDetector = 8,
-		StateMachine = 9,
-		RoveCommUDP = 10,
-		RoveCommTCP = 11,
+		MainProcess = 0,
+		MainCam = 1,
+		LeftCam = 2,
+		RightCam = 3,
+		GroundCam = 4,
+		MainDetector = 5,
+		LeftDetector = 6,
+		RightDetector = 7,
+		StateMachine = 8,
+		RoveCommUDP = 9,
+		RoveCommTCP = 10,
 	}
 }
 
 public static class Camera1
 {
+     
+    /// <summary>
+    /// Change which camera a feed is looking at. [0] is the feed, [1] is the camera to view.
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="arg1"></param>
+	/// <param name="arg2"></param>
+	public static void ChangeCameras(RoveCommService service, byte arg1, byte arg2) 
+    {
+        _ = Task.Run(() => service.SendAsync("Camera1", "ChangeCameras", [arg1, arg2], reliable: false));
+    }
      
     /// <summary>
     /// Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
@@ -794,7 +804,7 @@ public static class Camera1
 	/// <param name="arg2"></param>
 	public static void TakePicture(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Camera1", "TakePicture", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -803,9 +813,9 @@ public static class Camera1
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="arg1"></param>
 	/// <param name="arg2"></param>
-	public static void ToggleStream(RoveCommService service, byte arg1, byte arg2) 
+	public static void ToggleStream1(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Camera1", "ToggleStream1", [arg1, arg2], reliable: false));
     }
 }
 
@@ -820,7 +830,7 @@ public static class Camera2
 	/// <param name="arg2"></param>
 	public static void TakePicture(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Camera2", "TakePicture", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -829,9 +839,9 @@ public static class Camera2
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="arg1"></param>
 	/// <param name="arg2"></param>
-	public static void ToggleStream(RoveCommService service, byte arg1, byte arg2) 
+	public static void ToggleStream2(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Camera2", "ToggleStream2", [arg1, arg2], reliable: false));
     }
 }
 
@@ -845,7 +855,7 @@ public static class CameraServer
     /// <param name="arg1"></param>
 	public static void TakePhoto(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "TakePhoto", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -856,7 +866,7 @@ public static class CameraServer
 	/// <param name="arg2"></param>
 	public static void ToggleStream(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "ToggleStream", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -867,7 +877,7 @@ public static class CameraServer
 	/// <param name="arg2"></param>
 	public static void AdjustBrightness(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "AdjustBrightness", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -878,7 +888,7 @@ public static class CameraServer
 	/// <param name="arg2"></param>
 	public static void AdjustContrast(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "AdjustContrast", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -889,7 +899,7 @@ public static class CameraServer
 	/// <param name="arg2"></param>
 	public static void AdjustSaturation(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "AdjustSaturation", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -900,7 +910,7 @@ public static class CameraServer
 	/// <param name="arg2"></param>
 	public static void AdjustHue(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "AdjustHue", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -911,7 +921,7 @@ public static class CameraServer
 	/// <param name="arg2"></param>
 	public static void SetWhiteBalance(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "SetWhiteBalance", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -922,7 +932,7 @@ public static class CameraServer
 	/// <param name="arg2"></param>
 	public static void AdjustBacklightContrast(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "AdjustBacklightContrast", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -933,7 +943,7 @@ public static class CameraServer
 	/// <param name="arg2"></param>
 	public static void SetExposure(RoveCommService service, int arg1, int arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("CameraServer", "SetExposure", [arg1, arg2], reliable: false));
     }
 }
 
@@ -947,7 +957,7 @@ public static class Raman
     /// <param name="arg1"></param>
 	public static void InstrumentsAxis_OpenLoop(RoveCommService service, short arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Raman", "InstrumentsAxis_OpenLoop", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -957,7 +967,7 @@ public static class Raman
     /// <param name="arg1"></param>
 	public static void InstrumentsAxis_SetPosition(RoveCommService service, float arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Raman", "InstrumentsAxis_SetPosition", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -967,7 +977,7 @@ public static class Raman
     /// <param name="arg1"></param>
 	public static void InstrumentsAxis_IncrementPosition(RoveCommService service, float arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Raman", "InstrumentsAxis_IncrementPosition", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -977,7 +987,7 @@ public static class Raman
     /// <param name="arg1"></param>
 	public static void LimitSwitchOverride(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Raman", "LimitSwitchOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -987,7 +997,7 @@ public static class Raman
     /// <param name="arg1"></param>
 	public static void CalibrateEncoder(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Raman", "CalibrateEncoder", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -997,7 +1007,7 @@ public static class Raman
     /// <param name="arg1"></param>
 	public static void WatchdogOverride(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Raman", "WatchdogOverride", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -1007,7 +1017,7 @@ public static class Raman
     /// <param name="arg1"></param>
 	public static void Laser(RoveCommService service, byte arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Raman", "Laser", [arg1], reliable: false));
     }
      
     /// <summary>
@@ -1017,18 +1027,7 @@ public static class Raman
     /// <param name="arg1"></param>
 	public static void RequestRamanReading(RoveCommService service, uint arg1) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [arg1], reliable: false));
-    }
-     
-    /// <summary>
-    /// [Pan, Tilt](degrees -180-180)
-    /// </summary> 
-    /// <param name="service">The RoveComm service to use.</param>
-    /// <param name="Pan"></param>
-	/// <param name="Tilt"></param>
-	public static void RamanGimbalIncrement(RoveCommService service, short Pan, short Tilt) 
-    {
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [Pan, Tilt], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Raman", "RequestRamanReading", [arg1], reliable: false));
     }
 }
 

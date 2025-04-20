@@ -902,39 +902,46 @@ public static class RoveCommManifest
             ip: "192.168.4.100",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
-                ["TakePicture"] = new RoveCommPacketDesc
+                // Change which camera a feed is looking at. [0] is the feed, [1] is the camera to view.
+                ["ChangeCameras"] = new RoveCommPacketDesc
                 (
                     12000,
                     2,
                     RoveCommDataType.UINT8_T
                 ),
-                // Stop the current camera stream. [0] is the camera to stop streaming. [1] is whether to restart the stream.
-                ["ToggleStream"] = new RoveCommPacketDesc
+                // Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
+                ["TakePicture"] = new RoveCommPacketDesc
                 (
                     12001,
+                    2,
+                    RoveCommDataType.UINT8_T
+                ),
+                // Stop the current camera stream. [0] is the camera to stop streaming. [1] is whether to restart the stream.
+                ["ToggleStream1"] = new RoveCommPacketDesc
+                (
+                    12002,
                     2,
                     RoveCommDataType.UINT8_T
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Number of detected cameras.
+                // Bitmask values for which cameras are able to stream. LSB is Camera 0, MSB is Camera 7.
                 ["AvailableCameras"] = new RoveCommPacketDesc
                 (
                     12100,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // Number of streaming cameras.
+                // Which cameras the system is currently streaming on each port
                 ["StreamingCameras"] = new RoveCommPacketDesc
                 (
                     12101,
-                    1,
+                    4,
                     RoveCommDataType.UINT8_T
                 ),
                 // Picture has been taken.
-                ["PictureTaken"] = new RoveCommPacketDesc
+                ["PictureTaken1"] = new RoveCommPacketDesc
                 (
                     12102,
                     1,
@@ -960,38 +967,24 @@ public static class RoveCommManifest
                 // Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
                 ["TakePicture"] = new RoveCommPacketDesc
                 (
-                    13000,
+                    13001,
                     2,
                     RoveCommDataType.UINT8_T
                 ),
                 // Stop the current camera stream. [0] is the camera to stop streaming. [1] is whether to restart the stream.
-                ["ToggleStream"] = new RoveCommPacketDesc
+                ["ToggleStream2"] = new RoveCommPacketDesc
                 (
-                    13001,
+                    13002,
                     2,
                     RoveCommDataType.UINT8_T
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Number of detected cameras.
-                ["AvailableCameras"] = new RoveCommPacketDesc
+                // Picture has been taken.
+                ["PictureTaken2"] = new RoveCommPacketDesc
                 (
                     13100,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
-                // Number of streaming cameras.
-                ["StreamingCameras"] = new RoveCommPacketDesc
-                (
-                    13101,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
-                // Picture has been taken.
-                ["PictureTaken"] = new RoveCommPacketDesc
-                (
-                    13102,
                     1,
                     RoveCommDataType.UINT8_T
                 )
@@ -1181,13 +1174,6 @@ public static class RoveCommManifest
                     16007,
                     1,
                     RoveCommDataType.UINT32_T
-                ),
-                // [Pan, Tilt](degrees -180-180)
-                ["RamanGimbalIncrement"] = new RoveCommPacketDesc
-                (
-                    16008,
-                    2,
-                    RoveCommDataType.INT16_T
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>

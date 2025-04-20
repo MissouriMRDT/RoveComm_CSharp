@@ -33,7 +33,7 @@ def run(manifest, file_path):
     {"\n\t".join(f"""/// <param name="{params[i]}"></param>""" for i in range(len(params)))}""" 
                     file.write(f"""{comment}\n\tpublic static void {command if command is not board else "Run" + command}(RoveCommService service, {", ".join(f"""{cs_type_lookup[packet_desc["dataType"]]}{"" if packet_desc["dataCount"] < 10 else "[]"} {p}""" for p in params) }) 
     {{
-        _ = Task.Run(() => service.SendAsync("Camera1", "SetSource", [{", ".join(p for p in params)}], reliable: false));
+        _ = Task.Run(() => service.SendAsync("{board}", "{command}", [{", ".join(p for p in params)}], reliable: false));
     }}
 """)
             if "Enums" in board_desc:
