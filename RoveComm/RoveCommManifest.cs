@@ -199,30 +199,37 @@ public static class RoveCommManifest
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
                 // [FL, ML, BL, FR, MR, BR] (-1, 1)-> (-100%, 100%)
-                ["DriveSpeeds"] = new RoveCommPacketDesc
+                ["MotorSpeeds"] = new RoveCommPacketDesc
                 (
                     3100,
                     6,
                     RoveCommDataType.FLOAT
                 ),
-                // [FL, ML, BL, FR, MR, BR] VESC current draw
-                ["DriveCurrents"] = new RoveCommPacketDesc
+                // [FL, ML, BL, FR, MR, BR] Motor current draw
+                ["MotorCurrents"] = new RoveCommPacketDesc
                 (
                     3101,
+                    6,
+                    RoveCommDataType.FLOAT
+                ),
+                // [FL, ML, BL, FR, MR, BR] VESC (battery side) current draw
+                ["VESCCurrents"] = new RoveCommPacketDesc
+                (
+                    3102,
                     6,
                     RoveCommDataType.FLOAT
                 ),
                 // [Roll, Pitch, Yaw] degrees
                 ["IMUData"] = new RoveCommPacketDesc
                 (
-                    3102,
+                    3103,
                     3,
                     RoveCommDataType.FLOAT
                 ),
                 // [xAxis, yAxis, zAxis] Accel in m/s^2
                 ["AccelerometerData"] = new RoveCommPacketDesc
                 (
-                    3103,
+                    3104,
                     3,
                     RoveCommDataType.FLOAT
                 )
