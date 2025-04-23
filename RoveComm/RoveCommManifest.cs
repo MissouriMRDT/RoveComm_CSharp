@@ -198,31 +198,44 @@ public static class RoveCommManifest
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [LF, LM, LR, RF, RM, RR] (-1, 1)-> (-100%, 100%)
+                // [FL, ML, BL, FR, MR, BR] (-1, 1)-> (-100%, 100%)
                 ["DriveSpeeds"] = new RoveCommPacketDesc
                 (
                     3100,
                     6,
                     RoveCommDataType.FLOAT
                 ),
+                // [FL, ML, BL, FR, MR, BR] VESC current draw
+                ["DriveCurrents"] = new RoveCommPacketDesc
+                (
+                    3101,
+                    6,
+                    RoveCommDataType.FLOAT
+                ),
                 // [Roll, Pitch, Yaw] degrees
                 ["IMUData"] = new RoveCommPacketDesc
                 (
-                    3101,
+                    3102,
                     3,
                     RoveCommDataType.FLOAT
                 ),
                 // [xAxis, yAxis, zAxis] Accel in m/s^2
                 ["AccelerometerData"] = new RoveCommPacketDesc
                 (
-                    3102,
+                    3103,
                     3,
                     RoveCommDataType.FLOAT
                 )
             },
             error: new Dictionary<string, RoveCommPacketDesc>
             {
-
+                // [MotorID, FaultCode]
+                ["VESCFault"] = new RoveCommPacketDesc
+                (
+                    3200,
+                    2,
+                    RoveCommDataType.UINT8_T
+                )
             }
         ),
         ["PMS"] = new RoveCommBoardDesc
