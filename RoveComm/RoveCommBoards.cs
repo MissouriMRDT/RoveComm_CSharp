@@ -738,7 +738,7 @@ public static class Autonomy
     }
      
     /// <summary>
-    /// A multiplier from 0.0 to 1.0 that will scale the max power effort of Autonomy
+    /// A multiplier from 0.0 to 1.0 that will scale the max power effort of Autonomy.
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="arg1"></param>
@@ -806,33 +806,20 @@ public static class Autonomy
 		Critical = 8,
 	}
 	public enum AUTONOMYTHREADS {
-		MainProcess = 0,
-		MainCam = 1,
-		LeftCam = 2,
-		RightCam = 3,
-		GroundCam = 4,
-		MainDetector = 5,
-		LeftDetector = 6,
-		RightDetector = 7,
-		StateMachine = 8,
-		RoveCommUDP = 9,
-		RoveCommTCP = 10,
+		NotSet = 0,
+		MainProcess = 1,
+		MainCam = 2,
+		GroundCam = 3,
+		MainDetector = 4,
+		GroundDetector = 5,
+		StateMachine = 6,
+		RoveCommUDP = 7,
+		RoveCommTCP = 8,
 	}
 }
 
 public static class Camera1
 {
-     
-    /// <summary>
-    /// Change which camera a feed is looking at. [0] is the feed, [1] is the camera to view.
-    /// </summary> 
-    /// <param name="service">The RoveComm service to use.</param>
-    /// <param name="arg1"></param>
-	/// <param name="arg2"></param>
-	public static void ChangeCameras(RoveCommService service, byte arg1, byte arg2) 
-    {
-        _ = Task.Run(() => service.SendAsync("Camera1", "ChangeCameras", [arg1, arg2], reliable: false));
-    }
      
     /// <summary>
     /// Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
@@ -851,9 +838,9 @@ public static class Camera1
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="arg1"></param>
 	/// <param name="arg2"></param>
-	public static void ToggleStream1(RoveCommService service, byte arg1, byte arg2) 
+	public static void ToggleStream(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera1", "ToggleStream1", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Camera1", "ToggleStream", [arg1, arg2], reliable: false));
     }
 }
 
@@ -877,9 +864,9 @@ public static class Camera2
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="arg1"></param>
 	/// <param name="arg2"></param>
-	public static void ToggleStream2(RoveCommService service, byte arg1, byte arg2) 
+	public static void ToggleStream(RoveCommService service, byte arg1, byte arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Camera2", "ToggleStream2", [arg1, arg2], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Camera2", "ToggleStream", [arg1, arg2], reliable: false));
     }
 }
 
@@ -1066,6 +1053,17 @@ public static class Raman
 	public static void RequestRamanReading(RoveCommService service, uint arg1) 
     {
         _ = Task.Run(() => service.SendAsync("Raman", "RequestRamanReading", [arg1], reliable: false));
+    }
+     
+    /// <summary>
+    /// [Pan, Tilt](degrees -180-180)
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="Pan"></param>
+	/// <param name="Tilt"></param>
+	public static void RamanGimbalIncrement(RoveCommService service, short Pan, short Tilt) 
+    {
+        _ = Task.Run(() => service.SendAsync("Raman", "RamanGimbalIncrement", [Pan, Tilt], reliable: false));
     }
 }
 
