@@ -657,14 +657,13 @@ public static class Auger
     }
      
     /// <summary>
-    /// [Pan, Tilt](degrees -180-180)
+    /// [Position](degrees -180-180)
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>
-    /// <param name="Pan"></param>
-	/// <param name="Tilt"></param>
-	public static void AugerGimbalIncrement(RoveCommService service, short Pan, short Tilt) 
+    /// <param name="Position"></param>
+	public static void AugerMultiplexerServo(RoveCommService service, short Position) 
     {
-        _ = Task.Run(() => service.SendAsync("Auger", "AugerGimbalIncrement", [Pan, Tilt], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Auger", "AugerMultiplexerServo", [Position], reliable: false));
     }
 }
 

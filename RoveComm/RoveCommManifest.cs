@@ -741,11 +741,11 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Pan, Tilt](degrees -180-180)
-                ["AugerGimbalIncrement"] = new RoveCommPacketDesc
+                // [Position](degrees -180-180)
+                ["AugerMultiplexerServo"] = new RoveCommPacketDesc
                 (
                     9010,
-                    2,
+                    1,
                     RoveCommDataType.INT16_T
                 )
             },
