@@ -633,11 +633,11 @@ public static class RoveCommManifest
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
+                // [X, J2, J3, J4, P, R, AP] (in, deg, deg, deg, deg, deg, deg, deg)
                 ["Positions"] = new RoveCommPacketDesc
                 (
                     8100,
-                    6,
+                    7,
                     RoveCommDataType.FLOAT
                 ),
                 // [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
