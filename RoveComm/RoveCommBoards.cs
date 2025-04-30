@@ -841,6 +841,26 @@ public static class Camera1
     {
         _ = Task.Run(() => service.SendAsync("Camera1", "ToggleStream", [arg1, arg2], reliable: false));
     }
+     
+    /// <summary>
+    /// 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port.
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="args"></param>
+	public static void SetFFMPEGArguments(RoveCommService service, char[] args) 
+    {
+        _ = Task.Run(() => service.SendAsync("Camera1", "SetFFMPEGArguments", [args], reliable: false));
+    }
+     
+    /// <summary>
+    /// 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension.
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="args"></param>
+	public static void SetPictureArguments(RoveCommService service, char[] args) 
+    {
+        _ = Task.Run(() => service.SendAsync("Camera1", "SetPictureArguments", [args], reliable: false));
+    }
 }
 
 public static class Camera2
@@ -866,6 +886,26 @@ public static class Camera2
 	public static void ToggleStream(RoveCommService service, byte arg1, byte arg2) 
     {
         _ = Task.Run(() => service.SendAsync("Camera2", "ToggleStream", [arg1, arg2], reliable: false));
+    }
+     
+    /// <summary>
+    /// 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port.
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="args"></param>
+	public static void SetFFMPEGArguments(RoveCommService service, char[] args) 
+    {
+        _ = Task.Run(() => service.SendAsync("Camera2", "SetFFMPEGArguments", [args], reliable: false));
+    }
+     
+    /// <summary>
+    /// 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension.
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="args"></param>
+	public static void SetPictureArguments(RoveCommService service, char[] args) 
+    {
+        _ = Task.Run(() => service.SendAsync("Camera2", "SetPictureArguments", [args], reliable: false));
     }
 }
 

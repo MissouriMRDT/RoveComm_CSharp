@@ -935,6 +935,20 @@ public static class RoveCommManifest
                     12001,
                     2,
                     RoveCommDataType.UINT8_T
+                ),
+                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port.
+                ["SetFFMPEGArguments"] = new RoveCommPacketDesc
+                (
+                    12002,
+                    16384,
+                    RoveCommDataType.CHAR
+                ),
+                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension.
+                ["SetPictureArguments"] = new RoveCommPacketDesc
+                (
+                    12003,
+                    16384,
+                    RoveCommDataType.CHAR
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
@@ -959,17 +973,18 @@ public static class RoveCommManifest
                     12102,
                     1,
                     RoveCommDataType.UINT8_T
+                ),
+                // [cpu0, cpu1, cpu2, cpu3, mem, storage], (% usage)
+                ["Utilization"] = new RoveCommPacketDesc
+                (
+                    12103,
+                    4,
+                    RoveCommDataType.UINT8_T
                 )
             },
             error: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Camera has errored and stopped streaming. [0] is ID of camera as an integer (not bitmask).
-                ["CameraUnavailable"] = new RoveCommPacketDesc
-                (
-                    12200,
-                    1,
-                    RoveCommDataType.UINT8_T
-                )
+
             }
         ),
         ["Camera2"] = new RoveCommBoardDesc
@@ -990,6 +1005,20 @@ public static class RoveCommManifest
                     13001,
                     2,
                     RoveCommDataType.UINT8_T
+                ),
+                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port.
+                ["SetFFMPEGArguments"] = new RoveCommPacketDesc
+                (
+                    13002,
+                    16384,
+                    RoveCommDataType.CHAR
+                ),
+                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension.
+                ["SetPictureArguments"] = new RoveCommPacketDesc
+                (
+                    13003,
+                    16384,
+                    RoveCommDataType.CHAR
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
@@ -1013,6 +1042,13 @@ public static class RoveCommManifest
                 (
                     13102,
                     1,
+                    RoveCommDataType.UINT8_T
+                ),
+                // [cpu0, cpu1, cpu2, cpu3, mem, storage], (% usage)
+                ["Utilization"] = new RoveCommPacketDesc
+                (
+                    13103,
+                    4,
                     RoveCommDataType.UINT8_T
                 )
             },
