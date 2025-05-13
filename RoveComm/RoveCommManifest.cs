@@ -838,11 +838,11 @@ public static class RoveCommManifest
                     4,
                     RoveCommDataType.DOUBLE
                 ),
-                // [Lat, Lon, ObjectRadius (meters)]
+                // [Lat, Lon, ObjectID, ObjectRadius (meters)]
                 ["AddObjectLeg"] = new RoveCommPacketDesc
                 (
                     11004,
-                    3,
+                    4,
                     RoveCommDataType.DOUBLE
                 ),
                 // Clear queued positions, markers, and objects waypoints.

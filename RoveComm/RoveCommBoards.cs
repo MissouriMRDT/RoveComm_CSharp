@@ -715,15 +715,16 @@ public static class Autonomy
     }
      
     /// <summary>
-    /// [Lat, Lon, ObjectRadius (meters)]
+    /// [Lat, Lon, ObjectID, ObjectRadius (meters)]
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="Lat"></param>
 	/// <param name="Lon"></param>
+	/// <param name="ObjectID"></param>
 	/// <param name="ObjectRadius"></param>
-	public static void AddObjectLeg(RoveCommService service, double Lat, double Lon, double ObjectRadius) 
+	public static void AddObjectLeg(RoveCommService service, double Lat, double Lon, double ObjectID, double ObjectRadius) 
     {
-        _ = Task.Run(() => service.SendAsync("Autonomy", "AddObjectLeg", [Lat, Lon, ObjectRadius], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "AddObjectLeg", [Lat, Lon, ObjectID, ObjectRadius], reliable: false));
     }
      
     /// <summary>
@@ -814,6 +815,15 @@ public static class Autonomy
 		StateMachine = 6,
 		RoveCommUDP = 7,
 		RoveCommTCP = 8,
+	}
+	public enum AUTONOMYDETECTIONTYPES {
+		WaterBottle = -3,
+		Mallet = -2,
+		Any = -1,
+		Tag0 = 0,
+		Tag1 = 1,
+		Tag2 = 2,
+		Tag3 = 3,
 	}
 }
 
