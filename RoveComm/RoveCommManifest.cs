@@ -936,19 +936,33 @@ public static class RoveCommManifest
                     2,
                     RoveCommDataType.UINT8_T
                 ),
-                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port.
+                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast.
                 ["SetFFMPEGArguments"] = new RoveCommPacketDesc
                 (
                     12002,
                     16384,
                     RoveCommDataType.CHAR
                 ),
-                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension.
+                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast.
                 ["SetPictureArguments"] = new RoveCommPacketDesc
                 (
                     12003,
                     16384,
                     RoveCommDataType.CHAR
+                ),
+                // Brightness for each camera (-1.0, 1.0)
+                ["SetBrightness"] = new RoveCommPacketDesc
+                (
+                    12004,
+                    4,
+                    RoveCommDataType.FLOAT
+                ),
+                // Contrast for each camera (0, 2)
+                ["SetContrast"] = new RoveCommPacketDesc
+                (
+                    12005,
+                    4,
+                    RoveCommDataType.FLOAT
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
@@ -978,7 +992,7 @@ public static class RoveCommManifest
                 ["Utilization"] = new RoveCommPacketDesc
                 (
                     12103,
-                    4,
+                    6,
                     RoveCommDataType.UINT8_T
                 )
             },
@@ -1006,19 +1020,33 @@ public static class RoveCommManifest
                     2,
                     RoveCommDataType.UINT8_T
                 ),
-                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port.
+                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast.
                 ["SetFFMPEGArguments"] = new RoveCommPacketDesc
                 (
                     13002,
                     16384,
                     RoveCommDataType.CHAR
                 ),
-                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension.
+                // 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast.
                 ["SetPictureArguments"] = new RoveCommPacketDesc
                 (
                     13003,
                     16384,
                     RoveCommDataType.CHAR
+                ),
+                // Brightness for each camera (-1.0, 1.0)
+                ["SetBrightness"] = new RoveCommPacketDesc
+                (
+                    13004,
+                    4,
+                    RoveCommDataType.FLOAT
+                ),
+                // Contrast for each camera (0, 2)
+                ["SetContrast"] = new RoveCommPacketDesc
+                (
+                    13005,
+                    4,
+                    RoveCommDataType.FLOAT
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
@@ -1048,7 +1076,7 @@ public static class RoveCommManifest
                 ["Utilization"] = new RoveCommPacketDesc
                 (
                     13103,
-                    4,
+                    6,
                     RoveCommDataType.UINT8_T
                 )
             },
