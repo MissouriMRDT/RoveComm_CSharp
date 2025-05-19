@@ -474,13 +474,14 @@ public static class Arm
     }
      
     /// <summary>
-    /// Motor decipercent [-1000, 1000]
+    /// [Motor decipercent (-1000, 1000), Gripper number (0, 1)]
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="arg1"></param>
-	public static void SetGripperSpeed(RoveCommService service, short arg1) 
+	/// <param name="arg2"></param>
+	public static void SetGripperSpeed(RoveCommService service, short arg1, short arg2) 
     {
-        _ = Task.Run(() => service.SendAsync("Arm", "SetGripperSpeed", [arg1], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Arm", "SetGripperSpeed", [arg1, arg2], reliable: false));
     }
      
     /// <summary>
@@ -816,7 +817,7 @@ public static class Autonomy
 		RoveCommUDP = 7,
 		RoveCommTCP = 8,
 	}
-	public enum AUTONOMYDETECTIONTYPES {
+	public enum AUTONOMYWAYPOINTTYPES {
 		WaterBottle = -3,
 		Mallet = -2,
 		Any = -1,

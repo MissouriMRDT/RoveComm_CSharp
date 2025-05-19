@@ -581,11 +581,11 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // Motor decipercent [-1000, 1000]
+                // [Motor decipercent (-1000, 1000), Gripper number (0, 1)]
                 ["SetGripperSpeed"] = new RoveCommPacketDesc
                 (
                     8012,
-                    1,
+                    2,
                     RoveCommDataType.INT16_T
                 ),
                 // [0-override off, 1-override on] (bitmasked)
