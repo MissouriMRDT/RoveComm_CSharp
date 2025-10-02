@@ -824,21 +824,21 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Lat, Lon]
+                // [Lat, Lon, AUTONOMYWAYPOINTTYPES]
                 ["AddPositionLeg"] = new RoveCommPacketDesc
                 (
                     11002,
-                    2,
+                    3,
                     RoveCommDataType.DOUBLE
                 ),
-                // [Lat, Lon, MarkerID, MarkerRadius (meters)]
+                // [Lat, Lon, AUTONOMYWAYPOINTTYPES, MarkerRadius (meters)]
                 ["AddMarkerLeg"] = new RoveCommPacketDesc
                 (
                     11003,
                     4,
                     RoveCommDataType.DOUBLE
                 ),
-                // [Lat, Lon, ObjectID, ObjectRadius (meters)]
+                // [Lat, Lon, AUTONOMYWAYPOINTTYPES, ObjectRadius (meters)]
                 ["AddObjectLeg"] = new RoveCommPacketDesc
                 (
                     11004,

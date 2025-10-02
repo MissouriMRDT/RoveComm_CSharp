@@ -692,40 +692,41 @@ public static class Autonomy
     }
      
     /// <summary>
-    /// [Lat, Lon]
+    /// [Lat, Lon, AUTONOMYWAYPOINTTYPES]
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="Lat"></param>
 	/// <param name="Lon"></param>
-	public static void AddPositionLeg(RoveCommService service, double Lat, double Lon) 
+	/// <param name="AUTONOMYWAYPOINTTYPES"></param>
+	public static void AddPositionLeg(RoveCommService service, double Lat, double Lon, double AUTONOMYWAYPOINTTYPES) 
     {
-        _ = Task.Run(() => service.SendAsync("Autonomy", "AddPositionLeg", [Lat, Lon], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "AddPositionLeg", [Lat, Lon, AUTONOMYWAYPOINTTYPES], reliable: false));
     }
      
     /// <summary>
-    /// [Lat, Lon, MarkerID, MarkerRadius (meters)]
+    /// [Lat, Lon, AUTONOMYWAYPOINTTYPES, MarkerRadius (meters)]
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="Lat"></param>
 	/// <param name="Lon"></param>
-	/// <param name="MarkerID"></param>
+	/// <param name="AUTONOMYWAYPOINTTYPES"></param>
 	/// <param name="MarkerRadius"></param>
-	public static void AddMarkerLeg(RoveCommService service, double Lat, double Lon, double MarkerID, double MarkerRadius) 
+	public static void AddMarkerLeg(RoveCommService service, double Lat, double Lon, double AUTONOMYWAYPOINTTYPES, double MarkerRadius) 
     {
-        _ = Task.Run(() => service.SendAsync("Autonomy", "AddMarkerLeg", [Lat, Lon, MarkerID, MarkerRadius], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "AddMarkerLeg", [Lat, Lon, AUTONOMYWAYPOINTTYPES, MarkerRadius], reliable: false));
     }
      
     /// <summary>
-    /// [Lat, Lon, ObjectID, ObjectRadius (meters)]
+    /// [Lat, Lon, AUTONOMYWAYPOINTTYPES, ObjectRadius (meters)]
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>
     /// <param name="Lat"></param>
 	/// <param name="Lon"></param>
-	/// <param name="ObjectID"></param>
+	/// <param name="AUTONOMYWAYPOINTTYPES"></param>
 	/// <param name="ObjectRadius"></param>
-	public static void AddObjectLeg(RoveCommService service, double Lat, double Lon, double ObjectID, double ObjectRadius) 
+	public static void AddObjectLeg(RoveCommService service, double Lat, double Lon, double AUTONOMYWAYPOINTTYPES, double ObjectRadius) 
     {
-        _ = Task.Run(() => service.SendAsync("Autonomy", "AddObjectLeg", [Lat, Lon, ObjectID, ObjectRadius], reliable: false));
+        _ = Task.Run(() => service.SendAsync("Autonomy", "AddObjectLeg", [Lat, Lon, AUTONOMYWAYPOINTTYPES, ObjectRadius], reliable: false));
     }
      
     /// <summary>
@@ -818,6 +819,7 @@ public static class Autonomy
 		RoveCommTCP = 8,
 	}
 	public enum AUTONOMYWAYPOINTTYPES {
+		ContinuousNavigate = -99,
 		WaterBottle = -3,
 		Mallet = -2,
 		Any = -1,
