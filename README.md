@@ -1,12 +1,12 @@
 # RoveComm C# #
 
 RoveComm is the communication protocol used by the Mars Rover Design Team (MRDT) at Missouri University of Science and 
-Technology (Missouri S&T). Several implementations exist for RoveComm. This implementation was made to be used with the 
-[new BaseStation](https://github.com/MissouriMRDT/Basestation_Software_Blazor) written in Blazor.
+Technology (Missouri S&T). Several implementations exist for RoveComm. This implementation was made to be used with 
+[Basstation Software Blazor](https://github.com/MissouriMRDT/Basestation_Software_Blazor).
 
 # In This Repo
 
-The repo conains a Visual Studio 2022 solution `RoveComm_CSharp.sln`. The solution contains two projects.
+The repo conains a Visual Studio 2022 solution `RoveComm_CSharp.sln`. The solution contains two projects: RoveComm and RoveComm.Test.
 
 ## RoveComm
 
@@ -18,5 +18,10 @@ to use it from there. For more information on RoveComm installation and usage, l
 
 ## RoveComm.Test
 
-This contains a quick and dirty sample app for testing RoveComm. To run it, open the solution and right click on the
-`RoveComm.Test` project. Select "Set As Startup Project". Then click the run button at the top and select `http`.
+This contains a quick and dirty sample app for testing RoveComm. To start it, run `dotnet run --project Rovecomm.Test` in the RoveComm_CSharp root directory. The app can then be accessed at `http://127.0.0.1:5185/` within any web browser. 
+
+# Updating to Lastest Manifest Version
+The RoveComm Project can be updated to reflect the latest manifest version via the following steps:
+1. Update the main RoveComm submodule to the latest commit: `git submodule update --recursive --remote`
+2. Run the parser script to update the C# code: `python ./tools/parser.py`
+3. Commit and push your changes to the submodule and C# code to git.
