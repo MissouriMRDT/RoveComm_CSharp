@@ -84,7 +84,7 @@ public class RoveCommUDP : IDisposable
 
     public void Stop()
     {
-        if (!Running)
+        if (!Running) 
         {
             _logger?.LogWarning("RoveComm UDP already stopped.");
             return;
@@ -127,17 +127,17 @@ public class RoveCommUDP : IDisposable
             int expected = RoveCommConsts.HeaderSize + packet.DataCount * RoveCommUtils.DataTypeSize(packet.DataType);
             if (bytesSent != expected)
             {
-                _logger?.LogError("Failed to send UDP packet: {Sent} of {Expected} bytes sent.", bytesSent, expected);
+                LoggerCore.LoggerService.Log($"Failed to send UDP packet: {bytesSent} of {expected} bytes sent.", source:$"RoveComm:UDP", channel:$"{dest}");
                 return false;
             }
         }
         catch (Exception e)
         {
-            _logger?.LogError("Failed to send UDP packet: {Error}", e.Message);
+            LoggerCore.LoggerService.Log($"Failed to send UDP packet: {e.Message}", source:"RoveComm:UDP", channel:$"{dest}");
             return false;
         }
 
-        _logger?.LogInformation("UDP: Sent RoveCommPacket with DataID {DataID} and Data {DataType}[{DataCount}] to {Dest}.", packet.DataID, packet.DataType, packet.DataCount, dest);
+        LoggerCore.LoggerService.Log(message:"Sent RoveCommPacket", source:"RoveComm:UDP", channel:$"{dest}", data:$"{packet.DataType}");
         return true;
     }
     public bool Send<T>(RoveCommPacket<T> packet, string ip) => Send(packet, ip, Port);
@@ -164,17 +164,17 @@ public class RoveCommUDP : IDisposable
             int expected = RoveCommConsts.HeaderSize + packet.DataCount * RoveCommUtils.DataTypeSize(packet.DataType);
             if (bytesSent != expected)
             {
-                _logger?.LogError("Failed to send UDP packet: {Sent} of {Expected} bytes sent.", bytesSent, expected);
+                LoggerCore.LoggerService.Log($"Failed to send UDP packet: {bytesSent} of {expected} bytes sent.", source:"RoveComm:UDP", channel:$"{dest}");
                 return false;
             }
         }
         catch (Exception e)
         {
-            _logger?.LogError("Failed to send UDP packet: {Error}", e.Message);
+            LoggerCore.LoggerService.Log($"Failed to send UDP packet: {e.Message}", source:"RoveComm:UDP", channel:$"{dest}");
             return false;
         }
 
-        _logger?.LogInformation("UDP: Sent RoveCommPacket with DataID {DataID} and Data {DataType}[{DataCount}] to {Dest}.", packet.DataID, packet.DataType, packet.DataCount, dest);
+        LoggerCore.LoggerService.Log(message: "Sent RoveCommPacket", source: "RoveComm:UDP", channel: $"{dest}", data: $"{packet.DataType}, {packet.Data}");
         return true;
     }
     public async Task<bool> SendAsync<T>(RoveCommPacket<T> packet, string ip, CancellationToken cancelToken = default) =>
@@ -216,17 +216,17 @@ public class RoveCommUDP : IDisposable
                 case RoveCommDataType.DOUBLE: ProcessPacket(RoveCommUtils.ParsePacket<double>(data)); break;
                 case RoveCommDataType.CHAR: ProcessPacket(RoveCommUtils.ParsePacket<char>(data)); break;
             }
-            _logger?.LogInformation("UDP: Received RoveCommPacket with DataID {DataID} and Data {DataType}[{DataCount}] from {Remote}.", header.DataID, dataType, header.DataCount, fromIP);
+            LoggerCore.LoggerService.Log("Received RoveCommPacket", source:"RoveComm:UDP", channel:$"{fromIP}", data:$"{dataType}");
         }
         // RoveComm couldn't parse something:
         catch (RoveCommException e)
         {
-            _logger?.LogError("Failed to read UDP packet: {Error}", e.Message);
+            LoggerCore.LoggerService.Log($"Failed to read UDP packet: {e.Message}", source:"RoveComm:UDP");
         }
         // Network problems:
         catch (Exception e)
         {
-            _logger?.LogError("Failed to receive UDP data: {Error}", e.Message);
+            LoggerCore.LoggerService.Log($"Failed to receive UDP data: {e.Message}");
         }
     }
 
