@@ -750,6 +750,26 @@ public static class Autonomy
     }
      
     /// <summary>
+    /// A multiplier from 0.0 to 1.0 that will filter points from the traversability map. Higher values will result in more conservative pathing.
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="arg1"></param>
+	public static void SetMinTravScore(RoveCommService service, float arg1) 
+    {
+        _ = Task.Run(() => service.SendAsync("Autonomy", "SetMinTravScore", [arg1], reliable: false));
+    }
+     
+    /// <summary>
+    /// A multiplier from 0.0 to 1.0 that will bias the pathing algorithm towards shorter paths (lower values) or safer paths (higher values).
+    /// </summary> 
+    /// <param name="service">The RoveComm service to use.</param>
+    /// <param name="arg1"></param>
+	public static void SetBetaBias(RoveCommService service, float arg1) 
+    {
+        _ = Task.Run(() => service.SendAsync("Autonomy", "SetBetaBias", [arg1], reliable: false));
+    }
+     
+    /// <summary>
     /// [Enum (AUTONOMYLOG), Enum (AUTONOMYLOG), Enum (AUTONOMYLOG)] {Console, File, RoveComm}
     /// </summary> 
     /// <param name="service">The RoveComm service to use.</param>

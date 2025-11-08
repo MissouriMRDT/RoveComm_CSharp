@@ -859,24 +859,38 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.FLOAT
                 ),
+                // A multiplier from 0.0 to 1.0 that will filter points from the traversability map. Higher values will result in more conservative pathing.
+                ["SetMinTravScore"] = new RoveCommPacketDesc
+                (
+                    11007,
+                    1,
+                    RoveCommDataType.FLOAT
+                ),
+                // A multiplier from 0.0 to 1.0 that will bias the pathing algorithm towards shorter paths (lower values) or safer paths (higher values).
+                ["SetBetaBias"] = new RoveCommPacketDesc
+                (
+                    11008,
+                    1,
+                    RoveCommDataType.FLOAT
+                ),
                 // [Enum (AUTONOMYLOG), Enum (AUTONOMYLOG), Enum (AUTONOMYLOG)] {Console, File, RoveComm}
                 ["SetLoggingLevels"] = new RoveCommPacketDesc
                 (
-                    11007,
+                    11009,
                     3,
                     RoveCommDataType.UINT8_T
                 ),
                 // [Lat, Lon, ObstacleRadius (meters)]
                 ["AddObstacle"] = new RoveCommPacketDesc
                 (
-                    11008,
+                    11010,
                     3,
                     RoveCommDataType.DOUBLE
                 ),
                 // Clear queued permanent obstacles.
                 ["ClearObstacles"] = new RoveCommPacketDesc
                 (
-                    11009,
+                    11011,
                     1,
                     RoveCommDataType.UINT8_T
                 )
@@ -1339,12 +1353,12 @@ public static class RoveCommManifest
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Ultrasonic sensor distance reading in centimeters (cm). Value ranges from 0.00 to 500.00 cm
-                ["Ultrasonic1"] = new RoveCommPacketDesc
+                // [Accel X, Accel Y, Accel Z, Gyro X, Gyro Y, Gyro Z, Quat X, Quat Y, Quat Z, Quat W]
+                ["IMU"] = new RoveCommPacketDesc
                 (
                     99100,
-                    2,
-                    RoveCommDataType.FLOAT
+                    10,
+                    RoveCommDataType.DOUBLE
                 )
             },
             error: new Dictionary<string, RoveCommPacketDesc>
