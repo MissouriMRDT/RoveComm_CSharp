@@ -257,26 +257,26 @@ public class RoveCommTCP
         // If no existing connection was found, open a new one.
         if (client is null)
         {
-            _logger?.LogInformation("Attempting to establish a connection with {Dest}.", dest);
+            LoggerCore.LoggerService.Log($"Attempting to establish a connection with {dest}.", source:"RoveComm:TCP", channel:$"{dest}");
             try
             {
                 client = _addNewClient();
                 if (client is null)
                 {
-                    _logger?.LogError("Failed to connect to remote host: Too many TCP connections open.");
+                    LoggerCore.LoggerService.Log("Failed to connect to remote host: Too many TCP connections open.", source: "RoveComm:TCP");
                     return false;
                 }
 
                 _connecting.Add(client);
                 if (!client.ConnectAsync(dest).Wait(TimeSpan.FromMilliseconds(TCPConnectionTimeout)))
                 {
-                    _logger?.LogError("Failed to connect to remote host: The operation has timed out.");
+                    LoggerCore.LoggerService.Log("Failed to connect to remote host: The operation has timed out.", source: "RoveComm:TCP");
                     return false;
                 }
             }
             catch (Exception e)
             {
-                _logger?.LogError("Failed to connect to remote host: {Error}", e.Message);
+                LoggerCore.LoggerService.Log($"Failed to connect to remote host: {e.Message}", source: "RoveComm:TCP");
                 return false;
             }
             finally
@@ -287,7 +287,7 @@ public class RoveCommTCP
                 }
             }
 
-            _logger?.LogInformation("Established connection with {Remote}.", client.Client.RemoteEndPoint as IPEndPoint);
+            LoggerCore.LoggerService.Log($"Established connection with {client.Client.RemoteEndPoint as IPEndPoint}.", source: "RoveComm:TCP", channel:$"{dest}");
         }
         // Write the packet to the client's NetworkStream.
         try
@@ -296,10 +296,10 @@ public class RoveCommTCP
         }
         catch (Exception e)
         {
-            _logger?.LogError("Failed to send TCP packet: {Error}", e.Message);
+            LoggerCore.LoggerService.Log($"Failed to send TCP packet: {e.Message}", source: "RoveComm:TCP", channel:$"{dest}");
             return false;
         }
-        _logger?.LogInformation("TCP: Sent RoveCommPacket with DataID {DataID} and type {DataType}[{DataCount}] to {Dest}.", packet.DataID, packet.DataType, packet.DataCount, dest);
+        LoggerCore.LoggerService.Log($"Sent RoveCommPacket", source:"RoveComm:TCP", channel:$"{dest}", data:$"{packet.DataType}, {packet.Data}");
         return true;
     }
     public bool Send<T>(RoveCommPacket<T> packet, string ip) => Send(packet, ip, Port);
@@ -327,14 +327,14 @@ public class RoveCommTCP
         // If no existing connection was found, open a new one.
         if (client is null)
         {
-            _logger?.LogInformation("Attempting to establish a connection with {Dest}.", dest);
+            LoggerCore.LoggerService.Log($"Attempting to establish a connection with {dest}.", source: "RoveComm:TCP", channel:$"{dest}");
 
             try
             {
                 client = _addNewClient();
                 if (client is null)
                 {
-                    _logger?.LogError("Failed to connect to remote host: Too many TCP connections open.");
+                    LoggerCore.LoggerService.Log("Failed to connect to remote host: Too many TCP connections open.", source: "RoveComm:TCP", channel:$"{dest}");
                     return false;
                 }
 
@@ -343,7 +343,7 @@ public class RoveCommTCP
             }
             catch (Exception e)
             {
-                _logger?.LogError("Failed to connect to remote host: {Error}", e.Message);
+                LoggerCore.LoggerService.Log($"Failed to connect to remote host: {e.Message}", source: "RoveComm:TCP", channel:$"{dest}");
                 return false;
             }
             finally
@@ -354,7 +354,7 @@ public class RoveCommTCP
                 }
             }
 
-            _logger?.LogInformation("Established connection with {Remote}.", client.Client.RemoteEndPoint as IPEndPoint);
+            LoggerCore.LoggerService.Log($"Established connection with {client.Client.RemoteEndPoint as IPEndPoint}.", source: "RoveComm:TCP", channel:$"{dest}");
         }
         // Write the packet to the client's NetworkStream.
         try
@@ -363,10 +363,10 @@ public class RoveCommTCP
         }
         catch (Exception e)
         {
-            _logger?.LogError("Failed to send TCP packet: {Error}", e.Message);
+            LoggerCore.LoggerService.Log($"Failed to send TCP packet: {e.Message}", source: "RoveComm:TCP", channel:$"{dest}");
             return false;
         }
-        _logger?.LogInformation("TCP: Sent RoveCommPacket with DataID {DataID} and Data {DataType}[{DataCount}] to {Dest}.", packet.DataID, packet.DataType, packet.DataCount, dest);
+        LoggerCore.LoggerService.Log($"Sent RoveCommPacket", source: "RoveComm:TCP", channel: $"{dest}", data: $"{packet.DataType}, {packet.Data}");
         return true;
     }
     public async Task<bool> SendAsync<T>(RoveCommPacket<T> packet, string ip, CancellationToken cancelToken = default) =>
@@ -405,7 +405,7 @@ public class RoveCommTCP
                 int bytesRead = await stream.ReadAsync(headerBuf, cancelToken);
                 if (bytesRead == 0)
                 {
-                    _logger?.LogWarning("Failed to receive TCP data.");
+                    LoggerCore.LoggerService.Log("Failed to receive TCP data.", source: "RoveComm:TCP");
                     return;
                 }
 
@@ -430,17 +430,17 @@ public class RoveCommTCP
                     case RoveCommDataType.DOUBLE: ProcessPacket(RoveCommUtils.ParsePacket<double>(packetBuf.Span)); break;
                     case RoveCommDataType.CHAR: ProcessPacket(RoveCommUtils.ParsePacket<char>(packetBuf.Span)); break;
                 }
-                _logger?.LogInformation("TCP: Received RoveCommPacket with DataID {DataID} and Data {DataType}[{DataCount}] from {Remote}.", header.DataID, dataType, header.DataCount, connection.Client.RemoteEndPoint as IPEndPoint);
+                LoggerCore.LoggerService.Log($"Received RoveCommPacket", source: "RoveComm:TCP", channel: $"{connection.Client.RemoteEndPoint as IPEndPoint}", data: $"{dataType}");
             }
             // RoveComm couldn't parse something:
             catch (RoveCommException e)
             {
-                _logger?.LogError("Failed to read TCP packet: {Error}", e.Message);
+                LoggerCore.LoggerService.Log($"Failed to read TCP packet: {e.Message}", source: "RoveComm:TCP");
             }
             // Network problems:
             catch (Exception e)
             {
-                _logger?.LogError("Failed to receive TCP data: {Error}", e.Message);
+                LoggerCore.LoggerService.Log($"Failed to receive TCP data: {e.Message}", source: "RoveComm:TCP");
             }
         }
     }
