@@ -840,6 +840,7 @@ public static class Autonomy
 	}
 	public enum AUTONOMYWAYPOINTTYPES {
 		ContinuousNavigate = -99,
+		RockPick = -4,
 		WaterBottle = -3,
 		Mallet = -2,
 		Any = -1,

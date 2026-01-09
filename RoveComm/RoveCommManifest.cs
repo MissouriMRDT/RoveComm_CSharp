@@ -379,19 +379,12 @@ public static class RoveCommManifest
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [Lat, Long, Alt] [(-90, 90), (-180, 180)(deg), (0, 1000)]
+                // [Lat, Long, Alt, horizontal_accur, vertical_accur, heading_accur, fix_type, is_differential] [degrees, degrees, meters, meters, meters, degrees, ublox_navpvt fix type (http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html), boolean]]
                 ["GPSLatLonAlt"] = new RoveCommPacketDesc
                 (
                     6100,
-                    3,
+                    8,
                     RoveCommDataType.DOUBLE
-                ),
-                // [Pitch, Yaw, Roll] [(-90, 90), (0, 360), (-90, 90)] (deg)
-                ["IMUData"] = new RoveCommPacketDesc
-                (
-                    6101,
-                    3,
-                    RoveCommDataType.FLOAT
                 ),
                 // [Heading] [ 0, 360 ]
                 ["CompassData"] = new RoveCommPacketDesc
@@ -406,20 +399,6 @@ public static class RoveCommManifest
                     6103,
                     1,
                     RoveCommDataType.UINT8_T
-                ),
-                // [xAxis, yAxis, zAxis] Accel in m/s^2
-                ["AccelerometerData"] = new RoveCommPacketDesc
-                (
-                    6104,
-                    3,
-                    RoveCommDataType.FLOAT
-                ),
-                // [horizontal_accur, vertical_accur, heading_accur, fix_type, is_differentia] [meters, meters, degrees, ublox_navpvt fix type (http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html), boolean]
-                ["AccuracyData"] = new RoveCommPacketDesc
-                (
-                    6105,
-                    5,
-                    RoveCommDataType.FLOAT
                 )
             },
             error: new Dictionary<string, RoveCommPacketDesc>
@@ -904,8 +883,8 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // 
-                ["ReachedGoal"] = new RoveCommPacketDesc
+                // [Teleop, Autonomy, Reached Goal] (enum)
+                ["StateDisplay"] = new RoveCommPacketDesc
                 (
                     11101,
                     1,
