@@ -6,9 +6,9 @@ namespace RoveComm;
 
 public class RoveCommService : IHostedService
 {
-
     public RoveCommUDP UDP;
     public RoveCommTCP TCP;
+    public _Boards Boards;
 
     private readonly CancellationTokenSource _cts = new();
     private readonly ILogger<RoveCommService> _logger;
@@ -18,6 +18,7 @@ public class RoveCommService : IHostedService
         _logger = logger;
         UDP = new RoveCommUDP(_logger);
         TCP = new RoveCommTCP(_logger);
+        Boards = new(this);
     }
 
     public Task StartAsync(CancellationToken cancelToken)

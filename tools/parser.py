@@ -2,21 +2,21 @@ import json
 import generate_boards
 
 data_type_lookup = {
-    "INT8_T"    : "RoveCommDataType.INT8_T",
-    "UINT8_T"   : "RoveCommDataType.UINT8_T",
-    "INT16_T"   : "RoveCommDataType.INT16_T",
-    "UINT16_T"  : "RoveCommDataType.UINT16_T",
-    "INT32_T"   : "RoveCommDataType.INT32_T",
-    "UINT32_T"  : "RoveCommDataType.UINT32_T",
-    "FLOAT_T"   : "RoveCommDataType.FLOAT",
-    "DOUBLE_T"  : "RoveCommDataType.DOUBLE",
-    "CHAR"      : "RoveCommDataType.CHAR",
+    "INT8_T": "RoveCommDataType.INT8_T",
+    "UINT8_T": "RoveCommDataType.UINT8_T",
+    "INT16_T": "RoveCommDataType.INT16_T",
+    "UINT16_T": "RoveCommDataType.UINT16_T",
+    "INT32_T": "RoveCommDataType.INT32_T",
+    "UINT32_T": "RoveCommDataType.UINT32_T",
+    "FLOAT_T": "RoveCommDataType.FLOAT",
+    "DOUBLE_T": "RoveCommDataType.DOUBLE",
+    "CHAR": "RoveCommDataType.CHAR",
 }
 
 packet_type_lookup = {
-    "Commands"  : "commands",
-    "Telemetry" : "telemetry",
-    "Error"     : "error",
+    "Commands": "commands",
+    "Telemetry": "telemetry",
+    "Error": "error",
 }
 
 rovecomm_version = 3
@@ -24,15 +24,19 @@ manifest_file_path = "RoveComm/RoveCommManifest.cs"
 methods_file_path = "RoveComm/RoveCommBoards.cs"
 json_path = "data/RoveComm/manifest.json"
 
+
 def main() -> None:
     with open(json_path, "r") as file:
         manifest = json.load(file)
 
     with open(manifest_file_path, "w") as file:
-        file.write("""\
+        file.write(
+            """\
 namespace RoveComm;
-""")
-        file.write("""
+"""
+        )
+        file.write(
+            """
 public static class RoveCommConsts
 {
     public static readonly int RoveCommVersion = 3;
@@ -42,9 +46,11 @@ public static class RoveCommConsts
     public static readonly int MaxDataSize = 65535 / 3;
     public static readonly int UpdateRate = 100; // milliseconds
 }
-""")
+"""
+        )
 
-        file.write("""
+        file.write(
+            """
 public enum RoveCommDataType
 {
     INT8_T = 0,
@@ -57,8 +63,10 @@ public enum RoveCommDataType
     DOUBLE = 7,
     CHAR = 8,
 }
-""")
-        file.write("""
+"""
+        )
+        file.write(
+            """
 public class RoveCommDeviceDesc
 {
     public string Ip { get; init; }
@@ -68,8 +76,10 @@ public class RoveCommDeviceDesc
         Ip = ip;
     }
 }
-""")
-        file.write("""
+"""
+        )
+        file.write(
+            """
 public class RoveCommBoardDesc
 {
     public string IP { get; init; }
@@ -88,8 +98,10 @@ public class RoveCommBoardDesc
         Error = error ?? new Dictionary<string, RoveCommPacketDesc>();
     }
 }
-""")
-        file.write("""
+"""
+        )
+        file.write(
+            """
 public class RoveCommPacketDesc
 {
     public int DataID { get; init; }
@@ -103,9 +115,11 @@ public class RoveCommPacketDesc
         DataType = dataType;
     }
 }
-""")
+"""
+        )
         # :-D
-        file.write(f"""
+        file.write(
+            f"""
 public static class RoveCommManifest
 {{
     public static class SystemPackets
@@ -150,9 +164,11 @@ public static class RoveCommManifest
         for board, board_desc in manifest["RovecommManifest"].items()))}
     }};
 }}
-""")
+"""
+        )
     generate_boards.run(manifest, methods_file_path)
     print("Done.")
+
 
 if __name__ == "__main__":
     main()
