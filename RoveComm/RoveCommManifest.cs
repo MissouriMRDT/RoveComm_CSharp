@@ -650,81 +650,60 @@ public static class RoveCommManifest
             ip: "192.168.2.108",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Motor decipercent [-1000, 1000]
-                ["AugerAxis_OpenLoop"] = new RoveCommPacketDesc
+                // [Speed] (-32768 - 32767) -> (-100% - 100%)
+                ["AugerAxis"] = new RoveCommPacketDesc
                 (
                     9000,
                     1,
                     RoveCommDataType.INT16_T
                 ),
-                // Absolute position (in)
-                ["AugerAxis_SetPosition"] = new RoveCommPacketDesc
-                (
-                    9001,
-                    1,
-                    RoveCommDataType.FLOAT
-                ),
-                // (in)
-                ["AugerAxis_IncrementPosition"] = new RoveCommPacketDesc
-                (
-                    9002,
-                    1,
-                    RoveCommDataType.FLOAT
-                ),
-                // [AugerAxis+, AugerAxis-] (0-override off, 1-override on) (bitmasked)
+                // [AugerAxis+, AugerAxis-] (bitmask override enabled)
                 ["LimitSwitchOverride"] = new RoveCommPacketDesc
                 (
-                    9003,
+                    9001,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // Request calibration of the AugerAxis encoder
                 ["CalibrateEncoder"] = new RoveCommPacketDesc
                 (
+                    9002,
+                    0,
+                    RoveCommDataType.UINT8_T
+                ),
+                // [Speed] (-1000 - 1000) -> (-100% - 100%)
+                ["Auger"] = new RoveCommPacketDesc
+                (
+                    9003,
+                    1,
+                    RoveCommDataType.INT16_T
+                ),
+                // [Enabled]
+                ["WatchdogOverride"] = new RoveCommPacketDesc
+                (
                     9004,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // Motor decipercent [-1000, 1000]
-                ["Auger"] = new RoveCommPacketDesc
+                // [White, 365, 405, 500] (0 - 255) -> (Off - Full Brightness)
+                ["LED"] = new RoveCommPacketDesc
                 (
                     9005,
-                    1,
-                    RoveCommDataType.INT16_T
+                    4,
+                    RoveCommDataType.UINT8_T
                 ),
-                // [0-override off, 1-override on]
-                ["WatchdogOverride"] = new RoveCommPacketDesc
+                // [AFFilters, SoilTrapdoor] (-180deg - 180deg)
+                ["AugerServo"] = new RoveCommPacketDesc
                 (
                     9006,
-                    1,
-                    RoveCommDataType.UINT8_T
+                    2,
+                    RoveCommDataType.INT16_T
                 ),
-                // Request a reading of the temperature at the end of the auger
-                ["RequestTemperature"] = new RoveCommPacketDesc
+                // [Pan, Tilt] (-180deg - 180deg)
+                ["AugerGimbalIncrement"] = new RoveCommPacketDesc
                 (
                     9007,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
-                // Request a reading of the humidity at the end of the auger
-                ["RequestHumidity"] = new RoveCommPacketDesc
-                (
-                    9008,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
-                // Ultraviolet LED on AutoFluorescence (0-off, 1-on)
-                ["UVLED"] = new RoveCommPacketDesc
-                (
-                    9009,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
-                // [Position](degrees -180-180)
-                ["AugerMultiplexerServo"] = new RoveCommPacketDesc
-                (
-                    9010,
-                    1,
+                    2,
                     RoveCommDataType.INT16_T
                 )
             },
@@ -737,50 +716,40 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.FLOAT
                 ),
-                // (in/s)
+                // [AugerSpeed] (rpm)
                 ["AugerSpeed"] = new RoveCommPacketDesc
                 (
                     9101,
                     1,
                     RoveCommDataType.FLOAT
                 ),
-                // [AugerAxis+, AugerAxis-] (0-off, 1-on) (bitmasked)
-                ["LimitSwitchTriggered"] = new RoveCommPacketDesc
+                // [AugerAxis+, AugerAxis-] (bitmask depressed)
+                ["LimitSwitch"] = new RoveCommPacketDesc
                 (
                     9102,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Temperature] (degrees C)
-                ["Temperature"] = new RoveCommPacketDesc
+                // [Temperature, Humidity, N, P, K, pH] (degrees C, relative humidity %, ?, ?, ?, ?)
+                ["Environmental"] = new RoveCommPacketDesc
                 (
                     9103,
-                    1,
+                    6,
                     RoveCommDataType.FLOAT
                 ),
-                // [Humidity] (relative humidity %)
-                ["Humidity"] = new RoveCommPacketDesc
+                // [AugerCurrent] (A)
+                ["AugerCurrent"] = new RoveCommPacketDesc
                 (
                     9104,
                     1,
                     RoveCommDataType.FLOAT
-                )
-            },
-            error: new Dictionary<string, RoveCommPacketDesc>
-            {
-                // (1-Watchdog timeout, 0-OK)
-                ["WatchdogStatus"] = new RoveCommPacketDesc
-                (
-                    9200,
-                    1,
-                    RoveCommDataType.UINT8_T
                 ),
-                // (1-Stalled, 0-OK)
-                ["AugerStalled"] = new RoveCommPacketDesc
+                // [AugerAxis Ping Time] (ms)
+                ["SMOCOPing"] = new RoveCommPacketDesc
                 (
-                    9201,
+                    9105,
                     1,
-                    RoveCommDataType.UINT8_T
+                    RoveCommDataType.UINT16_T
                 )
             }
         ),
@@ -1203,81 +1172,60 @@ public static class RoveCommManifest
             ip: "192.168.3.105",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Motor decipercent [-1000, 1000]
-                ["InstrumentsAxis_OpenLoop"] = new RoveCommPacketDesc
+                // [Speed] (-32768 - 32767) -> (-100% - 100%)
+                ["InstrumentsAxis"] = new RoveCommPacketDesc
                 (
                     16000,
                     1,
                     RoveCommDataType.INT16_T
                 ),
-                // Absolute position (in)
-                ["InstrumentsAxis_SetPosition"] = new RoveCommPacketDesc
-                (
-                    16001,
-                    1,
-                    RoveCommDataType.FLOAT
-                ),
-                // (in)
-                ["InstrumentsAxis_IncrementPosition"] = new RoveCommPacketDesc
-                (
-                    16002,
-                    1,
-                    RoveCommDataType.FLOAT
-                ),
-                // [InstrumentsAxis+, InstrumentsAxis-] (0-override off, 1-override on) (bitmasked)
+                // [InstrumentsAxis+, InstrumentsAxis-] (bitmask override enabled)
                 ["LimitSwitchOverride"] = new RoveCommPacketDesc
                 (
-                    16003,
+                    16001,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // Request calibration of the InstrumentsAxis encoder
                 ["CalibrateEncoder"] = new RoveCommPacketDesc
                 (
-                    16004,
-                    1,
+                    16002,
+                    0,
                     RoveCommDataType.UINT8_T
                 ),
-                // [0-override off, 1-override on]
+                // [Enabled]
                 ["WatchdogOverride"] = new RoveCommPacketDesc
                 (
-                    16005,
+                    16003,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // [0-disable, 1-enable]
                 ["Laser"] = new RoveCommPacketDesc
                 (
-                    16006,
+                    16004,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // Start a Raman reading, with the provided integration time (milliseconds)
+                // [Integration Time] (ms)
                 ["RequestRamanReading"] = new RoveCommPacketDesc
                 (
-                    16007,
+                    16005,
                     1,
                     RoveCommDataType.UINT32_T
-                ),
-                // [Pan, Tilt](degrees -180-180)
-                ["RamanGimbalIncrement"] = new RoveCommPacketDesc
-                (
-                    16008,
-                    2,
-                    RoveCommDataType.INT16_T
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [InstrumentsAxis] (in)
+                // [InstrumentsAxis, TOF] (mm)
                 ["Position"] = new RoveCommPacketDesc
                 (
                     16100,
-                    1,
+                    2,
                     RoveCommDataType.FLOAT
                 ),
-                // [InstrumentsAxis+, InstrumentsAxis-] (0-off, 1-on) (bitmasked)
-                ["LimitSwitchTriggered"] = new RoveCommPacketDesc
+                // [InstrumentsAxis+, InstrumentsAxis-] (bitmask depressed)
+                ["LimitSwitch"] = new RoveCommPacketDesc
                 (
                     16101,
                     1,
@@ -1310,16 +1258,13 @@ public static class RoveCommManifest
                     16105,
                     512,
                     RoveCommDataType.UINT16_T
-                )
-            },
-            error: new Dictionary<string, RoveCommPacketDesc>
-            {
-                // (1-Watchdog timeout, 0-OK)
-                ["WatchdogStatus"] = new RoveCommPacketDesc
+                ),
+                // [InstrumentsAxis Ping Time] (ms)
+                ["SMOCOPing"] = new RoveCommPacketDesc
                 (
-                    16200,
+                    16106,
                     1,
-                    RoveCommDataType.UINT8_T
+                    RoveCommDataType.UINT16_T
                 )
             }
         ),

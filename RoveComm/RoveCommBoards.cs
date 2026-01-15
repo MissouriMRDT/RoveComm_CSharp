@@ -175,6 +175,36 @@ namespace RoveComm.Boards
             _service.Send(3013, [args], _ip);
         }
 
+        /// <summary>
+        /// [FL, ML, BL, FR, MR, BR] (-1, 1)-> (-100%, 100%)
+        /// </summary>
+        public void OnMotorSpeeds(RoveCommCallback<float> handler) { _service.On(3100, handler); }
+
+        /// <summary>
+        /// [FL, ML, BL, FR, MR, BR] Motor current draw
+        /// </summary>
+        public void OnMotorCurrents(RoveCommCallback<float> handler) { _service.On(3101, handler); }
+
+        /// <summary>
+        /// [FL, ML, BL, FR, MR, BR] VESC (battery side) current draw
+        /// </summary>
+        public void OnVESCCurrents(RoveCommCallback<float> handler) { _service.On(3102, handler); }
+
+        /// <summary>
+        /// [Roll, Pitch, Yaw] degrees
+        /// </summary>
+        public void OnIMUData(RoveCommCallback<float> handler) { _service.On(3103, handler); }
+
+        /// <summary>
+        /// [xAxis, yAxis, zAxis] Accel in m/s^2
+        /// </summary>
+        public void OnAccelerometerData(RoveCommCallback<float> handler) { _service.On(3104, handler); }
+
+        /// <summary>
+        /// [MotorID, FaultCode]
+        /// </summary>
+        public void OnVESCFault(RoveCommCallback<byte> handler) { _service.On(3200, handler); }
+
         public enum Motors
         {
             FRONT_LEFT = 0,
@@ -293,6 +323,56 @@ namespace RoveComm.Boards
         {
             _service.Send(4005, [arg1], _ip);
         }
+
+        /// <summary>
+        /// Total current draw from battery
+        /// </summary>
+        public void OnPackCurrent(RoveCommCallback<float> handler) { _service.On(4100, handler); }
+
+        /// <summary>
+        /// Pack voltage
+        /// </summary>
+        public void OnPackVoltage(RoveCommCallback<float> handler) { _service.On(4101, handler); }
+
+        /// <summary>
+        /// C1, C2, C3, C4, C5, C6
+        /// </summary>
+        public void OnCellVoltage(RoveCommCallback<float> handler) { _service.On(4102, handler); }
+
+        /// <summary>
+        /// Current draw by aux systems (before 12V buck)
+        /// </summary>
+        public void OnAuxCurrent(RoveCommCallback<float> handler) { _service.On(4103, handler); }
+
+        /// <summary>
+        /// Current draw from other devices (CS1, CS2, CS3)
+        /// </summary>
+        public void OnMiscCurrent(RoveCommCallback<float> handler) { _service.On(4104, handler); }
+
+        /// <summary>
+        /// [Motor, Core, Aux, Network] (bitmasked) [1-Enabled, 0-Disabled]
+        /// </summary>
+        public void OnBusStatus(RoveCommCallback<byte> handler) { _service.On(4105, handler); }
+
+        /// <summary>
+        /// Higher current draw than the battery can support. Rover will Reboot automatically
+        /// </summary>
+        public void OnPackOvercurrent(RoveCommCallback<byte> handler) { _service.On(4200, handler); }
+
+        /// <summary>
+        /// (bitmasked) [1-Undervolt, 0-OK]. Rover will EStop automatically
+        /// </summary>
+        public void OnCellUndervoltage(RoveCommCallback<byte> handler) { _service.On(4201, handler); }
+
+        /// <summary>
+        /// (bitmasked) [1-Critical, 0-OK]. Rover will Suicide automatically
+        /// </summary>
+        public void OnCellCritical(RoveCommCallback<byte> handler) { _service.On(4202, handler); }
+
+        /// <summary>
+        /// Aux system current draw too high. Rover will disable Aux bus automatically
+        /// </summary>
+        public void OnAuxOvercurrent(RoveCommCallback<byte> handler) { _service.On(4203, handler); }
     }
 
     public class SignalStack
@@ -340,6 +420,16 @@ namespace RoveComm.Boards
         {
             _service.Send(7003, [arg1], _ip);
         }
+
+        /// <summary>
+        /// [Heading] [0, 360)
+        /// </summary>
+        public void OnCompassAngle(RoveCommCallback<float> handler) { _service.On(7100, handler); }
+
+        /// <summary>
+        /// (1-Watchdog timeout, 0-OK)
+        /// </summary>
+        public void OnWatchdogStatus(RoveCommCallback<byte> handler) { _service.On(7200, handler); }
     }
 
     public class Arm
@@ -553,6 +643,26 @@ namespace RoveComm.Boards
             _service.Send(8018, [arg1], _ip);
         }
 
+        /// <summary>
+        /// [X, J2, J3, J4, P, R, AP] (in, deg, deg, deg, deg, deg, deg, deg)
+        /// </summary>
+        public void OnPositions(RoveCommCallback<float> handler) { _service.On(8100, handler); }
+
+        /// <summary>
+        /// [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
+        /// </summary>
+        public void OnCoordinates(RoveCommCallback<float> handler) { _service.On(8101, handler); }
+
+        /// <summary>
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P] (0-off, 1-on) (bitmasked)
+        /// </summary>
+        public void OnLimitSwitchTriggered(RoveCommCallback<ushort> handler) { _service.On(8102, handler); }
+
+        /// <summary>
+        /// (1-Watchdog timeout, 0-OK)
+        /// </summary>
+        public void OnWatchdogStatus(RoveCommCallback<byte> handler) { _service.On(8200, handler); }
+
         public enum Joints
         {
             X = 0,
@@ -572,103 +682,111 @@ namespace RoveComm.Boards
         internal Auger(RoveCommService service) => _service = service;
 
         /// <summary>
-        /// Motor decipercent [-1000, 1000]
+        /// [Speed] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void AugerAxis_OpenLoop(short arg1)
+        /// <param name="Speed"></param>
+        public void AugerAxis(short Speed)
         {
-            _service.Send(9000, [arg1], _ip);
+            _service.Send(9000, [Speed], _ip);
         }
 
         /// <summary>
-        /// Absolute position (in)
+        /// [AugerAxis+, AugerAxis-] (bitmask override enabled)
         /// </summary>
         /// <param name="arg1"></param>
-        public void AugerAxis_SetPosition(float arg1)
+        public void LimitSwitchOverride(byte arg1)
         {
             _service.Send(9001, [arg1], _ip);
         }
 
         /// <summary>
-        /// (in)
-        /// </summary>
-        /// <param name="arg1"></param>
-        public void AugerAxis_IncrementPosition(float arg1)
-        {
-            _service.Send(9002, [arg1], _ip);
-        }
-
-        /// <summary>
-        /// [AugerAxis+, AugerAxis-] (0-override off, 1-override on) (bitmasked)
-        /// </summary>
-        /// <param name="arg1"></param>
-        public void LimitSwitchOverride(byte arg1)
-        {
-            _service.Send(9003, [arg1], _ip);
-        }
-
-        /// <summary>
         /// Request calibration of the AugerAxis encoder
         /// </summary>
-        /// <param name="arg1"></param>
-        public void CalibrateEncoder(byte arg1)
+        
+        public void CalibrateEncoder()
         {
-            _service.Send(9004, [arg1], _ip);
+            _service.Send(9002, [], _ip);
         }
 
         /// <summary>
-        /// Motor decipercent [-1000, 1000]
+        /// [Speed] (-1000 - 1000) -> (-100% - 100%)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void RunAuger(short arg1)
+        /// <param name="Speed"></param>
+        public void RunAuger(short Speed)
         {
-            _service.Send(9005, [arg1], _ip);
+            _service.Send(9003, [Speed], _ip);
         }
 
         /// <summary>
-        /// [0-override off, 1-override on]
+        /// [Enabled]
         /// </summary>
-        /// <param name="arg1"></param>
-        public void WatchdogOverride(byte arg1)
+        /// <param name="Enabled"></param>
+        public void WatchdogOverride(byte Enabled)
         {
-            _service.Send(9006, [arg1], _ip);
+            _service.Send(9004, [Enabled], _ip);
         }
 
         /// <summary>
-        /// Request a reading of the temperature at the end of the auger
+        /// [White, 365, 405, 500] (0 - 255) -> (Off - Full Brightness)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void RequestTemperature(byte arg1)
+        /// <param name="White"></param>
+        /// <param name="_365"></param>
+        /// <param name="_405"></param>
+        /// <param name="_500"></param>
+        public void LED(byte White, byte _365, byte _405, byte _500)
         {
-            _service.Send(9007, [arg1], _ip);
+            _service.Send(9005, [White, _365, _405, _500], _ip);
         }
 
         /// <summary>
-        /// Request a reading of the humidity at the end of the auger
+        /// [AFFilters, SoilTrapdoor] (-180deg - 180deg)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void RequestHumidity(byte arg1)
+        /// <param name="AFFilters"></param>
+        /// <param name="SoilTrapdoor"></param>
+        public void AugerServo(short AFFilters, short SoilTrapdoor)
         {
-            _service.Send(9008, [arg1], _ip);
+            _service.Send(9006, [AFFilters, SoilTrapdoor], _ip);
         }
 
         /// <summary>
-        /// Ultraviolet LED on AutoFluorescence (0-off, 1-on)
+        /// [Pan, Tilt] (-180deg - 180deg)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void UVLED(byte arg1)
+        /// <param name="Pan"></param>
+        /// <param name="Tilt"></param>
+        public void AugerGimbalIncrement(short Pan, short Tilt)
         {
-            _service.Send(9009, [arg1], _ip);
+            _service.Send(9007, [Pan, Tilt], _ip);
         }
 
         /// <summary>
-        /// [Position](degrees -180-180)
+        /// [AugerAxis] (in)
         /// </summary>
-        /// <param name="Position"></param>
-        public void AugerMultiplexerServo(short Position)
-        {
-            _service.Send(9010, [Position], _ip);
-        }
+        public void OnPosition(RoveCommCallback<float> handler) { _service.On(9100, handler); }
+
+        /// <summary>
+        /// [AugerSpeed] (rpm)
+        /// </summary>
+        public void OnAugerSpeed(RoveCommCallback<float> handler) { _service.On(9101, handler); }
+
+        /// <summary>
+        /// [AugerAxis+, AugerAxis-] (bitmask depressed)
+        /// </summary>
+        public void OnLimitSwitch(RoveCommCallback<byte> handler) { _service.On(9102, handler); }
+
+        /// <summary>
+        /// [Temperature, Humidity, N, P, K, pH] (degrees C, relative humidity %, ?, ?, ?, ?)
+        /// </summary>
+        public void OnEnvironmental(RoveCommCallback<float> handler) { _service.On(9103, handler); }
+
+        /// <summary>
+        /// [AugerCurrent] (A)
+        /// </summary>
+        public void OnAugerCurrent(RoveCommCallback<float> handler) { _service.On(9104, handler); }
+
+        /// <summary>
+        /// [AugerAxis Ping Time] (ms)
+        /// </summary>
+        public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(9105, handler); }
     }
 
     public class Autonomy
@@ -770,12 +888,12 @@ namespace RoveComm.Boards
         /// <summary>
         /// [Enum (AUTONOMYLOG), Enum (AUTONOMYLOG), Enum (AUTONOMYLOG)] {Console, File, RoveComm}
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        /// <param name="arg3"></param>
-        public void SetLoggingLevels(byte arg1, byte arg2, byte arg3)
+        /// <param name="Enum0"></param>
+        /// <param name="Enum1"></param>
+        /// <param name="Enum2"></param>
+        public void SetLoggingLevels(byte Enum0, byte Enum1, byte Enum2)
         {
-            _service.Send(11009, [arg1, arg2, arg3], _ip);
+            _service.Send(11009, [Enum0, Enum1, Enum2], _ip);
         }
 
         /// <summary>
@@ -798,6 +916,26 @@ namespace RoveComm.Boards
             _service.Send(11011, [arg1], _ip);
         }
 
+        /// <summary>
+        /// Enum (AUTONOMYSTATE)
+        /// </summary>
+        public void OnCurrentState(RoveCommCallback<byte> handler) { _service.On(11100, handler); }
+
+        /// <summary>
+        /// [Teleop, Autonomy, Reached Goal] (enum)
+        /// </summary>
+        public void OnStateDisplay(RoveCommCallback<byte> handler) { _service.On(11101, handler); }
+
+        /// <summary>
+        /// String version of most current error log
+        /// </summary>
+        public void OnCurrentLog(RoveCommCallback<char> handler) { _service.On(11102, handler); }
+
+        /// <summary>
+        /// [Thread Enum ID, FPS Value]
+        /// </summary>
+        public void OnThreadFPS(RoveCommCallback<uint> handler) { _service.On(11103, handler); }
+
         public enum AUTONOMYSTATE
         {
             Idle = 0,
@@ -808,9 +946,8 @@ namespace RoveComm.Boards
             VerifyingGPS = 5,
             VerifyingMarker = 6,
             VerifyingObject = 7,
-            Avoidance = 8,
-            Reversing = 9,
-            Stuck = 10,
+            Reversing = 8,
+            Stuck = 9,
         }
         public enum AUTONOMYLOG
         {
@@ -829,7 +966,7 @@ namespace RoveComm.Boards
             NotSet = 0,
             MainProcess = 1,
             MainCam = 2,
-            GroundCam = 3,
+            RearCam = 3,
             TagDetector = 4,
             ObjectDetector = 5,
             StateMachine = 6,
@@ -918,6 +1055,26 @@ namespace RoveComm.Boards
         {
             _service.Send(12005, [arg1, arg2, arg3, arg4], _ip);
         }
+
+        /// <summary>
+        /// Number of detected cameras.
+        /// </summary>
+        public void OnAvailableCameras(RoveCommCallback<byte> handler) { _service.On(12100, handler); }
+
+        /// <summary>
+        /// Number of streaming cameras.
+        /// </summary>
+        public void OnStreamingCameras(RoveCommCallback<byte> handler) { _service.On(12101, handler); }
+
+        /// <summary>
+        /// Picture has been taken.
+        /// </summary>
+        public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(12102, handler); }
+
+        /// <summary>
+        /// [cpu0, cpu1, cpu2, cpu3, mem, storage], (% usage)
+        /// </summary>
+        public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(12103, handler); }
     }
 
     public class Camera2
@@ -988,6 +1145,26 @@ namespace RoveComm.Boards
         {
             _service.Send(13005, [arg1, arg2, arg3, arg4], _ip);
         }
+
+        /// <summary>
+        /// Number of detected cameras.
+        /// </summary>
+        public void OnAvailableCameras(RoveCommCallback<byte> handler) { _service.On(13100, handler); }
+
+        /// <summary>
+        /// Number of streaming cameras.
+        /// </summary>
+        public void OnStreamingCameras(RoveCommCallback<byte> handler) { _service.On(13101, handler); }
+
+        /// <summary>
+        /// Picture has been taken.
+        /// </summary>
+        public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(13102, handler); }
+
+        /// <summary>
+        /// [cpu0, cpu1, cpu2, cpu3, mem, storage], (% usage)
+        /// </summary>
+        public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(13103, handler); }
     }
 
     public class CameraServer
@@ -1000,10 +1177,10 @@ namespace RoveComm.Boards
         /// <summary>
         /// Take a picture with the current camera. [0] is the camera to take a picture with.
         /// </summary>
-        /// <param name="arg1"></param>
-        public void TakePhoto(byte arg1)
+        /// <param name="akeapicturewiththecurrentcamera0"></param>
+        public void TakePhoto(byte akeapicturewiththecurrentcamera0)
         {
-            _service.Send(14000, [arg1], _ip);
+            _service.Send(14000, [akeapicturewiththecurrentcamera0], _ip);
         }
 
         /// <summary>
@@ -1085,6 +1262,26 @@ namespace RoveComm.Boards
         {
             _service.Send(14010, [arg1, arg2], _ip);
         }
+
+        /// <summary>
+        /// Bitmask values for which cameras are able to stream. LSB is Camera 0, MSB is Camera 7.
+        /// </summary>
+        public void OnAvailableCameras(RoveCommCallback<byte> handler) { _service.On(14100, handler); }
+
+        /// <summary>
+        /// Which cameras the system is currently streaming on each port
+        /// </summary>
+        public void OnStreamingCameras(RoveCommCallback<byte> handler) { _service.On(14101, handler); }
+
+        /// <summary>
+        /// Picture has been taken.
+        /// </summary>
+        public void OnPictureTaken1(RoveCommCallback<byte> handler) { _service.On(14102, handler); }
+
+        /// <summary>
+        /// Camera has errored and stopped streaming. [0] is ID of camera as an integer (not bitmask).
+        /// </summary>
+        public void OnCameraUnavailable(RoveCommCallback<byte> handler) { _service.On(14200, handler); }
     }
 
     public class Raman
@@ -1095,57 +1292,39 @@ namespace RoveComm.Boards
         internal Raman(RoveCommService service) => _service = service;
 
         /// <summary>
-        /// Motor decipercent [-1000, 1000]
+        /// [Speed] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void InstrumentsAxis_OpenLoop(short arg1)
+        /// <param name="Speed"></param>
+        public void InstrumentsAxis(short Speed)
         {
-            _service.Send(16000, [arg1], _ip);
+            _service.Send(16000, [Speed], _ip);
         }
 
         /// <summary>
-        /// Absolute position (in)
+        /// [InstrumentsAxis+, InstrumentsAxis-] (bitmask override enabled)
         /// </summary>
         /// <param name="arg1"></param>
-        public void InstrumentsAxis_SetPosition(float arg1)
+        public void LimitSwitchOverride(byte arg1)
         {
             _service.Send(16001, [arg1], _ip);
         }
 
         /// <summary>
-        /// (in)
-        /// </summary>
-        /// <param name="arg1"></param>
-        public void InstrumentsAxis_IncrementPosition(float arg1)
-        {
-            _service.Send(16002, [arg1], _ip);
-        }
-
-        /// <summary>
-        /// [InstrumentsAxis+, InstrumentsAxis-] (0-override off, 1-override on) (bitmasked)
-        /// </summary>
-        /// <param name="arg1"></param>
-        public void LimitSwitchOverride(byte arg1)
-        {
-            _service.Send(16003, [arg1], _ip);
-        }
-
-        /// <summary>
         /// Request calibration of the InstrumentsAxis encoder
         /// </summary>
-        /// <param name="arg1"></param>
-        public void CalibrateEncoder(byte arg1)
+        
+        public void CalibrateEncoder()
         {
-            _service.Send(16004, [arg1], _ip);
+            _service.Send(16002, [], _ip);
         }
 
         /// <summary>
-        /// [0-override off, 1-override on]
+        /// [Enabled]
         /// </summary>
-        /// <param name="arg1"></param>
-        public void WatchdogOverride(byte arg1)
+        /// <param name="Enabled"></param>
+        public void WatchdogOverride(byte Enabled)
         {
-            _service.Send(16005, [arg1], _ip);
+            _service.Send(16003, [Enabled], _ip);
         }
 
         /// <summary>
@@ -1154,26 +1333,51 @@ namespace RoveComm.Boards
         /// <param name="arg1"></param>
         public void Laser(byte arg1)
         {
-            _service.Send(16006, [arg1], _ip);
+            _service.Send(16004, [arg1], _ip);
         }
 
         /// <summary>
-        /// Start a Raman reading, with the provided integration time (milliseconds)
+        /// [Integration Time] (ms)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void RequestRamanReading(uint arg1)
+        /// <param name="IntegrationTime"></param>
+        public void RequestRamanReading(uint IntegrationTime)
         {
-            _service.Send(16007, [arg1], _ip);
+            _service.Send(16005, [IntegrationTime], _ip);
         }
 
         /// <summary>
-        /// [Pan, Tilt](degrees -180-180)
+        /// [InstrumentsAxis, TOF] (mm)
         /// </summary>
-        /// <param name="Pan"></param>
-        /// <param name="Tilt"></param>
-        public void RamanGimbalIncrement(short Pan, short Tilt)
-        {
-            _service.Send(16008, [Pan, Tilt], _ip);
-        }
+        public void OnPosition(RoveCommCallback<float> handler) { _service.On(16100, handler); }
+
+        /// <summary>
+        /// [InstrumentsAxis+, InstrumentsAxis-] (bitmask depressed)
+        /// </summary>
+        public void OnLimitSwitch(RoveCommCallback<byte> handler) { _service.On(16101, handler); }
+
+        /// <summary>
+        /// Raman CCD elements 1-512
+        /// </summary>
+        public void OnRamanReading_Part1(RoveCommCallback<ushort> handler) { _service.On(16102, handler); }
+
+        /// <summary>
+        /// Raman CCD elements 513-1024
+        /// </summary>
+        public void OnRamanReading_Part2(RoveCommCallback<ushort> handler) { _service.On(16103, handler); }
+
+        /// <summary>
+        /// Raman CCD elements 1025-1536
+        /// </summary>
+        public void OnRamanReading_Part3(RoveCommCallback<ushort> handler) { _service.On(16104, handler); }
+
+        /// <summary>
+        /// Raman CCD elements 1537-2048
+        /// </summary>
+        public void OnRamanReading_Part4(RoveCommCallback<ushort> handler) { _service.On(16105, handler); }
+
+        /// <summary>
+        /// [InstrumentsAxis Ping Time] (ms)
+        /// </summary>
+        public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(16106, handler); }
     }
 }
