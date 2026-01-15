@@ -4,6 +4,7 @@ namespace RoveComm
     {
         public Boards.Core Core;
         public Boards.PMS PMS;
+        public Boards.Nav Nav;
         public Boards.SignalStack SignalStack;
         public Boards.Arm Arm;
         public Boards.Auger Auger;
@@ -12,11 +13,13 @@ namespace RoveComm
         public Boards.Camera2 Camera2;
         public Boards.CameraServer CameraServer;
         public Boards.Raman Raman;
+        public Boards.RoveSoSimulator RoveSoSimulator;
 
         internal _Boards(RoveCommService service)
         {
             Core = new(service);
             PMS = new(service);
+            Nav = new(service);
             SignalStack = new(service);
             Arm = new(service);
             Auger = new(service);
@@ -25,6 +28,7 @@ namespace RoveComm
             Camera2 = new(service);
             CameraServer = new(service);
             Raman = new(service);
+            RoveSoSimulator = new(service);
             Arm = new(service);
         }
     }
@@ -35,7 +39,7 @@ namespace RoveComm.Boards
     public class Core
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.2.110";
+private static string _ip = "192.168.2.110";
 
         internal Core(RoveCommService service) => _service = service;
 
@@ -266,7 +270,7 @@ namespace RoveComm.Boards
     public class PMS
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.2.102";
+private static string _ip = "192.168.2.102";
 
         internal PMS(RoveCommService service) => _service = service;
 
@@ -375,10 +379,37 @@ namespace RoveComm.Boards
         public void OnAuxOvercurrent(RoveCommCallback<byte> handler) { _service.On(4203, handler); }
     }
 
+    public class Nav
+    {
+        private RoveCommService _service;
+
+        internal Nav(RoveCommService service) => _service = service;
+
+        /// <summary>
+        /// [Lat, Long, Alt, horizontal_accur, vertical_accur, heading_accur, fix_type, is_differential] [degrees, degrees, meters, meters, meters, degrees, ublox_navpvt fix type (http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html), boolean]]
+        /// </summary>
+        public void OnGPSLatLonAlt(RoveCommCallback<double> handler) { _service.On(6100, handler); }
+
+        /// <summary>
+        /// [Heading] [ 0, 360 ]
+        /// </summary>
+        public void OnCompassData(RoveCommCallback<float> handler) { _service.On(6102, handler); }
+
+        /// <summary>
+        /// [Number of satellites]
+        /// </summary>
+        public void OnSatelliteCountData(RoveCommCallback<byte> handler) { _service.On(6103, handler); }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public void OnGPSLockError(RoveCommCallback<byte> handler) { _service.On(6200, handler); }
+    }
+
     public class SignalStack
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.100.101";
+private static string _ip = "192.168.100.101";
 
         internal SignalStack(RoveCommService service) => _service = service;
 
@@ -435,7 +466,7 @@ namespace RoveComm.Boards
     public class Arm
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.2.107";
+private static string _ip = "192.168.2.107";
 
         internal Arm(RoveCommService service) => _service = service;
 
@@ -677,7 +708,7 @@ namespace RoveComm.Boards
     public class Auger
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.2.108";
+private static string _ip = "192.168.2.108";
 
         internal Auger(RoveCommService service) => _service = service;
 
@@ -705,7 +736,7 @@ namespace RoveComm.Boards
         
         public void CalibrateEncoder()
         {
-            _service.Send(9002, [], _ip);
+            _service.Send<byte>(9002, [], _ip);
         }
 
         /// <summary>
@@ -792,7 +823,7 @@ namespace RoveComm.Boards
     public class Autonomy
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.3.100";
+private static string _ip = "192.168.3.100";
 
         internal Autonomy(RoveCommService service) => _service = service;
 
@@ -990,7 +1021,7 @@ namespace RoveComm.Boards
     public class Camera1
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.4.100";
+private static string _ip = "192.168.4.100";
 
         internal Camera1(RoveCommService service) => _service = service;
 
@@ -1080,7 +1111,7 @@ namespace RoveComm.Boards
     public class Camera2
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.4.101";
+private static string _ip = "192.168.4.101";
 
         internal Camera2(RoveCommService service) => _service = service;
 
@@ -1170,7 +1201,7 @@ namespace RoveComm.Boards
     public class CameraServer
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.4.102";
+private static string _ip = "192.168.4.102";
 
         internal CameraServer(RoveCommService service) => _service = service;
 
@@ -1287,7 +1318,7 @@ namespace RoveComm.Boards
     public class Raman
     {
         private RoveCommService _service;
-        private static string _ip = "192.168.3.105";
+private static string _ip = "192.168.3.105";
 
         internal Raman(RoveCommService service) => _service = service;
 
@@ -1315,7 +1346,7 @@ namespace RoveComm.Boards
         
         public void CalibrateEncoder()
         {
-            _service.Send(16002, [], _ip);
+            _service.Send<byte>(16002, [], _ip);
         }
 
         /// <summary>
@@ -1379,5 +1410,17 @@ namespace RoveComm.Boards
         /// [InstrumentsAxis Ping Time] (ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(16106, handler); }
+    }
+
+    public class RoveSoSimulator
+    {
+        private RoveCommService _service;
+
+        internal RoveSoSimulator(RoveCommService service) => _service = service;
+
+        /// <summary>
+        /// [Accel X, Accel Y, Accel Z, Gyro X, Gyro Y, Gyro Z, Quat X, Quat Y, Quat Z, Quat W]
+        /// </summary>
+        public void OnIMU(RoveCommCallback<double> handler) { _service.On(99100, handler); }
     }
 }

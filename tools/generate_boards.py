@@ -52,7 +52,14 @@ def run(manifest, file_path):
         boards_with_content = [
             board
             for board, board_desc in manifest["RovecommManifest"].items()
-            if "Commands" in board_desc and len(board_desc["Commands"].items()) > 0
+            if (
+                ("Commands" in board_desc and len(board_desc["Commands"].items()) > 0)
+                or (
+                    "Telemetry" in board_desc
+                    and len(board_desc["Telemetry"].items()) > 0
+                )
+                or ("Error" in board_desc and len(board_desc["Error"].items()) > 0)
+            )
         ]
         file.write(
             f"""namespace RoveComm
@@ -75,22 +82,29 @@ namespace RoveComm.Boards
 
         for board, board_desc in manifest["RovecommManifest"].items():
             board_has_content = (
-                "Commands" in board_desc and len(board_desc["Commands"].items()) > 0
+                ("Commands" in board_desc and len(board_desc["Commands"].items()) > 0)
+                or (
+                    "Telemetry" in board_desc
+                    and len(board_desc["Telemetry"].items()) > 0
+                )
+                or ("Error" in board_desc and len(board_desc["Error"].items()) > 0)
             )
             if board_has_content:
                 file.write(
                     f"""
     public class {board}
     {{
-        private RoveCommService _service;
-        private static string _ip = "{board_desc["Ip"]}";
+        private RoveCommService _service;{f"\nprivate static string _ip = \"{board_desc["Ip"]}\";" if "Commands" in board_desc and len(board_desc["Commands"].items()) > 0 else ""}
 
         internal {board}(RoveCommService service) => _service = service;
 """
                 )
 
+                if "Commands" not in board_desc:
+                    board_desc["Commands"] = {}
                 for command, packet_desc in board_desc["Commands"].items():
                     params = get_params(packet_desc)
+                    cs_type = cs_type_lookup[packet_desc["dataType"]]
 
                     comment = f"""
         /// <summary>
@@ -100,16 +114,17 @@ namespace RoveComm.Boards
 
                     file.write(
                         f"""{comment}
-        public void {command if command is not board else "Run" + command}({", ".join(f"""{cs_type_lookup[packet_desc["dataType"]]}{"" if packet_desc["dataCount"] < 10 else "[]"} {p}""" for p in params) })
+        public void {command if command is not board else "Run" + command}({", ".join(f"""{cs_type}{"" if packet_desc["dataCount"] < 10 else "[]"} {p}""" for p in params) })
         {{
-            _service.Send({packet_desc["dataId"]}, [{", ".join(p for p in params)}], _ip);
+            _service.Send{"" if len(params) > 0 else f"<{cs_type}>"}({packet_desc["dataId"]}, [{", ".join(p for p in params)}], _ip);
         }}
 """
                     )
 
                 if "Error" not in board_desc:
                     board_desc["Error"] = {}
-
+                if "Telemetry" not in board_desc:
+                    board_desc["Telemetry"] = {}
                 for telemetry, packet_desc in (
                     board_desc["Telemetry"] | board_desc["Error"]
                 ).items():
