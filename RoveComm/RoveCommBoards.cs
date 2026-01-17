@@ -44,7 +44,7 @@ private static string _ip = "192.168.2.110";
         internal Core(RoveCommService service) => _service = service;
 
         /// <summary>
-        /// [LeftSpeed, RightSpeed] (-1, 1)-> (-100%, 100%)
+        /// [LeftSpeed, RightSpeed] (-1 - 1)-> (-100% - 100%)
         /// </summary>
         /// <param name="LeftSpeed"></param>
         /// <param name="RightSpeed"></param>
@@ -54,7 +54,7 @@ private static string _ip = "192.168.2.110";
         }
 
         /// <summary>
-        /// [LF, LM, LR, RF, RM, RR] (-1, 1)-> (-100%, 100%)
+        /// [LF, LM, LR, RF, RM, RR] (-1 - 1)-> (-100% - 100%)
         /// </summary>
         /// <param name="LF"></param>
         /// <param name="LM"></param>
@@ -77,101 +77,104 @@ private static string _ip = "192.168.2.110";
         }
 
         /// <summary>
-        /// [Tilt](degrees -180-180)
-        /// </summary>
-        /// <param name="Tilt"></param>
-        public void LeftDriveGimbalIncrement(short Tilt)
-        {
-            _service.Send(3003, [Tilt], _ip);
-        }
-
-        /// <summary>
-        /// [Tilt](degrees -180-180)
-        /// </summary>
-        /// <param name="Tilt"></param>
-        public void RightDriveGimbalIncrement(short Tilt)
-        {
-            _service.Send(3004, [Tilt], _ip);
-        }
-
-        /// <summary>
-        /// [Pan, Tilt](degrees -180-180)
+        /// [Pan, Tilt] (-180deg - 180deg)
         /// </summary>
         /// <param name="Pan"></param>
         /// <param name="Tilt"></param>
-        public void LeftMainGimbalIncrement(short Pan, short Tilt)
+        public void LeftGimbal(short Pan, short Tilt)
+        {
+            _service.Send(3003, [Pan, Tilt], _ip);
+        }
+
+        /// <summary>
+        /// [Pan, Tilt] (-180deg - 180deg)
+        /// </summary>
+        /// <param name="Pan"></param>
+        /// <param name="Tilt"></param>
+        public void RightGimbal(short Pan, short Tilt)
+        {
+            _service.Send(3004, [Pan, Tilt], _ip);
+        }
+
+        /// <summary>
+        /// [Pan, Tilt] (-180deg - 180deg)
+        /// </summary>
+        /// <param name="Pan"></param>
+        /// <param name="Tilt"></param>
+        public void BackGimbal(short Pan, short Tilt)
         {
             _service.Send(3005, [Pan, Tilt], _ip);
         }
 
         /// <summary>
-        /// [Pan, Tilt](degrees -180-180)
-        /// </summary>
-        /// <param name="Pan"></param>
-        /// <param name="Tilt"></param>
-        public void RightMainGimbalIncrement(short Pan, short Tilt)
-        {
-            _service.Send(3006, [Pan, Tilt], _ip);
-        }
-
-        /// <summary>
-        /// [Tilt](degrees -180-180)
-        /// </summary>
-        /// <param name="Tilt"></param>
-        public void BackDriveGimbalIncrement(short Tilt)
-        {
-            _service.Send(3007, [Tilt], _ip);
-        }
-
-        /// <summary>
-        /// [R, G, B] (0, 255)
+        /// [R, G, B] (Brightness 0 - 255)
         /// </summary>
         /// <param name="R"></param>
         /// <param name="G"></param>
         /// <param name="B"></param>
         public void LEDRGB(byte R, byte G, byte B)
         {
+            _service.Send(3006, [R, G, B], _ip);
+        }
+
+        /// <summary>
+        /// [Color] (RGBA)
+        /// </summary>
+        /// <param name="args"></param>
+        public void BackImage(uint[] args)
+        {
+            _service.Send(3007, [args], _ip);
+        }
+
+        /// <summary>
+        /// [R, G, B] (Brightness 0 - 255)
+        /// </summary>
+        /// <param name="R"></param>
+        /// <param name="G"></param>
+        /// <param name="B"></param>
+        public void InternalRGB(byte R, byte G, byte B)
+        {
             _service.Send(3008, [R, G, B], _ip);
         }
 
         /// <summary>
-        /// [Pattern] (Enum)
+        /// [Color] (RGBA)
         /// </summary>
-        /// <param name="Pattern"></param>
-        public void LEDPatterns(byte Pattern)
+        /// <param name="args"></param>
+        public void InternalImage(uint[] args)
         {
-            _service.Send(3009, [Pattern], _ip);
+            _service.Send(3009, [args], _ip);
         }
 
         /// <summary>
-        /// [Teleop, Autonomy, Reached Goal] (enum)
+        /// [State] (DisplayState)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void StateDisplay(byte arg1)
+        /// <param name="State"></param>
+        public void StateDisplay(byte State)
         {
-            _service.Send(3010, [arg1], _ip);
+            _service.Send(3010, [State], _ip);
         }
 
         /// <summary>
-        /// Set Brightness (0-255)
+        /// [Brightness] (0 - 255)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void Brightness(byte arg1)
+        /// <param name="Brightness"></param>
+        public void Brightness(byte Brightness)
         {
-            _service.Send(3011, [arg1], _ip);
+            _service.Send(3011, [Brightness], _ip);
         }
 
         /// <summary>
-        /// 0: Teleop, 1: Autonomy
+        /// [Mode] (0: Teleop, 1: Autonomy)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void SetWatchdogMode(byte arg1)
+        /// <param name="Mode"></param>
+        public void SetWatchdogMode(byte Mode)
         {
-            _service.Send(3012, [arg1], _ip);
+            _service.Send(3012, [Mode], _ip);
         }
 
         /// <summary>
-        /// Set the message to display on the lighting panel; null terminator ends string early
+        /// [Message] (Null terminated string)
         /// </summary>
         /// <param name="args"></param>
         public void LEDText(char[] args)
@@ -185,22 +188,22 @@ private static string _ip = "192.168.2.110";
         public void OnMotorSpeeds(RoveCommCallback<float> handler) { _service.On(3100, handler); }
 
         /// <summary>
-        /// [FL, ML, BL, FR, MR, BR] Motor current draw
+        /// [FL, ML, BL, FR, MR, BR] (A)
         /// </summary>
         public void OnMotorCurrents(RoveCommCallback<float> handler) { _service.On(3101, handler); }
 
         /// <summary>
-        /// [FL, ML, BL, FR, MR, BR] VESC (battery side) current draw
+        /// [FL, ML, BL, FR, MR, BR] (A Battery side)
         /// </summary>
         public void OnVESCCurrents(RoveCommCallback<float> handler) { _service.On(3102, handler); }
 
         /// <summary>
-        /// [Roll, Pitch, Yaw] degrees
+        /// [Roll, Pitch] (deg)
         /// </summary>
         public void OnIMUData(RoveCommCallback<float> handler) { _service.On(3103, handler); }
 
         /// <summary>
-        /// [xAxis, yAxis, zAxis] Accel in m/s^2
+        /// [X, Y, Z] (m/s2)
         /// </summary>
         public void OnAccelerometerData(RoveCommCallback<float> handler) { _service.On(3104, handler); }
 
@@ -223,16 +226,6 @@ private static string _ip = "192.168.2.110";
             TELEOP = 0,
             AUTONOMY = 1,
             REACHED_GOAL = 2,
-        }
-        public enum Patterns
-        {
-            MRDT = 0,
-            BELGIUM = 1,
-            MERICA = 2,
-            DIRT = 3,
-            DOTA = 4,
-            MCD = 5,
-            WINDOWS = 6,
         }
         public enum VESCFaultCode
         {
@@ -277,32 +270,32 @@ private static string _ip = "192.168.2.102";
         /// <summary>
         /// Power off all systems except network (PMS will stay on)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void EStop(byte arg1)
+        
+        public void EStop()
         {
-            _service.Send(4000, [arg1], _ip);
+            _service.Send<byte>(4000, [], _ip);
         }
 
         /// <summary>
         /// Power off all systems including network, cannot recover without physical reboot (PMS will stay on)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void Suicide(byte arg1)
+        
+        public void Suicide()
         {
-            _service.Send(4001, [arg1], _ip);
+            _service.Send<byte>(4001, [], _ip);
         }
 
         /// <summary>
         /// Cycle all systems including network off and back on (PMS will stay on)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void Reboot(byte arg1)
+        
+        public void Reboot()
         {
-            _service.Send(4002, [arg1], _ip);
+            _service.Send<byte>(4002, [], _ip);
         }
 
         /// <summary>
-        /// [Motor, Core, Aux] (bitmasked) [1-Enable, 0-No change]
+        /// [Motor, Core, Aux] (bitmasked enable)
         /// </summary>
         /// <param name="arg1"></param>
         public void EnableBus(byte arg1)
@@ -311,7 +304,7 @@ private static string _ip = "192.168.2.102";
         }
 
         /// <summary>
-        /// [Motor, Core, Aux] (bitmasked) [1-Disable, 0-No change]
+        /// [Motor, Core, Aux] (bitmasked disable)
         /// </summary>
         /// <param name="arg1"></param>
         public void DisableBus(byte arg1)
@@ -320,7 +313,7 @@ private static string _ip = "192.168.2.102";
         }
 
         /// <summary>
-        /// [Motor, Core, Aux] (bitmasked) [1-Enable, 0-Disable]
+        /// [Motor, Core, Aux] (bitmasked enabled)
         /// </summary>
         /// <param name="arg1"></param>
         public void SetBus(byte arg1)
@@ -329,34 +322,14 @@ private static string _ip = "192.168.2.102";
         }
 
         /// <summary>
-        /// Total current draw from battery
+        /// [PackCurrent, AuxCurrent, LowCurrent, NetworkCurrent, RadioM2Current, RadioM9Current, Cell1Voltage, Cell2Voltage, Cell3Voltage, Cell4Voltage, Cell5Voltage, Cell6Voltage] (A, A, A, A, A, A, V, V, V, V, V, V)
         /// </summary>
-        public void OnPackCurrent(RoveCommCallback<float> handler) { _service.On(4100, handler); }
+        public void OnCurrentAndVoltage(RoveCommCallback<float> handler) { _service.On(4100, handler); }
 
         /// <summary>
-        /// Pack voltage
+        /// [Motor, Core, Aux, RadioM2, RadioM9, Network] (bitmasked) [1-Enabled, 0-Disabled]
         /// </summary>
-        public void OnPackVoltage(RoveCommCallback<float> handler) { _service.On(4101, handler); }
-
-        /// <summary>
-        /// C1, C2, C3, C4, C5, C6
-        /// </summary>
-        public void OnCellVoltage(RoveCommCallback<float> handler) { _service.On(4102, handler); }
-
-        /// <summary>
-        /// Current draw by aux systems (before 12V buck)
-        /// </summary>
-        public void OnAuxCurrent(RoveCommCallback<float> handler) { _service.On(4103, handler); }
-
-        /// <summary>
-        /// Current draw from other devices (CS1, CS2, CS3)
-        /// </summary>
-        public void OnMiscCurrent(RoveCommCallback<float> handler) { _service.On(4104, handler); }
-
-        /// <summary>
-        /// [Motor, Core, Aux, Network] (bitmasked) [1-Enabled, 0-Disabled]
-        /// </summary>
-        public void OnBusStatus(RoveCommCallback<byte> handler) { _service.On(4105, handler); }
+        public void OnBusStatus(RoveCommCallback<byte> handler) { _service.On(4101, handler); }
 
         /// <summary>
         /// Higher current draw than the battery can support. Rover will Reboot automatically
@@ -364,12 +337,12 @@ private static string _ip = "192.168.2.102";
         public void OnPackOvercurrent(RoveCommCallback<byte> handler) { _service.On(4200, handler); }
 
         /// <summary>
-        /// (bitmasked) [1-Undervolt, 0-OK]. Rover will EStop automatically
+        /// [C1, C2, C3, C4, C5, C6] (bitmasked undervolt). Rover will EStop automatically
         /// </summary>
         public void OnCellUndervoltage(RoveCommCallback<byte> handler) { _service.On(4201, handler); }
 
         /// <summary>
-        /// (bitmasked) [1-Critical, 0-OK]. Rover will Suicide automatically
+        /// [C1, C2, C3, C4, C5, C6] (bitmasked critical). Rover will Suicide automatically
         /// </summary>
         public void OnCellCritical(RoveCommCallback<byte> handler) { _service.On(4202, handler); }
 
@@ -471,7 +444,7 @@ private static string _ip = "192.168.2.107";
         internal Arm(RoveCommService service) => _service = service;
 
         /// <summary>
-        /// [X, J2, J3, J4, P, R] Motor decipercent [-1000, 1000]
+        /// [X, J2, J3, J4, P, R] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
         /// <param name="X"></param>
         /// <param name="J2"></param>
@@ -479,23 +452,13 @@ private static string _ip = "192.168.2.107";
         /// <param name="J4"></param>
         /// <param name="P"></param>
         /// <param name="R"></param>
-        public void SetIndividualSpeeds(short X, short J2, short J3, short J4, short P, short R)
+        public void OpenLoop(short X, short J2, short J3, short J4, short P, short R)
         {
             _service.Send(8000, [X, J2, J3, J4, P, R], _ip);
         }
 
         /// <summary>
-        /// [JointID, Decipercent] Motor decipercent [-1000, 1000]
-        /// </summary>
-        /// <param name="JointID"></param>
-        /// <param name="Decipercent"></param>
-        public void SetJointSpeed(short JointID, short Decipercent)
-        {
-            _service.Send(8001, [JointID, Decipercent], _ip);
-        }
-
-        /// <summary>
-        /// [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
+        /// [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg, deg)
         /// </summary>
         /// <param name="X"></param>
         /// <param name="J2"></param>
@@ -503,206 +466,145 @@ private static string _ip = "192.168.2.107";
         /// <param name="J4"></param>
         /// <param name="P"></param>
         /// <param name="R"></param>
-        public void SetIndividualTargetAngles(float X, float J2, float J3, float J4, float P, float R)
+        public void TargetAngle(float X, float J2, float J3, float J4, float P, float R)
         {
-            _service.Send(8002, [X, J2, J3, J4, P, R], _ip);
+            _service.Send(8001, [X, J2, J3, J4, P, R], _ip);
         }
 
         /// <summary>
-        /// [JointID, Position] (in for id 0, deg otherwise)
+        /// [Gripper] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
-        /// <param name="JointID"></param>
+        /// <param name="Gripper"></param>
+        public void GripperOpenLoop(float Gripper)
+        {
+            _service.Send(8002, [Gripper], _ip);
+        }
+
+        /// <summary>
+        /// [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="Z"></param>
+        /// <param name="J4"></param>
+        /// <param name="P"></param>
+        /// <param name="R"></param>
+        public void IKPosition(float X, float Y, float Z, float J4, float P, float R)
+        {
+            _service.Send(8003, [X, Y, Z, J4, P, R], _ip);
+        }
+
+        /// <summary>
+        /// [Enabled]
+        /// </summary>
+        /// <param name="Enabled"></param>
+        public void Laser(byte Enabled)
+        {
+            _service.Send(8004, [Enabled], _ip);
+        }
+
+        /// <summary>
+        /// [Position] (-180 - 180)
+        /// </summary>
         /// <param name="Position"></param>
-        public void SetJointTargetAngle(float JointID, float Position)
+        public void LinearServo(byte Position)
         {
-            _service.Send(8003, [JointID, Position], _ip);
+            _service.Send(8005, [Position], _ip);
         }
 
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
+        /// [Position] (-180 - 180)
         /// </summary>
-        /// <param name="X"></param>
-        /// <param name="J2"></param>
-        /// <param name="J3"></param>
-        /// <param name="J4"></param>
-        /// <param name="P"></param>
-        /// <param name="R"></param>
-        public void IncrementIndividualTargetAngles(float X, float J2, float J3, float J4, float P, float R)
+        /// <param name="Position"></param>
+        public void Cache(byte Position)
         {
-            _service.Send(8004, [X, J2, J3, J4, P, R], _ip);
+            _service.Send(8006, [Position], _ip);
         }
 
         /// <summary>
-        /// [JointID, Angle] (in for id 0, deg otherwise)
+        /// [Enabled]
         /// </summary>
-        /// <param name="JointID"></param>
-        /// <param name="Angle"></param>
-        public void IncrementJointTargetAngle(float JointID, float Angle)
+        /// <param name="Enabled"></param>
+        public void WatchdogOverride(byte Enabled)
         {
-            _service.Send(8005, [JointID, Angle], _ip);
+            _service.Send(8007, [Enabled], _ip);
         }
 
         /// <summary>
-        /// [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
-        /// </summary>
-        /// <param name="X"></param>
-        /// <param name="Y"></param>
-        /// <param name="Z"></param>
-        /// <param name="J4"></param>
-        /// <param name="P"></param>
-        /// <param name="R"></param>
-        public void SetIKPosition(float X, float Y, float Z, float J4, float P, float R)
-        {
-            _service.Send(8006, [X, Y, Z, J4, P, R], _ip);
-        }
-
-        /// <summary>
-        /// [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
-        /// </summary>
-        /// <param name="X"></param>
-        /// <param name="Y"></param>
-        /// <param name="Z"></param>
-        /// <param name="J4"></param>
-        /// <param name="P"></param>
-        /// <param name="R"></param>
-        public void IncrementIKPosition(float X, float Y, float Z, float J4, float P, float R)
-        {
-            _service.Send(8007, [X, Y, Z, J4, P, R], _ip);
-        }
-
-        /// <summary>
-        /// [J4, P, R] (deg, deg, deg)
-        /// </summary>
-        /// <param name="J4"></param>
-        /// <param name="P"></param>
-        /// <param name="R"></param>
-        public void SetLockModePosition(float J4, float P, float R)
-        {
-            _service.Send(8008, [J4, P, R], _ip);
-        }
-
-        /// <summary>
-        /// [J4, P, R] (deg, deg, deg)
-        /// </summary>
-        /// <param name="J4"></param>
-        /// <param name="P"></param>
-        /// <param name="R"></param>
-        public void IncrementLockModePosition(float J4, float P, float R)
-        {
-            _service.Send(8009, [J4, P, R], _ip);
-        }
-
-        /// <summary>
-        /// [0-disable, 1-enable]
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
         /// </summary>
         /// <param name="arg1"></param>
-        public void Laser(byte arg1)
+        public void LimitSwitchOverride(ushort arg1)
+        {
+            _service.Send(8008, [arg1], _ip);
+        }
+
+        /// <summary>
+        /// [X, J2, J3, J4, P, R] (bitmasked override enabled)
+        /// </summary>
+        /// <param name="arg1"></param>
+        public void ClosedLoopOverride(byte arg1)
+        {
+            _service.Send(8009, [arg1], _ip);
+        }
+
+        /// <summary>
+        /// [X, Roll] (bitmask start calibration)
+        /// </summary>
+        /// <param name="arg1"></param>
+        public void CalibrateEncoder(byte arg1)
         {
             _service.Send(8010, [arg1], _ip);
         }
 
         /// <summary>
-        /// [0-retract, 1-extend]
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
         /// </summary>
         /// <param name="arg1"></param>
-        public void Solenoid(byte arg1)
+        public void SoftLimitOverride(ushort arg1)
         {
             _service.Send(8011, [arg1], _ip);
         }
 
         /// <summary>
-        /// [Motor decipercent (-1000, 1000), Gripper number (0, 1)]
+        /// [Pan, Tilt] (-180deg - 180deg)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void SetGripperSpeed(short arg1, short arg2)
+        /// <param name="Pan"></param>
+        /// <param name="Tilt"></param>
+        public void ArmGimbal1(short Pan, short Tilt)
         {
-            _service.Send(8012, [arg1, arg2], _ip);
+            _service.Send(8012, [Pan, Tilt], _ip);
         }
 
         /// <summary>
-        /// [0-override off, 1-override on] (bitmasked)
+        /// [Pan, Tilt] (-180deg - 180deg)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void WatchdogOverride(byte arg1)
+        /// <param name="Pan"></param>
+        /// <param name="Tilt"></param>
+        public void ArmGimbal2(short Pan, short Tilt)
         {
-            _service.Send(8013, [arg1], _ip);
+            _service.Send(8013, [Pan, Tilt], _ip);
         }
 
         /// <summary>
-        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P] (0-override off, 1-override on) (bitmasked)
+        /// [X, J2, J3, J4, P, R, Y, Z] (in, deg, deg, deg, deg, deg, deg, deg, in, in)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void LimitSwitchOverride(ushort arg1)
-        {
-            _service.Send(8014, [arg1], _ip);
-        }
+        public void OnPosition(RoveCommCallback<float> handler) { _service.On(8100, handler); }
 
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (0-override off, 1-override on) (bitmasked)
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask depressed)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void ClosedLoopOverride(byte arg1)
-        {
-            _service.Send(8015, [arg1], _ip);
-        }
+        public void OnLimitSwitch(RoveCommCallback<ushort> handler) { _service.On(8101, handler); }
 
         /// <summary>
-        /// [X, Roll] (1-calibrate, 0-no action) (bitmasked)
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask triggered)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void CalibrateEncoder(byte arg1)
-        {
-            _service.Send(8016, [arg1], _ip);
-        }
+        public void OnSoftLimit(RoveCommCallback<ushort> handler) { _service.On(8102, handler); }
 
         /// <summary>
-        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (0-override off, 1-override on) (bitmasked)
+        /// [X, J2, J3, J4, P, R] (Ping Time ms)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void SoftLimitOverride(ushort arg1)
-        {
-            _service.Send(8017, [arg1], _ip);
-        }
-
-        /// <summary>
-        /// Shut off all motors (set decipercents to 0 and disable closed loop)
-        /// </summary>
-        /// <param name="arg1"></param>
-        public void EStop(byte arg1)
-        {
-            _service.Send(8018, [arg1], _ip);
-        }
-
-        /// <summary>
-        /// [X, J2, J3, J4, P, R, AP] (in, deg, deg, deg, deg, deg, deg, deg)
-        /// </summary>
-        public void OnPositions(RoveCommCallback<float> handler) { _service.On(8100, handler); }
-
-        /// <summary>
-        /// [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
-        /// </summary>
-        public void OnCoordinates(RoveCommCallback<float> handler) { _service.On(8101, handler); }
-
-        /// <summary>
-        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P] (0-off, 1-on) (bitmasked)
-        /// </summary>
-        public void OnLimitSwitchTriggered(RoveCommCallback<ushort> handler) { _service.On(8102, handler); }
-
-        /// <summary>
-        /// (1-Watchdog timeout, 0-OK)
-        /// </summary>
-        public void OnWatchdogStatus(RoveCommCallback<byte> handler) { _service.On(8200, handler); }
-
-        public enum Joints
-        {
-            X = 0,
-            J2 = 1,
-            J3 = 2,
-            J4 = 3,
-            PITCH = 4,
-            ROLL = 5,
-        }
+        public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(8103, handler); }
     }
 
     public class Auger
@@ -784,7 +686,7 @@ private static string _ip = "192.168.2.108";
         /// </summary>
         /// <param name="Pan"></param>
         /// <param name="Tilt"></param>
-        public void AugerGimbalIncrement(short Pan, short Tilt)
+        public void AugerGimbal(short Pan, short Tilt)
         {
             _service.Send(9007, [Pan, Tilt], _ip);
         }

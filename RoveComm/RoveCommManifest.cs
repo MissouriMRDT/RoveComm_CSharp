@@ -97,14 +97,14 @@ public static class RoveCommManifest
             ip: "192.168.2.110",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [LeftSpeed, RightSpeed] (-1, 1)-> (-100%, 100%)
+                // [LeftSpeed, RightSpeed] (-1 - 1)-> (-100% - 100%)
                 ["DriveLeftRight"] = new RoveCommPacketDesc
                 (
                     3000,
                     2,
                     RoveCommDataType.FLOAT
                 ),
-                // [LF, LM, LR, RF, RM, RR] (-1, 1)-> (-100%, 100%)
+                // [LF, LM, LR, RF, RM, RR] (-1 - 1)-> (-100% - 100%)
                 ["DriveIndividual"] = new RoveCommPacketDesc
                 (
                     3001,
@@ -118,77 +118,77 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Tilt](degrees -180-180)
-                ["LeftDriveGimbalIncrement"] = new RoveCommPacketDesc
+                // [Pan, Tilt] (-180deg - 180deg)
+                ["LeftGimbal"] = new RoveCommPacketDesc
                 (
                     3003,
-                    1,
+                    2,
                     RoveCommDataType.INT16_T
                 ),
-                // [Tilt](degrees -180-180)
-                ["RightDriveGimbalIncrement"] = new RoveCommPacketDesc
+                // [Pan, Tilt] (-180deg - 180deg)
+                ["RightGimbal"] = new RoveCommPacketDesc
                 (
                     3004,
-                    1,
+                    2,
                     RoveCommDataType.INT16_T
                 ),
-                // [Pan, Tilt](degrees -180-180)
-                ["LeftMainGimbalIncrement"] = new RoveCommPacketDesc
+                // [Pan, Tilt] (-180deg - 180deg)
+                ["BackGimbal"] = new RoveCommPacketDesc
                 (
                     3005,
                     2,
                     RoveCommDataType.INT16_T
                 ),
-                // [Pan, Tilt](degrees -180-180)
-                ["RightMainGimbalIncrement"] = new RoveCommPacketDesc
+                // [R, G, B] (Brightness 0 - 255)
+                ["LEDRGB"] = new RoveCommPacketDesc
                 (
                     3006,
-                    2,
-                    RoveCommDataType.INT16_T
+                    3,
+                    RoveCommDataType.UINT8_T
                 ),
-                // [Tilt](degrees -180-180)
-                ["BackDriveGimbalIncrement"] = new RoveCommPacketDesc
+                // [Color] (RGBA)
+                ["BackImage"] = new RoveCommPacketDesc
                 (
                     3007,
-                    1,
-                    RoveCommDataType.INT16_T
+                    256,
+                    RoveCommDataType.UINT32_T
                 ),
-                // [R, G, B] (0, 255)
-                ["LEDRGB"] = new RoveCommPacketDesc
+                // [R, G, B] (Brightness 0 - 255)
+                ["InternalRGB"] = new RoveCommPacketDesc
                 (
                     3008,
                     3,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Pattern] (Enum)
-                ["LEDPatterns"] = new RoveCommPacketDesc
+                // [Color] (RGBA)
+                ["InternalImage"] = new RoveCommPacketDesc
                 (
                     3009,
-                    1,
-                    RoveCommDataType.UINT8_T
+                    256,
+                    RoveCommDataType.UINT32_T
                 ),
-                // [Teleop, Autonomy, Reached Goal] (enum)
+                // [State] (DisplayState)
                 ["StateDisplay"] = new RoveCommPacketDesc
                 (
                     3010,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // Set Brightness (0-255)
+                // [Brightness] (0 - 255)
                 ["Brightness"] = new RoveCommPacketDesc
                 (
                     3011,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // 0: Teleop, 1: Autonomy
+                // [Mode] (0: Teleop, 1: Autonomy)
                 ["SetWatchdogMode"] = new RoveCommPacketDesc
                 (
                     3012,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // Set the message to display on the lighting panel; null terminator ends string early
+                // [Message] (Null terminated string)
                 ["LEDText"] = new RoveCommPacketDesc
                 (
                     3013,
@@ -205,28 +205,28 @@ public static class RoveCommManifest
                     6,
                     RoveCommDataType.FLOAT
                 ),
-                // [FL, ML, BL, FR, MR, BR] Motor current draw
+                // [FL, ML, BL, FR, MR, BR] (A)
                 ["MotorCurrents"] = new RoveCommPacketDesc
                 (
                     3101,
                     6,
                     RoveCommDataType.FLOAT
                 ),
-                // [FL, ML, BL, FR, MR, BR] VESC (battery side) current draw
+                // [FL, ML, BL, FR, MR, BR] (A Battery side)
                 ["VESCCurrents"] = new RoveCommPacketDesc
                 (
                     3102,
                     6,
                     RoveCommDataType.FLOAT
                 ),
-                // [Roll, Pitch, Yaw] degrees
+                // [Roll, Pitch] (deg)
                 ["IMUData"] = new RoveCommPacketDesc
                 (
                     3103,
-                    3,
+                    2,
                     RoveCommDataType.FLOAT
                 ),
-                // [xAxis, yAxis, zAxis] Accel in m/s^2
+                // [X, Y, Z] (m/s2)
                 ["AccelerometerData"] = new RoveCommPacketDesc
                 (
                     3104,
@@ -254,38 +254,38 @@ public static class RoveCommManifest
                 ["EStop"] = new RoveCommPacketDesc
                 (
                     4000,
-                    1,
+                    0,
                     RoveCommDataType.UINT8_T
                 ),
                 // Power off all systems including network, cannot recover without physical reboot (PMS will stay on)
                 ["Suicide"] = new RoveCommPacketDesc
                 (
                     4001,
-                    1,
+                    0,
                     RoveCommDataType.UINT8_T
                 ),
                 // Cycle all systems including network off and back on (PMS will stay on)
                 ["Reboot"] = new RoveCommPacketDesc
                 (
                     4002,
-                    1,
+                    0,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Motor, Core, Aux] (bitmasked) [1-Enable, 0-No change]
+                // [Motor, Core, Aux] (bitmasked enable)
                 ["EnableBus"] = new RoveCommPacketDesc
                 (
                     4003,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Motor, Core, Aux] (bitmasked) [1-Disable, 0-No change]
+                // [Motor, Core, Aux] (bitmasked disable)
                 ["DisableBus"] = new RoveCommPacketDesc
                 (
                     4004,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Motor, Core, Aux] (bitmasked) [1-Enable, 0-Disable]
+                // [Motor, Core, Aux] (bitmasked enabled)
                 ["SetBus"] = new RoveCommPacketDesc
                 (
                     4005,
@@ -295,45 +295,17 @@ public static class RoveCommManifest
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // Total current draw from battery
-                ["PackCurrent"] = new RoveCommPacketDesc
+                // [PackCurrent, AuxCurrent, LowCurrent, NetworkCurrent, RadioM2Current, RadioM9Current, Cell1Voltage, Cell2Voltage, Cell3Voltage, Cell4Voltage, Cell5Voltage, Cell6Voltage] (A, A, A, A, A, A, V, V, V, V, V, V)
+                ["CurrentAndVoltage"] = new RoveCommPacketDesc
                 (
                     4100,
-                    1,
+                    12,
                     RoveCommDataType.FLOAT
                 ),
-                // Pack voltage
-                ["PackVoltage"] = new RoveCommPacketDesc
-                (
-                    4101,
-                    1,
-                    RoveCommDataType.FLOAT
-                ),
-                // C1, C2, C3, C4, C5, C6
-                ["CellVoltage"] = new RoveCommPacketDesc
-                (
-                    4102,
-                    6,
-                    RoveCommDataType.FLOAT
-                ),
-                // Current draw by aux systems (before 12V buck)
-                ["AuxCurrent"] = new RoveCommPacketDesc
-                (
-                    4103,
-                    1,
-                    RoveCommDataType.FLOAT
-                ),
-                // Current draw from other devices (CS1, CS2, CS3)
-                ["MiscCurrent"] = new RoveCommPacketDesc
-                (
-                    4104,
-                    3,
-                    RoveCommDataType.FLOAT
-                ),
-                // [Motor, Core, Aux, Network] (bitmasked) [1-Enabled, 0-Disabled]
+                // [Motor, Core, Aux, RadioM2, RadioM9, Network] (bitmasked) [1-Enabled, 0-Disabled]
                 ["BusStatus"] = new RoveCommPacketDesc
                 (
-                    4105,
+                    4101,
                     1,
                     RoveCommDataType.UINT8_T
                 )
@@ -344,17 +316,17 @@ public static class RoveCommManifest
                 ["PackOvercurrent"] = new RoveCommPacketDesc
                 (
                     4200,
-                    1,
+                    0,
                     RoveCommDataType.UINT8_T
                 ),
-                // (bitmasked) [1-Undervolt, 0-OK]. Rover will EStop automatically
+                // [C1, C2, C3, C4, C5, C6] (bitmasked undervolt). Rover will EStop automatically
                 ["CellUndervoltage"] = new RoveCommPacketDesc
                 (
                     4201,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // (bitmasked) [1-Critical, 0-OK]. Rover will Suicide automatically
+                // [C1, C2, C3, C4, C5, C6] (bitmasked critical). Rover will Suicide automatically
                 ["CellCritical"] = new RoveCommPacketDesc
                 (
                     4202,
@@ -365,7 +337,7 @@ public static class RoveCommManifest
                 ["AuxOvercurrent"] = new RoveCommPacketDesc
                 (
                     4203,
-                    1,
+                    0,
                     RoveCommDataType.UINT8_T
                 )
             }
@@ -411,10 +383,6 @@ public static class RoveCommManifest
                     RoveCommDataType.UINT8_T
                 )
             }
-        ),
-        ["BaseStationNav"] = new RoveCommBoardDesc
-        (
-            ip: "192.168.100.112"
         ),
         ["SignalStack"] = new RoveCommBoardDesc
         (
@@ -476,173 +444,139 @@ public static class RoveCommManifest
             ip: "192.168.2.107",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [X, J2, J3, J4, P, R] Motor decipercent [-1000, 1000]
-                ["SetIndividualSpeeds"] = new RoveCommPacketDesc
+                // [X, J2, J3, J4, P, R] (-32768 - 32767) -> (-100% - 100%)
+                ["OpenLoop"] = new RoveCommPacketDesc
                 (
                     8000,
                     6,
                     RoveCommDataType.INT16_T
                 ),
-                // [JointID, Decipercent] Motor decipercent [-1000, 1000]
-                ["SetJointSpeed"] = new RoveCommPacketDesc
+                // [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg, deg)
+                ["TargetAngle"] = new RoveCommPacketDesc
                 (
                     8001,
-                    2,
-                    RoveCommDataType.INT16_T
+                    6,
+                    RoveCommDataType.FLOAT
                 ),
-                // [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
-                ["SetIndividualTargetAngles"] = new RoveCommPacketDesc
+                // [Gripper] (-32768 - 32767) -> (-100% - 100%)
+                ["GripperOpenLoop"] = new RoveCommPacketDesc
                 (
                     8002,
-                    6,
+                    1,
                     RoveCommDataType.FLOAT
                 ),
-                // [JointID, Position] (in for id 0, deg otherwise)
-                ["SetJointTargetAngle"] = new RoveCommPacketDesc
+                // [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
+                ["IKPosition"] = new RoveCommPacketDesc
                 (
                     8003,
-                    2,
+                    6,
                     RoveCommDataType.FLOAT
                 ),
-                // [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
-                ["IncrementIndividualTargetAngles"] = new RoveCommPacketDesc
+                // [Enabled]
+                ["Laser"] = new RoveCommPacketDesc
                 (
                     8004,
-                    6,
-                    RoveCommDataType.FLOAT
+                    1,
+                    RoveCommDataType.UINT8_T
                 ),
-                // [JointID, Angle] (in for id 0, deg otherwise)
-                ["IncrementJointTargetAngle"] = new RoveCommPacketDesc
+                // [Position] (-180 - 180)
+                ["LinearServo"] = new RoveCommPacketDesc
                 (
                     8005,
-                    2,
-                    RoveCommDataType.FLOAT
+                    1,
+                    RoveCommDataType.UINT8_T
                 ),
-                // [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
-                ["SetIKPosition"] = new RoveCommPacketDesc
+                // [Position] (-180 - 180)
+                ["Cache"] = new RoveCommPacketDesc
                 (
                     8006,
-                    6,
-                    RoveCommDataType.FLOAT
+                    1,
+                    RoveCommDataType.UINT8_T
                 ),
-                // [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
-                ["IncrementIKPosition"] = new RoveCommPacketDesc
+                // [Enabled]
+                ["WatchdogOverride"] = new RoveCommPacketDesc
                 (
                     8007,
-                    6,
-                    RoveCommDataType.FLOAT
+                    1,
+                    RoveCommDataType.UINT8_T
                 ),
-                // [J4, P, R] (deg, deg, deg)
-                ["SetLockModePosition"] = new RoveCommPacketDesc
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
+                ["LimitSwitchOverride"] = new RoveCommPacketDesc
                 (
                     8008,
-                    3,
-                    RoveCommDataType.FLOAT
+                    1,
+                    RoveCommDataType.UINT16_T
                 ),
-                // [J4, P, R] (deg, deg, deg)
-                ["IncrementLockModePosition"] = new RoveCommPacketDesc
+                // [X, J2, J3, J4, P, R] (bitmasked override enabled)
+                ["ClosedLoopOverride"] = new RoveCommPacketDesc
                 (
                     8009,
-                    3,
-                    RoveCommDataType.FLOAT
+                    1,
+                    RoveCommDataType.UINT8_T
                 ),
-                // [0-disable, 1-enable]
-                ["Laser"] = new RoveCommPacketDesc
+                // [X, Roll] (bitmask start calibration)
+                ["CalibrateEncoder"] = new RoveCommPacketDesc
                 (
                     8010,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [0-retract, 1-extend]
-                ["Solenoid"] = new RoveCommPacketDesc
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
+                ["SoftLimitOverride"] = new RoveCommPacketDesc
                 (
                     8011,
                     1,
-                    RoveCommDataType.UINT8_T
+                    RoveCommDataType.UINT16_T
                 ),
-                // [Motor decipercent (-1000, 1000), Gripper number (0, 1)]
-                ["SetGripperSpeed"] = new RoveCommPacketDesc
+                // [Pan, Tilt] (-180deg - 180deg)
+                ["ArmGimbal1"] = new RoveCommPacketDesc
                 (
                     8012,
                     2,
                     RoveCommDataType.INT16_T
                 ),
-                // [0-override off, 1-override on] (bitmasked)
-                ["WatchdogOverride"] = new RoveCommPacketDesc
+                // [Pan, Tilt] (-180deg - 180deg)
+                ["ArmGimbal2"] = new RoveCommPacketDesc
                 (
                     8013,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
-                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P] (0-override off, 1-override on) (bitmasked)
-                ["LimitSwitchOverride"] = new RoveCommPacketDesc
-                (
-                    8014,
-                    1,
-                    RoveCommDataType.UINT16_T
-                ),
-                // [X, J2, J3, J4, P, R] (0-override off, 1-override on) (bitmasked)
-                ["ClosedLoopOverride"] = new RoveCommPacketDesc
-                (
-                    8015,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
-                // [X, Roll] (1-calibrate, 0-no action) (bitmasked)
-                ["CalibrateEncoder"] = new RoveCommPacketDesc
-                (
-                    8016,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
-                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (0-override off, 1-override on) (bitmasked)
-                ["SoftLimitOverride"] = new RoveCommPacketDesc
-                (
-                    8017,
-                    1,
-                    RoveCommDataType.UINT16_T
-                ),
-                // Shut off all motors (set decipercents to 0 and disable closed loop)
-                ["EStop"] = new RoveCommPacketDesc
-                (
-                    8018,
-                    1,
-                    RoveCommDataType.UINT8_T
+                    2,
+                    RoveCommDataType.INT16_T
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [X, J2, J3, J4, P, R, AP] (in, deg, deg, deg, deg, deg, deg, deg)
-                ["Positions"] = new RoveCommPacketDesc
+                // [X, J2, J3, J4, P, R, Y, Z] (in, deg, deg, deg, deg, deg, deg, deg, in, in)
+                ["Position"] = new RoveCommPacketDesc
                 (
                     8100,
-                    7,
+                    8,
                     RoveCommDataType.FLOAT
                 ),
-                // [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
-                ["Coordinates"] = new RoveCommPacketDesc
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask depressed)
+                ["LimitSwitch"] = new RoveCommPacketDesc
                 (
                     8101,
-                    6,
-                    RoveCommDataType.FLOAT
+                    1,
+                    RoveCommDataType.UINT16_T
                 ),
-                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P] (0-off, 1-on) (bitmasked)
-                ["LimitSwitchTriggered"] = new RoveCommPacketDesc
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask triggered)
+                ["SoftLimit"] = new RoveCommPacketDesc
                 (
                     8102,
                     1,
+                    RoveCommDataType.UINT16_T
+                ),
+                // [X, J2, J3, J4, P, R] (Ping Time ms)
+                ["SMOCOPing"] = new RoveCommPacketDesc
+                (
+                    8103,
+                    6,
                     RoveCommDataType.UINT16_T
                 )
             },
             error: new Dictionary<string, RoveCommPacketDesc>
             {
-                // (1-Watchdog timeout, 0-OK)
-                ["WatchdogStatus"] = new RoveCommPacketDesc
-                (
-                    8200,
-                    1,
-                    RoveCommDataType.UINT8_T
-                )
+
             }
         ),
         ["Auger"] = new RoveCommBoardDesc
@@ -700,7 +634,7 @@ public static class RoveCommManifest
                     RoveCommDataType.INT16_T
                 ),
                 // [Pan, Tilt] (-180deg - 180deg)
-                ["AugerGimbalIncrement"] = new RoveCommPacketDesc
+                ["AugerGimbal"] = new RoveCommPacketDesc
                 (
                     9007,
                     2,
@@ -1149,22 +1083,6 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 )
-            }
-        ),
-        ["IRSpectrometer"] = new RoveCommBoardDesc
-        (
-            ip: "192.168.3.104",
-            commands: new Dictionary<string, RoveCommPacketDesc>
-            {
-
-            },
-            telemetry: new Dictionary<string, RoveCommPacketDesc>
-            {
-
-            },
-            error: new Dictionary<string, RoveCommPacketDesc>
-            {
-
             }
         ),
         ["Raman"] = new RoveCommBoardDesc
