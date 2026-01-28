@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
@@ -31,15 +32,15 @@ public class RoveCommTCP
         public void Invoke(RoveCommPacket<T> packet) => Notifier?.Invoke(packet);
     }
 
-    private readonly Dictionary<int, RoveCommEmitter<sbyte>> _callbacksInt8 = [];
-    private readonly Dictionary<int, RoveCommEmitter<byte>> _callbacksUInt8 = [];
-    private readonly Dictionary<int, RoveCommEmitter<short>> _callbacksInt16 = [];
-    private readonly Dictionary<int, RoveCommEmitter<ushort>> _callbacksUInt16 = [];
-    private readonly Dictionary<int, RoveCommEmitter<int>> _callbacksInt32 = [];
-    private readonly Dictionary<int, RoveCommEmitter<uint>> _callbacksUInt32 = [];
-    private readonly Dictionary<int, RoveCommEmitter<float>> _callbacksFloat = [];
-    private readonly Dictionary<int, RoveCommEmitter<double>> _callbacksDouble = [];
-    private readonly Dictionary<int, RoveCommEmitter<char>> _callbacksChar = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<sbyte>> _callbacksInt8 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<byte>> _callbacksUInt8 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<short>> _callbacksInt16 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<ushort>> _callbacksUInt16 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<int>> _callbacksInt32 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<uint>> _callbacksUInt32 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<float>> _callbacksFloat = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<double>> _callbacksDouble = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<char>> _callbacksChar = [];
 
     public RoveCommTCP(int port, ILogger? logger = null)
     {
@@ -209,7 +210,8 @@ public class RoveCommTCP
                 connection.Dispose();
                 _outgoing[i] = null;
             }
-        };
+        }
+        ;
     }
 
     // Create a new TcpClient at the first available spot in the list.
@@ -257,7 +259,7 @@ public class RoveCommTCP
         // If no existing connection was found, open a new one.
         if (client is null)
         {
-            LoggerCore.LoggerService.Log($"Attempting to establish a connection with {dest}.", source:"RoveComm:TCP", channel:$"{dest}");
+            LoggerCore.LoggerService.Log($"Attempting to establish a connection with {dest}.", source: "RoveComm:TCP", channel: $"{dest}");
             try
             {
                 client = _addNewClient();
@@ -287,7 +289,7 @@ public class RoveCommTCP
                 }
             }
 
-            LoggerCore.LoggerService.Log($"Established connection with {client.Client.RemoteEndPoint as IPEndPoint}.", source: "RoveComm:TCP", channel:$"{dest}");
+            LoggerCore.LoggerService.Log($"Established connection with {client.Client.RemoteEndPoint as IPEndPoint}.", source: "RoveComm:TCP", channel: $"{dest}");
         }
         // Write the packet to the client's NetworkStream.
         try
@@ -296,10 +298,10 @@ public class RoveCommTCP
         }
         catch (Exception e)
         {
-            LoggerCore.LoggerService.Log($"Failed to send TCP packet: {e.Message}", source: "RoveComm:TCP", channel:$"{dest}");
+            LoggerCore.LoggerService.Log($"Failed to send TCP packet: {e.Message}", source: "RoveComm:TCP", channel: $"{dest}");
             return false;
         }
-        LoggerCore.LoggerService.Log($"Sent RoveCommPacket", source:"RoveComm:TCP", channel:$"{dest}", data:$"{packet.DataType}, {packet.Data}");
+        LoggerCore.LoggerService.Log($"Sent RoveCommPacket", source: "RoveComm:TCP", channel: $"{dest}", data: $"{packet.DataType}, {packet.Data}");
         return true;
     }
     public bool Send<T>(RoveCommPacket<T> packet, string ip) => Send(packet, ip, Port);
@@ -327,14 +329,14 @@ public class RoveCommTCP
         // If no existing connection was found, open a new one.
         if (client is null)
         {
-            LoggerCore.LoggerService.Log($"Attempting to establish a connection with {dest}.", source: "RoveComm:TCP", channel:$"{dest}");
+            LoggerCore.LoggerService.Log($"Attempting to establish a connection with {dest}.", source: "RoveComm:TCP", channel: $"{dest}");
 
             try
             {
                 client = _addNewClient();
                 if (client is null)
                 {
-                    LoggerCore.LoggerService.Log("Failed to connect to remote host: Too many TCP connections open.", source: "RoveComm:TCP", channel:$"{dest}");
+                    LoggerCore.LoggerService.Log("Failed to connect to remote host: Too many TCP connections open.", source: "RoveComm:TCP", channel: $"{dest}");
                     return false;
                 }
 
@@ -343,7 +345,7 @@ public class RoveCommTCP
             }
             catch (Exception e)
             {
-                LoggerCore.LoggerService.Log($"Failed to connect to remote host: {e.Message}", source: "RoveComm:TCP", channel:$"{dest}");
+                LoggerCore.LoggerService.Log($"Failed to connect to remote host: {e.Message}", source: "RoveComm:TCP", channel: $"{dest}");
                 return false;
             }
             finally
@@ -354,7 +356,7 @@ public class RoveCommTCP
                 }
             }
 
-            LoggerCore.LoggerService.Log($"Established connection with {client.Client.RemoteEndPoint as IPEndPoint}.", source: "RoveComm:TCP", channel:$"{dest}");
+            LoggerCore.LoggerService.Log($"Established connection with {client.Client.RemoteEndPoint as IPEndPoint}.", source: "RoveComm:TCP", channel: $"{dest}");
         }
         // Write the packet to the client's NetworkStream.
         try
@@ -363,7 +365,7 @@ public class RoveCommTCP
         }
         catch (Exception e)
         {
-            LoggerCore.LoggerService.Log($"Failed to send TCP packet: {e.Message}", source: "RoveComm:TCP", channel:$"{dest}");
+            LoggerCore.LoggerService.Log($"Failed to send TCP packet: {e.Message}", source: "RoveComm:TCP", channel: $"{dest}");
             return false;
         }
         LoggerCore.LoggerService.Log($"Sent RoveCommPacket", source: "RoveComm:TCP", channel: $"{dest}", data: $"{packet.DataType}, {packet.Data}");
@@ -467,17 +469,11 @@ public class RoveCommTCP
             default: throw new RoveCommException("Failed to process RoveCommPacket: invalid data type.");
         }
     }
-    private void _processPacket<T>(Dictionary<int, RoveCommEmitter<T>> callbacks, RoveCommPacket<T> packet)
+    private void _processPacket<T>(ConcurrentDictionary<int, RoveCommEmitter<T>> callbacks, RoveCommPacket<T> packet)
     {
-        if (callbacks.ContainsKey(packet.DataID))
-        {
-            callbacks[packet.DataID].Invoke(packet);
-        }
+        callbacks.GetValueOrDefault(packet.DataID)?.Invoke(packet);
         // Data ID 0 means subscribe to all packets.
-        if (callbacks.ContainsKey(0))
-        {
-            callbacks[0].Invoke(packet);
-        }
+        callbacks.GetValueOrDefault(0)?.Invoke(packet);
     }
 
     /// <summary>
@@ -502,14 +498,9 @@ public class RoveCommTCP
             default: throw new RoveCommException("Failed to add callback: invalid data type.");
         }
     }
-    private void _addCallback<T>(Dictionary<int, RoveCommEmitter<T>> callbacks, int dataId, RoveCommCallback<T> handler)
+    private void _addCallback<T>(ConcurrentDictionary<int, RoveCommEmitter<T>> callbacks, int dataId, RoveCommCallback<T> handler)
     {
-        if (!callbacks.ContainsKey(dataId))
-        {
-            callbacks.Add(dataId, new RoveCommEmitter<T>());
-        }
-
-        callbacks[dataId].Notifier += handler;
+        callbacks.GetOrAdd(dataId, _ => new()).Notifier += handler;
     }
 
     /// <summary>
@@ -533,7 +524,7 @@ public class RoveCommTCP
             default: throw new RoveCommException("Failed to add callback: invalid data type.");
         }
     }
-    private void _clearCallback<T>(Dictionary<int, RoveCommEmitter<T>> callbacks, RoveCommCallback<T> handler)
+    private void _clearCallback<T>(ConcurrentDictionary<int, RoveCommEmitter<T>> callbacks, RoveCommCallback<T> handler)
     {
         foreach (var emitter in callbacks.Values)
         {
@@ -563,7 +554,7 @@ public class RoveCommTCP
             default: throw new RoveCommException("Failed to add callback: invalid data type.");
         }
     }
-    private void _clearCallback<T>(Dictionary<int, RoveCommEmitter<T>> callbacks, int dataId, RoveCommCallback<T> handler)
+    private void _clearCallback<T>(ConcurrentDictionary<int, RoveCommEmitter<T>> callbacks, int dataId, RoveCommCallback<T> handler)
     {
         if (!callbacks.ContainsKey(dataId))
         {

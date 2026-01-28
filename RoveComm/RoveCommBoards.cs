@@ -29,7 +29,6 @@ namespace RoveComm
             CameraServer = new(service);
             Raman = new(service);
             RoveSoSimulator = new(service);
-            Arm = new(service);
         }
     }
 }
@@ -39,22 +38,31 @@ namespace RoveComm.Boards
     public class Core
     {
         private RoveCommService _service;
-private static string _ip = "192.168.2.110";
+        private static string _ip = "192.168.2.110";
 
-        internal Core(RoveCommService service) => _service = service;
+        internal Core(RoveCommService service)
+        {
+            _service = service;
 
+            _service.UDP._telemetryFloat[3100] = new float[6];
+            _service.UDP._telemetryFloat[3101] = new float[6];
+            _service.UDP._telemetryFloat[3102] = new float[6];
+            _service.UDP._telemetryFloat[3103] = new float[2];
+            _service.UDP._telemetryFloat[3104] = new float[3];
+            _service.UDP._telemetryUInt8[3200] = new byte[2];
+        }
         /// <summary>
-        /// [LeftSpeed, RightSpeed] (-1 - 1)-> (-100% - 100%)
+        /// [LeftSpeed, RightSpeed] (-1 - 1) -> (-100% - 100%)
         /// </summary>
         /// <param name="LeftSpeed"></param>
         /// <param name="RightSpeed"></param>
         public void DriveLeftRight(float LeftSpeed, float RightSpeed)
         {
-            _service.Send(3000, [LeftSpeed, RightSpeed], _ip);
+            _service.SendBG(3000, [LeftSpeed, RightSpeed], _ip);
         }
 
         /// <summary>
-        /// [LF, LM, LR, RF, RM, RR] (-1 - 1)-> (-100% - 100%)
+        /// [LF, LM, LR, RF, RM, RR] (-1 - 1) -> (-100% - 100%)
         /// </summary>
         /// <param name="LF"></param>
         /// <param name="LM"></param>
@@ -64,16 +72,16 @@ private static string _ip = "192.168.2.110";
         /// <param name="RR"></param>
         public void DriveIndividual(float LF, float LM, float LR, float RF, float RM, float RR)
         {
-            _service.Send(3001, [LF, LM, LR, RF, RM, RR], _ip);
+            _service.SendBG(3001, [LF, LM, LR, RF, RM, RR], _ip);
         }
 
         /// <summary>
-        /// [0-override off, 1-override on]
+        /// [Enabled]
         /// </summary>
-        /// <param name="arg1"></param>
-        public void WatchdogOverride(byte arg1)
+        /// <param name="Enabled"></param>
+        public void WatchdogOverride(byte Enabled)
         {
-            _service.Send(3002, [arg1], _ip);
+            _service.SendBG(3002, [Enabled], _ip);
         }
 
         /// <summary>
@@ -83,7 +91,7 @@ private static string _ip = "192.168.2.110";
         /// <param name="Tilt"></param>
         public void LeftGimbal(short Pan, short Tilt)
         {
-            _service.Send(3003, [Pan, Tilt], _ip);
+            _service.SendBG(3003, [Pan, Tilt], _ip);
         }
 
         /// <summary>
@@ -93,7 +101,7 @@ private static string _ip = "192.168.2.110";
         /// <param name="Tilt"></param>
         public void RightGimbal(short Pan, short Tilt)
         {
-            _service.Send(3004, [Pan, Tilt], _ip);
+            _service.SendBG(3004, [Pan, Tilt], _ip);
         }
 
         /// <summary>
@@ -103,47 +111,47 @@ private static string _ip = "192.168.2.110";
         /// <param name="Tilt"></param>
         public void BackGimbal(short Pan, short Tilt)
         {
-            _service.Send(3005, [Pan, Tilt], _ip);
+            _service.SendBG(3005, [Pan, Tilt], _ip);
         }
 
         /// <summary>
-        /// [R, G, B] (Brightness 0 - 255)
+        /// [R, G, B] (brightness 0 - 255)
         /// </summary>
         /// <param name="R"></param>
         /// <param name="G"></param>
         /// <param name="B"></param>
         public void LEDRGB(byte R, byte G, byte B)
         {
-            _service.Send(3006, [R, G, B], _ip);
+            _service.SendBG(3006, [R, G, B], _ip);
         }
 
         /// <summary>
         /// [Color] (RGBA)
         /// </summary>
-        /// <param name="args"></param>
-        public void BackImage(uint[] args)
+        /// <param name="Data"></param>
+        public void BackImage(uint[] Data)
         {
-            _service.Send(3007, [args], _ip);
+            _service.SendBG(3007, [Data], _ip);
         }
 
         /// <summary>
-        /// [R, G, B] (Brightness 0 - 255)
+        /// [R, G, B] (brightness 0 - 255)
         /// </summary>
         /// <param name="R"></param>
         /// <param name="G"></param>
         /// <param name="B"></param>
         public void InternalRGB(byte R, byte G, byte B)
         {
-            _service.Send(3008, [R, G, B], _ip);
+            _service.SendBG(3008, [R, G, B], _ip);
         }
 
         /// <summary>
         /// [Color] (RGBA)
         /// </summary>
-        /// <param name="args"></param>
-        public void InternalImage(uint[] args)
+        /// <param name="Data"></param>
+        public void InternalImage(uint[] Data)
         {
-            _service.Send(3009, [args], _ip);
+            _service.SendBG(3009, [Data], _ip);
         }
 
         /// <summary>
@@ -152,7 +160,7 @@ private static string _ip = "192.168.2.110";
         /// <param name="State"></param>
         public void StateDisplay(byte State)
         {
-            _service.Send(3010, [State], _ip);
+            _service.SendBG(3010, [State], _ip);
         }
 
         /// <summary>
@@ -161,52 +169,83 @@ private static string _ip = "192.168.2.110";
         /// <param name="Brightness"></param>
         public void Brightness(byte Brightness)
         {
-            _service.Send(3011, [Brightness], _ip);
+            _service.SendBG(3011, [Brightness], _ip);
         }
 
         /// <summary>
-        /// [Mode] (0: Teleop, 1: Autonomy)
+        /// [Mode] (0: Teleop 1: Autonomy)
         /// </summary>
         /// <param name="Mode"></param>
         public void SetWatchdogMode(byte Mode)
         {
-            _service.Send(3012, [Mode], _ip);
+            _service.SendBG(3012, [Mode], _ip);
         }
 
         /// <summary>
-        /// [Message] (Null terminated string)
+        /// [Message] (null terminated string)
         /// </summary>
-        /// <param name="args"></param>
-        public void LEDText(char[] args)
+        /// <param name="Data"></param>
+        public void LEDText(char[] Data)
         {
-            _service.Send(3013, [args], _ip);
+            _service.SendBG(3013, [Data], _ip);
         }
 
+        public float[] MotorSpeeds { get => _service.UDP._telemetryFloat[3100]; }
+        public float MotorSpeeds_FL { get => _service.UDP._telemetryFloat[3100][0]; }
+        public float MotorSpeeds_ML { get => _service.UDP._telemetryFloat[3100][1]; }
+        public float MotorSpeeds_BL { get => _service.UDP._telemetryFloat[3100][2]; }
+        public float MotorSpeeds_FR { get => _service.UDP._telemetryFloat[3100][3]; }
+        public float MotorSpeeds_MR { get => _service.UDP._telemetryFloat[3100][4]; }
+        public float MotorSpeeds_BR { get => _service.UDP._telemetryFloat[3100][5]; }
         /// <summary>
-        /// [FL, ML, BL, FR, MR, BR] (-1, 1)-> (-100%, 100%)
+        /// [FL, ML, BL, FR, MR, BR] (-1 - 1) -> (-100% - 100%)
         /// </summary>
         public void OnMotorSpeeds(RoveCommCallback<float> handler) { _service.On(3100, handler); }
 
+        public float[] MotorCurrents { get => _service.UDP._telemetryFloat[3101]; }
+        public float MotorCurrents_FL { get => _service.UDP._telemetryFloat[3101][0]; }
+        public float MotorCurrents_ML { get => _service.UDP._telemetryFloat[3101][1]; }
+        public float MotorCurrents_BL { get => _service.UDP._telemetryFloat[3101][2]; }
+        public float MotorCurrents_FR { get => _service.UDP._telemetryFloat[3101][3]; }
+        public float MotorCurrents_MR { get => _service.UDP._telemetryFloat[3101][4]; }
+        public float MotorCurrents_BR { get => _service.UDP._telemetryFloat[3101][5]; }
         /// <summary>
         /// [FL, ML, BL, FR, MR, BR] (A)
         /// </summary>
         public void OnMotorCurrents(RoveCommCallback<float> handler) { _service.On(3101, handler); }
 
+        public float[] VESCCurrents { get => _service.UDP._telemetryFloat[3102]; }
+        public float VESCCurrents_FL { get => _service.UDP._telemetryFloat[3102][0]; }
+        public float VESCCurrents_ML { get => _service.UDP._telemetryFloat[3102][1]; }
+        public float VESCCurrents_BL { get => _service.UDP._telemetryFloat[3102][2]; }
+        public float VESCCurrents_FR { get => _service.UDP._telemetryFloat[3102][3]; }
+        public float VESCCurrents_MR { get => _service.UDP._telemetryFloat[3102][4]; }
+        public float VESCCurrents_BR { get => _service.UDP._telemetryFloat[3102][5]; }
         /// <summary>
-        /// [FL, ML, BL, FR, MR, BR] (A Battery side)
+        /// [FL, ML, BL, FR, MR, BR] (A battery side)
         /// </summary>
         public void OnVESCCurrents(RoveCommCallback<float> handler) { _service.On(3102, handler); }
 
+        public float[] IMUData { get => _service.UDP._telemetryFloat[3103]; }
+        public float IMUData_Roll { get => _service.UDP._telemetryFloat[3103][0]; }
+        public float IMUData_Pitch { get => _service.UDP._telemetryFloat[3103][1]; }
         /// <summary>
         /// [Roll, Pitch] (deg)
         /// </summary>
         public void OnIMUData(RoveCommCallback<float> handler) { _service.On(3103, handler); }
 
+        public float[] AccelerometerData { get => _service.UDP._telemetryFloat[3104]; }
+        public float AccelerometerData_X { get => _service.UDP._telemetryFloat[3104][0]; }
+        public float AccelerometerData_Y { get => _service.UDP._telemetryFloat[3104][1]; }
+        public float AccelerometerData_Z { get => _service.UDP._telemetryFloat[3104][2]; }
         /// <summary>
         /// [X, Y, Z] (m/s2)
         /// </summary>
         public void OnAccelerometerData(RoveCommCallback<float> handler) { _service.On(3104, handler); }
 
+        public byte[] VESCFault { get => _service.UDP._telemetryUInt8[3200]; }
+        public byte VESCFault_MotorID { get => _service.UDP._telemetryUInt8[3200][0]; }
+        public byte VESCFault_FaultCode { get => _service.UDP._telemetryUInt8[3200][1]; }
         /// <summary>
         /// [MotorID, FaultCode]
         /// </summary>
@@ -263,17 +302,24 @@ private static string _ip = "192.168.2.110";
     public class PMS
     {
         private RoveCommService _service;
-private static string _ip = "192.168.2.102";
+        private static string _ip = "192.168.2.102";
 
-        internal PMS(RoveCommService service) => _service = service;
+        internal PMS(RoveCommService service)
+        {
+            _service = service;
 
+            _service.UDP._telemetryFloat[4100] = new float[12];
+            _service.UDP._telemetryUInt8[4101] = new byte[1];
+            _service.UDP._telemetryUInt8[4201] = new byte[1];
+            _service.UDP._telemetryUInt8[4202] = new byte[1];
+        }
         /// <summary>
         /// Power off all systems except network (PMS will stay on)
         /// </summary>
         
         public void EStop()
         {
-            _service.Send<byte>(4000, [], _ip);
+            _service.SendBG<byte>(4000, [], _ip);
         }
 
         /// <summary>
@@ -282,7 +328,7 @@ private static string _ip = "192.168.2.102";
         
         public void Suicide()
         {
-            _service.Send<byte>(4001, [], _ip);
+            _service.SendBG<byte>(4001, [], _ip);
         }
 
         /// <summary>
@@ -291,43 +337,57 @@ private static string _ip = "192.168.2.102";
         
         public void Reboot()
         {
-            _service.Send<byte>(4002, [], _ip);
+            _service.SendBG<byte>(4002, [], _ip);
         }
 
         /// <summary>
-        /// [Motor, Core, Aux] (bitmasked enable)
+        /// [Motor, Core, Aux] (bitmask enable)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void EnableBus(byte arg1)
+        /// <param name="Data0"></param>
+        public void EnableBus(byte Data0)
         {
-            _service.Send(4003, [arg1], _ip);
+            _service.SendBG(4003, [Data0], _ip);
         }
 
         /// <summary>
-        /// [Motor, Core, Aux] (bitmasked disable)
+        /// [Motor, Core, Aux] (bitmask disable)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void DisableBus(byte arg1)
+        /// <param name="Data0"></param>
+        public void DisableBus(byte Data0)
         {
-            _service.Send(4004, [arg1], _ip);
+            _service.SendBG(4004, [Data0], _ip);
         }
 
         /// <summary>
-        /// [Motor, Core, Aux] (bitmasked enabled)
+        /// [Motor, Core, Aux] (bitmask enabled)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void SetBus(byte arg1)
+        /// <param name="Data0"></param>
+        public void SetBus(byte Data0)
         {
-            _service.Send(4005, [arg1], _ip);
+            _service.SendBG(4005, [Data0], _ip);
         }
 
+        public float[] CurrentAndVoltage { get => _service.UDP._telemetryFloat[4100]; }
+        public float CurrentAndVoltage_PackCurrent { get => _service.UDP._telemetryFloat[4100][0]; }
+        public float CurrentAndVoltage_AuxCurrent { get => _service.UDP._telemetryFloat[4100][1]; }
+        public float CurrentAndVoltage_LowCurrent { get => _service.UDP._telemetryFloat[4100][2]; }
+        public float CurrentAndVoltage_NetworkCurrent { get => _service.UDP._telemetryFloat[4100][3]; }
+        public float CurrentAndVoltage_RadioM2Current { get => _service.UDP._telemetryFloat[4100][4]; }
+        public float CurrentAndVoltage_RadioM9Current { get => _service.UDP._telemetryFloat[4100][5]; }
+        public float CurrentAndVoltage_Cell1Voltage { get => _service.UDP._telemetryFloat[4100][6]; }
+        public float CurrentAndVoltage_Cell2Voltage { get => _service.UDP._telemetryFloat[4100][7]; }
+        public float CurrentAndVoltage_Cell3Voltage { get => _service.UDP._telemetryFloat[4100][8]; }
+        public float CurrentAndVoltage_Cell4Voltage { get => _service.UDP._telemetryFloat[4100][9]; }
+        public float CurrentAndVoltage_Cell5Voltage { get => _service.UDP._telemetryFloat[4100][10]; }
+        public float CurrentAndVoltage_Cell6Voltage { get => _service.UDP._telemetryFloat[4100][11]; }
         /// <summary>
         /// [PackCurrent, AuxCurrent, LowCurrent, NetworkCurrent, RadioM2Current, RadioM9Current, Cell1Voltage, Cell2Voltage, Cell3Voltage, Cell4Voltage, Cell5Voltage, Cell6Voltage] (A, A, A, A, A, A, V, V, V, V, V, V)
         /// </summary>
         public void OnCurrentAndVoltage(RoveCommCallback<float> handler) { _service.On(4100, handler); }
 
+        public byte BusStatus { get => _service.UDP._telemetryUInt8[4101][0]; }
         /// <summary>
-        /// [Motor, Core, Aux, RadioM2, RadioM9, Network] (bitmasked) [1-Enabled, 0-Disabled]
+        /// [Motor, Core, Aux, RadioM2, RadioM9, Network] (bitmask enabled)
         /// </summary>
         public void OnBusStatus(RoveCommCallback<byte> handler) { _service.On(4101, handler); }
 
@@ -336,13 +396,15 @@ private static string _ip = "192.168.2.102";
         /// </summary>
         public void OnPackOvercurrent(RoveCommCallback<byte> handler) { _service.On(4200, handler); }
 
+        public byte CellUndervoltage { get => _service.UDP._telemetryUInt8[4201][0]; }
         /// <summary>
-        /// [C1, C2, C3, C4, C5, C6] (bitmasked undervolt). Rover will EStop automatically
+        /// [C1, C2, C3, C4, C5, C6] (bitmask undervolt) Rover will EStop automatically
         /// </summary>
         public void OnCellUndervoltage(RoveCommCallback<byte> handler) { _service.On(4201, handler); }
 
+        public byte CellCritical { get => _service.UDP._telemetryUInt8[4202][0]; }
         /// <summary>
-        /// [C1, C2, C3, C4, C5, C6] (bitmasked critical). Rover will Suicide automatically
+        /// [C1, C2, C3, C4, C5, C6] (bitmask critical) Rover will Suicide automatically
         /// </summary>
         public void OnCellCritical(RoveCommCallback<byte> handler) { _service.On(4202, handler); }
 
@@ -356,20 +418,37 @@ private static string _ip = "192.168.2.102";
     {
         private RoveCommService _service;
 
-        internal Nav(RoveCommService service) => _service = service;
+        internal Nav(RoveCommService service)
+        {
+            _service = service;
 
+            _service.UDP._telemetryDouble[6100] = new double[8];
+            _service.UDP._telemetryFloat[6102] = new float[1];
+            _service.UDP._telemetryUInt8[6103] = new byte[1];
+        }
+        public double[] GPSLatLonAlt { get => _service.UDP._telemetryDouble[6100]; }
+        public double GPSLatLonAlt_Lat { get => _service.UDP._telemetryDouble[6100][0]; }
+        public double GPSLatLonAlt_Lon { get => _service.UDP._telemetryDouble[6100][1]; }
+        public double GPSLatLonAlt_Alt { get => _service.UDP._telemetryDouble[6100][2]; }
+        public double GPSLatLonAlt_HorizontalAccuracy { get => _service.UDP._telemetryDouble[6100][3]; }
+        public double GPSLatLonAlt_VerticalAccuracy { get => _service.UDP._telemetryDouble[6100][4]; }
+        public double GPSLatLonAlt_HeadingAccuracy { get => _service.UDP._telemetryDouble[6100][5]; }
+        public double GPSLatLonAlt_FixType { get => _service.UDP._telemetryDouble[6100][6]; }
+        public double GPSLatLonAlt_IsDifferential { get => _service.UDP._telemetryDouble[6100][7]; }
         /// <summary>
-        /// [Lat, Long, Alt, horizontal_accur, vertical_accur, heading_accur, fix_type, is_differential] [degrees, degrees, meters, meters, meters, degrees, ublox_navpvt fix type (http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html), boolean]]
+        /// [Lat, Lon, Alt, HorizontalAccuracy, VerticalAccuracy, HeadingAccuracy, FixType, IsDifferential] (degrees, degrees, meters, meters, meters, degrees, ublox_navpvt fix type http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html, boolean)
         /// </summary>
         public void OnGPSLatLonAlt(RoveCommCallback<double> handler) { _service.On(6100, handler); }
 
+        public float CompassData { get => _service.UDP._telemetryFloat[6102][0]; }
         /// <summary>
-        /// [Heading] [ 0, 360 ]
+        /// [Heading] (0 - 360)
         /// </summary>
         public void OnCompassData(RoveCommCallback<float> handler) { _service.On(6102, handler); }
 
+        public byte SatelliteCountData { get => _service.UDP._telemetryUInt8[6103][0]; }
         /// <summary>
-        /// [Number of satellites]
+        /// [Satellites]
         /// </summary>
         public void OnSatelliteCountData(RoveCommCallback<byte> handler) { _service.On(6103, handler); }
 
@@ -382,67 +461,74 @@ private static string _ip = "192.168.2.102";
     public class SignalStack
     {
         private RoveCommService _service;
-private static string _ip = "192.168.100.101";
+        private static string _ip = "192.168.100.101";
 
-        internal SignalStack(RoveCommService service) => _service = service;
-
-        /// <summary>
-        /// Motor decipercent [-1000, 1000]
-        /// </summary>
-        /// <param name="arg1"></param>
-        public void OpenLoop(short arg1)
+        internal SignalStack(RoveCommService service)
         {
-            _service.Send(7000, [arg1], _ip);
+            _service = service;
+
+            _service.UDP._telemetryFloat[7100] = new float[1];
+        }
+        /// <summary>
+        /// [Speed] (-1000 - 1000) -> (-100% - 100%)
+        /// </summary>
+        /// <param name="Speed"></param>
+        public void OpenLoop(short Speed)
+        {
+            _service.SendBG(7000, [Speed], _ip);
         }
 
         /// <summary>
-        /// [Heading] [0, 360)
+        /// [Heading] (0 - 360)
         /// </summary>
         /// <param name="Heading"></param>
         public void SetAngleTarget(float Heading)
         {
-            _service.Send(7001, [Heading], _ip);
+            _service.SendBG(7001, [Heading], _ip);
         }
 
         /// <summary>
-        /// [Rover Lat, Rover Long, Basestation Lat, Basestation Long] [Lat:(-90, 90), Long:(-180, 180)] (deg)
+        /// [Rover Lat, Rover Lon, Basestation Lat, Basestation Lon] (-90 - 90, -180 - 180, -90 - 90, -180 - 180)
         /// </summary>
         /// <param name="RoverLat"></param>
-        /// <param name="RoverLong"></param>
+        /// <param name="RoverLon"></param>
         /// <param name="BasestationLat"></param>
-        /// <param name="BasestationLong"></param>
-        public void SetGPSTarget(double RoverLat, double RoverLong, double BasestationLat, double BasestationLong)
+        /// <param name="BasestationLon"></param>
+        public void SetGPSTarget(double RoverLat, double RoverLon, double BasestationLat, double BasestationLon)
         {
-            _service.Send(7002, [RoverLat, RoverLong, BasestationLat, BasestationLong], _ip);
+            _service.SendBG(7002, [RoverLat, RoverLon, BasestationLat, BasestationLon], _ip);
         }
 
         /// <summary>
-        /// [0-override off, 1-override on]
+        /// [Enabled]
         /// </summary>
-        /// <param name="arg1"></param>
-        public void WatchdogOverride(byte arg1)
+        /// <param name="Enabled"></param>
+        public void WatchdogOverride(byte Enabled)
         {
-            _service.Send(7003, [arg1], _ip);
+            _service.SendBG(7003, [Enabled], _ip);
         }
 
+        public float CompassAngle { get => _service.UDP._telemetryFloat[7100][0]; }
         /// <summary>
-        /// [Heading] [0, 360)
+        /// [Heading] (0 - 360)
         /// </summary>
         public void OnCompassAngle(RoveCommCallback<float> handler) { _service.On(7100, handler); }
-
-        /// <summary>
-        /// (1-Watchdog timeout, 0-OK)
-        /// </summary>
-        public void OnWatchdogStatus(RoveCommCallback<byte> handler) { _service.On(7200, handler); }
     }
 
     public class Arm
     {
         private RoveCommService _service;
-private static string _ip = "192.168.2.107";
+        private static string _ip = "192.168.2.107";
 
-        internal Arm(RoveCommService service) => _service = service;
+        internal Arm(RoveCommService service)
+        {
+            _service = service;
 
+            _service.UDP._telemetryFloat[8100] = new float[8];
+            _service.UDP._telemetryUInt16[8101] = new ushort[1];
+            _service.UDP._telemetryUInt16[8102] = new ushort[1];
+            _service.UDP._telemetryUInt16[8103] = new ushort[6];
+        }
         /// <summary>
         /// [X, J2, J3, J4, P, R] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
@@ -454,11 +540,11 @@ private static string _ip = "192.168.2.107";
         /// <param name="R"></param>
         public void OpenLoop(short X, short J2, short J3, short J4, short P, short R)
         {
-            _service.Send(8000, [X, J2, J3, J4, P, R], _ip);
+            _service.SendBG(8000, [X, J2, J3, J4, P, R], _ip);
         }
 
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg, deg)
+        /// [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
         /// </summary>
         /// <param name="X"></param>
         /// <param name="J2"></param>
@@ -468,7 +554,7 @@ private static string _ip = "192.168.2.107";
         /// <param name="R"></param>
         public void TargetAngle(float X, float J2, float J3, float J4, float P, float R)
         {
-            _service.Send(8001, [X, J2, J3, J4, P, R], _ip);
+            _service.SendBG(8001, [X, J2, J3, J4, P, R], _ip);
         }
 
         /// <summary>
@@ -477,7 +563,7 @@ private static string _ip = "192.168.2.107";
         /// <param name="Gripper"></param>
         public void GripperOpenLoop(float Gripper)
         {
-            _service.Send(8002, [Gripper], _ip);
+            _service.SendBG(8002, [Gripper], _ip);
         }
 
         /// <summary>
@@ -491,7 +577,7 @@ private static string _ip = "192.168.2.107";
         /// <param name="R"></param>
         public void IKPosition(float X, float Y, float Z, float J4, float P, float R)
         {
-            _service.Send(8003, [X, Y, Z, J4, P, R], _ip);
+            _service.SendBG(8003, [X, Y, Z, J4, P, R], _ip);
         }
 
         /// <summary>
@@ -500,7 +586,7 @@ private static string _ip = "192.168.2.107";
         /// <param name="Enabled"></param>
         public void Laser(byte Enabled)
         {
-            _service.Send(8004, [Enabled], _ip);
+            _service.SendBG(8004, [Enabled], _ip);
         }
 
         /// <summary>
@@ -509,7 +595,7 @@ private static string _ip = "192.168.2.107";
         /// <param name="Position"></param>
         public void LinearServo(byte Position)
         {
-            _service.Send(8005, [Position], _ip);
+            _service.SendBG(8005, [Position], _ip);
         }
 
         /// <summary>
@@ -518,7 +604,7 @@ private static string _ip = "192.168.2.107";
         /// <param name="Position"></param>
         public void Cache(byte Position)
         {
-            _service.Send(8006, [Position], _ip);
+            _service.SendBG(8006, [Position], _ip);
         }
 
         /// <summary>
@@ -527,43 +613,43 @@ private static string _ip = "192.168.2.107";
         /// <param name="Enabled"></param>
         public void WatchdogOverride(byte Enabled)
         {
-            _service.Send(8007, [Enabled], _ip);
+            _service.SendBG(8007, [Enabled], _ip);
         }
 
         /// <summary>
         /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void LimitSwitchOverride(ushort arg1)
+        /// <param name="Data0"></param>
+        public void LimitSwitchOverride(ushort Data0)
         {
-            _service.Send(8008, [arg1], _ip);
+            _service.SendBG(8008, [Data0], _ip);
         }
 
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (bitmasked override enabled)
+        /// [X, J2, J3, J4, P, R] (bitmask override enabled)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void ClosedLoopOverride(byte arg1)
+        /// <param name="Data0"></param>
+        public void ClosedLoopOverride(byte Data0)
         {
-            _service.Send(8009, [arg1], _ip);
+            _service.SendBG(8009, [Data0], _ip);
         }
 
         /// <summary>
         /// [X, Roll] (bitmask start calibration)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void CalibrateEncoder(byte arg1)
+        /// <param name="Data0"></param>
+        public void CalibrateEncoder(byte Data0)
         {
-            _service.Send(8010, [arg1], _ip);
+            _service.SendBG(8010, [Data0], _ip);
         }
 
         /// <summary>
         /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void SoftLimitOverride(ushort arg1)
+        /// <param name="Data0"></param>
+        public void SoftLimitOverride(ushort Data0)
         {
-            _service.Send(8011, [arg1], _ip);
+            _service.SendBG(8011, [Data0], _ip);
         }
 
         /// <summary>
@@ -573,7 +659,7 @@ private static string _ip = "192.168.2.107";
         /// <param name="Tilt"></param>
         public void ArmGimbal1(short Pan, short Tilt)
         {
-            _service.Send(8012, [Pan, Tilt], _ip);
+            _service.SendBG(8012, [Pan, Tilt], _ip);
         }
 
         /// <summary>
@@ -583,26 +669,44 @@ private static string _ip = "192.168.2.107";
         /// <param name="Tilt"></param>
         public void ArmGimbal2(short Pan, short Tilt)
         {
-            _service.Send(8013, [Pan, Tilt], _ip);
+            _service.SendBG(8013, [Pan, Tilt], _ip);
         }
 
+        public float[] Position { get => _service.UDP._telemetryFloat[8100]; }
+        public float Position_X { get => _service.UDP._telemetryFloat[8100][0]; }
+        public float Position_J2 { get => _service.UDP._telemetryFloat[8100][1]; }
+        public float Position_J3 { get => _service.UDP._telemetryFloat[8100][2]; }
+        public float Position_J4 { get => _service.UDP._telemetryFloat[8100][3]; }
+        public float Position_P { get => _service.UDP._telemetryFloat[8100][4]; }
+        public float Position_R { get => _service.UDP._telemetryFloat[8100][5]; }
+        public float Position_Y { get => _service.UDP._telemetryFloat[8100][6]; }
+        public float Position_Z { get => _service.UDP._telemetryFloat[8100][7]; }
         /// <summary>
-        /// [X, J2, J3, J4, P, R, Y, Z] (in, deg, deg, deg, deg, deg, deg, deg, in, in)
+        /// [X, J2, J3, J4, P, R, Y, Z] (in, deg, deg, deg, deg, deg, in, in)
         /// </summary>
         public void OnPosition(RoveCommCallback<float> handler) { _service.On(8100, handler); }
 
+        public ushort LimitSwitch { get => _service.UDP._telemetryUInt16[8101][0]; }
         /// <summary>
         /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask depressed)
         /// </summary>
         public void OnLimitSwitch(RoveCommCallback<ushort> handler) { _service.On(8101, handler); }
 
+        public ushort SoftLimit { get => _service.UDP._telemetryUInt16[8102][0]; }
         /// <summary>
         /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask triggered)
         /// </summary>
         public void OnSoftLimit(RoveCommCallback<ushort> handler) { _service.On(8102, handler); }
 
+        public ushort[] SMOCOPing { get => _service.UDP._telemetryUInt16[8103]; }
+        public ushort SMOCOPing_X { get => _service.UDP._telemetryUInt16[8103][0]; }
+        public ushort SMOCOPing_J2 { get => _service.UDP._telemetryUInt16[8103][1]; }
+        public ushort SMOCOPing_J3 { get => _service.UDP._telemetryUInt16[8103][2]; }
+        public ushort SMOCOPing_J4 { get => _service.UDP._telemetryUInt16[8103][3]; }
+        public ushort SMOCOPing_P { get => _service.UDP._telemetryUInt16[8103][4]; }
+        public ushort SMOCOPing_R { get => _service.UDP._telemetryUInt16[8103][5]; }
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (Ping Time ms)
+        /// [X, J2, J3, J4, P, R] (ping time ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(8103, handler); }
     }
@@ -610,26 +714,35 @@ private static string _ip = "192.168.2.107";
     public class Auger
     {
         private RoveCommService _service;
-private static string _ip = "192.168.2.108";
+        private static string _ip = "192.168.2.108";
 
-        internal Auger(RoveCommService service) => _service = service;
+        internal Auger(RoveCommService service)
+        {
+            _service = service;
 
+            _service.UDP._telemetryFloat[9100] = new float[1];
+            _service.UDP._telemetryFloat[9101] = new float[1];
+            _service.UDP._telemetryUInt8[9102] = new byte[1];
+            _service.UDP._telemetryFloat[9103] = new float[2];
+            _service.UDP._telemetryFloat[9104] = new float[1];
+            _service.UDP._telemetryUInt16[9105] = new ushort[1];
+        }
         /// <summary>
         /// [Speed] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
         /// <param name="Speed"></param>
         public void AugerAxis(short Speed)
         {
-            _service.Send(9000, [Speed], _ip);
+            _service.SendBG(9000, [Speed], _ip);
         }
 
         /// <summary>
         /// [AugerAxis+, AugerAxis-] (bitmask override enabled)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void LimitSwitchOverride(byte arg1)
+        /// <param name="Data0"></param>
+        public void LimitSwitchOverride(byte Data0)
         {
-            _service.Send(9001, [arg1], _ip);
+            _service.SendBG(9001, [Data0], _ip);
         }
 
         /// <summary>
@@ -638,7 +751,7 @@ private static string _ip = "192.168.2.108";
         
         public void CalibrateEncoder()
         {
-            _service.Send<byte>(9002, [], _ip);
+            _service.SendBG<byte>(9002, [], _ip);
         }
 
         /// <summary>
@@ -647,7 +760,7 @@ private static string _ip = "192.168.2.108";
         /// <param name="Speed"></param>
         public void RunAuger(short Speed)
         {
-            _service.Send(9003, [Speed], _ip);
+            _service.SendBG(9003, [Speed], _ip);
         }
 
         /// <summary>
@@ -656,11 +769,11 @@ private static string _ip = "192.168.2.108";
         /// <param name="Enabled"></param>
         public void WatchdogOverride(byte Enabled)
         {
-            _service.Send(9004, [Enabled], _ip);
+            _service.SendBG(9004, [Enabled], _ip);
         }
 
         /// <summary>
-        /// [White, 365, 405, 500] (0 - 255) -> (Off - Full Brightness)
+        /// [White, 365, 405, 500] (brightness 0 - 255)
         /// </summary>
         /// <param name="White"></param>
         /// <param name="_365"></param>
@@ -668,7 +781,7 @@ private static string _ip = "192.168.2.108";
         /// <param name="_500"></param>
         public void LED(byte White, byte _365, byte _405, byte _500)
         {
-            _service.Send(9005, [White, _365, _405, _500], _ip);
+            _service.SendBG(9005, [White, _365, _405, _500], _ip);
         }
 
         /// <summary>
@@ -678,7 +791,7 @@ private static string _ip = "192.168.2.108";
         /// <param name="SoilTrapdoor"></param>
         public void AugerServo(short AFFilters, short SoilTrapdoor)
         {
-            _service.Send(9006, [AFFilters, SoilTrapdoor], _ip);
+            _service.SendBG(9006, [AFFilters, SoilTrapdoor], _ip);
         }
 
         /// <summary>
@@ -688,36 +801,44 @@ private static string _ip = "192.168.2.108";
         /// <param name="Tilt"></param>
         public void AugerGimbal(short Pan, short Tilt)
         {
-            _service.Send(9007, [Pan, Tilt], _ip);
+            _service.SendBG(9007, [Pan, Tilt], _ip);
         }
 
+        public float Position { get => _service.UDP._telemetryFloat[9100][0]; }
         /// <summary>
         /// [AugerAxis] (in)
         /// </summary>
         public void OnPosition(RoveCommCallback<float> handler) { _service.On(9100, handler); }
 
+        public float AugerSpeed { get => _service.UDP._telemetryFloat[9101][0]; }
         /// <summary>
         /// [AugerSpeed] (rpm)
         /// </summary>
         public void OnAugerSpeed(RoveCommCallback<float> handler) { _service.On(9101, handler); }
 
+        public byte LimitSwitch { get => _service.UDP._telemetryUInt8[9102][0]; }
         /// <summary>
         /// [AugerAxis+, AugerAxis-] (bitmask depressed)
         /// </summary>
         public void OnLimitSwitch(RoveCommCallback<byte> handler) { _service.On(9102, handler); }
 
+        public float[] Environmental { get => _service.UDP._telemetryFloat[9103]; }
+        public float Environmental_Temperature { get => _service.UDP._telemetryFloat[9103][0]; }
+        public float Environmental_Humidity { get => _service.UDP._telemetryFloat[9103][1]; }
         /// <summary>
-        /// [Temperature, Humidity, N, P, K, pH] (degrees C, relative humidity %, ?, ?, ?, ?)
+        /// [Temperature, Humidity] (degrees C, relative humidity %)
         /// </summary>
         public void OnEnvironmental(RoveCommCallback<float> handler) { _service.On(9103, handler); }
 
+        public float AugerCurrent { get => _service.UDP._telemetryFloat[9104][0]; }
         /// <summary>
         /// [AugerCurrent] (A)
         /// </summary>
         public void OnAugerCurrent(RoveCommCallback<float> handler) { _service.On(9104, handler); }
 
+        public ushort SMOCOPing { get => _service.UDP._telemetryUInt16[9105][0]; }
         /// <summary>
-        /// [AugerAxis Ping Time] (ms)
+        /// [AugerAxis] (ping time ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(9105, handler); }
     }
@@ -725,26 +846,32 @@ private static string _ip = "192.168.2.108";
     public class Autonomy
     {
         private RoveCommService _service;
-private static string _ip = "192.168.3.100";
+        private static string _ip = "192.168.3.100";
 
-        internal Autonomy(RoveCommService service) => _service = service;
+        internal Autonomy(RoveCommService service)
+        {
+            _service = service;
 
+            _service.UDP._telemetryUInt8[11100] = new byte[1];
+            _service.UDP._telemetryUInt8[11101] = new byte[1];
+            _service.UDP._telemetryUInt32[11103] = new uint[2];
+        }
         /// <summary>
         /// Start Autonomy_Software
         /// </summary>
-        /// <param name="arg1"></param>
-        public void StartAutonomy(byte arg1)
+        /// <param name="Data0"></param>
+        public void StartAutonomy(byte Data0)
         {
-            _service.Send(11000, [arg1], _ip);
+            _service.SendBG(11000, [Data0], _ip);
         }
 
         /// <summary>
         /// Return Autonomy_Software to Idle state
         /// </summary>
-        /// <param name="arg1"></param>
-        public void DisableAutonomy(byte arg1)
+        /// <param name="Data0"></param>
+        public void DisableAutonomy(byte Data0)
         {
-            _service.Send(11001, [arg1], _ip);
+            _service.SendBG(11001, [Data0], _ip);
         }
 
         /// <summary>
@@ -755,7 +882,7 @@ private static string _ip = "192.168.3.100";
         /// <param name="AUTONOMYWAYPOINTTYPES"></param>
         public void AddPositionLeg(double Lat, double Lon, double AUTONOMYWAYPOINTTYPES)
         {
-            _service.Send(11002, [Lat, Lon, AUTONOMYWAYPOINTTYPES], _ip);
+            _service.SendBG(11002, [Lat, Lon, AUTONOMYWAYPOINTTYPES], _ip);
         }
 
         /// <summary>
@@ -767,7 +894,7 @@ private static string _ip = "192.168.3.100";
         /// <param name="MarkerRadius"></param>
         public void AddMarkerLeg(double Lat, double Lon, double AUTONOMYWAYPOINTTYPES, double MarkerRadius)
         {
-            _service.Send(11003, [Lat, Lon, AUTONOMYWAYPOINTTYPES, MarkerRadius], _ip);
+            _service.SendBG(11003, [Lat, Lon, AUTONOMYWAYPOINTTYPES, MarkerRadius], _ip);
         }
 
         /// <summary>
@@ -779,43 +906,43 @@ private static string _ip = "192.168.3.100";
         /// <param name="ObjectRadius"></param>
         public void AddObjectLeg(double Lat, double Lon, double AUTONOMYWAYPOINTTYPES, double ObjectRadius)
         {
-            _service.Send(11004, [Lat, Lon, AUTONOMYWAYPOINTTYPES, ObjectRadius], _ip);
+            _service.SendBG(11004, [Lat, Lon, AUTONOMYWAYPOINTTYPES, ObjectRadius], _ip);
         }
 
         /// <summary>
         /// Clear queued positions, markers, and objects waypoints.
         /// </summary>
-        /// <param name="arg1"></param>
-        public void ClearWaypoints(byte arg1)
+        /// <param name="Data0"></param>
+        public void ClearWaypoints(byte Data0)
         {
-            _service.Send(11005, [arg1], _ip);
+            _service.SendBG(11005, [Data0], _ip);
         }
 
         /// <summary>
         /// A multiplier from 0.0 to 1.0 that will scale the max power effort of Autonomy.
         /// </summary>
-        /// <param name="arg1"></param>
-        public void SetMaxSpeed(float arg1)
+        /// <param name="Data0"></param>
+        public void SetMaxSpeed(float Data0)
         {
-            _service.Send(11006, [arg1], _ip);
+            _service.SendBG(11006, [Data0], _ip);
         }
 
         /// <summary>
         /// A multiplier from 0.0 to 1.0 that will filter points from the traversability map. Higher values will result in more conservative pathing.
         /// </summary>
-        /// <param name="arg1"></param>
-        public void SetMinTravScore(float arg1)
+        /// <param name="Data0"></param>
+        public void SetMinTravScore(float Data0)
         {
-            _service.Send(11007, [arg1], _ip);
+            _service.SendBG(11007, [Data0], _ip);
         }
 
         /// <summary>
         /// A multiplier from 0.0 to 1.0 that will bias the pathing algorithm towards shorter paths (lower values) or safer paths (higher values).
         /// </summary>
-        /// <param name="arg1"></param>
-        public void SetBetaBias(float arg1)
+        /// <param name="Data0"></param>
+        public void SetBetaBias(float Data0)
         {
-            _service.Send(11008, [arg1], _ip);
+            _service.SendBG(11008, [Data0], _ip);
         }
 
         /// <summary>
@@ -826,7 +953,7 @@ private static string _ip = "192.168.3.100";
         /// <param name="Enum2"></param>
         public void SetLoggingLevels(byte Enum0, byte Enum1, byte Enum2)
         {
-            _service.Send(11009, [Enum0, Enum1, Enum2], _ip);
+            _service.SendBG(11009, [Enum0, Enum1, Enum2], _ip);
         }
 
         /// <summary>
@@ -837,35 +964,35 @@ private static string _ip = "192.168.3.100";
         /// <param name="ObstacleRadius"></param>
         public void AddObstacle(double Lat, double Lon, double ObstacleRadius)
         {
-            _service.Send(11010, [Lat, Lon, ObstacleRadius], _ip);
+            _service.SendBG(11010, [Lat, Lon, ObstacleRadius], _ip);
         }
 
         /// <summary>
         /// Clear queued permanent obstacles.
         /// </summary>
-        /// <param name="arg1"></param>
-        public void ClearObstacles(byte arg1)
+        /// <param name="Data0"></param>
+        public void ClearObstacles(byte Data0)
         {
-            _service.Send(11011, [arg1], _ip);
+            _service.SendBG(11011, [Data0], _ip);
         }
 
+        public byte CurrentState { get => _service.UDP._telemetryUInt8[11100][0]; }
         /// <summary>
-        /// Enum (AUTONOMYSTATE)
+        /// [State] (AUTONOMYSTATE)
         /// </summary>
         public void OnCurrentState(RoveCommCallback<byte> handler) { _service.On(11100, handler); }
 
+        public byte StateDisplay { get => _service.UDP._telemetryUInt8[11101][0]; }
         /// <summary>
-        /// [Teleop, Autonomy, Reached Goal] (enum)
+        /// [State] (0: Teleop 1: Autonomy 2: Reached Goal)
         /// </summary>
         public void OnStateDisplay(RoveCommCallback<byte> handler) { _service.On(11101, handler); }
 
+        public uint[] ThreadFPS { get => _service.UDP._telemetryUInt32[11103]; }
+        public uint ThreadFPS_Thread { get => _service.UDP._telemetryUInt32[11103][0]; }
+        public uint ThreadFPS_FPS { get => _service.UDP._telemetryUInt32[11103][1]; }
         /// <summary>
-        /// String version of most current error log
-        /// </summary>
-        public void OnCurrentLog(RoveCommCallback<char> handler) { _service.On(11102, handler); }
-
-        /// <summary>
-        /// [Thread Enum ID, FPS Value]
+        /// [Thread, FPS] (AUTONOMYTHREADS, fps)
         /// </summary>
         public void OnThreadFPS(RoveCommCallback<uint> handler) { _service.On(11103, handler); }
 
@@ -923,79 +1050,87 @@ private static string _ip = "192.168.3.100";
     public class Camera1
     {
         private RoveCommService _service;
-private static string _ip = "192.168.4.100";
+        private static string _ip = "192.168.4.100";
 
-        internal Camera1(RoveCommService service) => _service = service;
-
-        /// <summary>
-        /// Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
-        /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void TakePicture(byte arg1, byte arg2)
+        internal Camera1(RoveCommService service)
         {
-            _service.Send(12000, [arg1, arg2], _ip);
+            _service = service;
+
+            _service.UDP._telemetryUInt8[12100] = new byte[1];
+            _service.UDP._telemetryUInt8[12101] = new byte[1];
+            _service.UDP._telemetryUInt8[12103] = new byte[6];
+        }
+        /// <summary>
+        /// [Camera, Restart]
+        /// </summary>
+        /// <param name="Camera"></param>
+        /// <param name="Restart"></param>
+        public void TakePicture(byte Camera, byte Restart)
+        {
+            _service.SendBG(12000, [Camera, Restart], _ip);
         }
 
         /// <summary>
-        /// Stop the current camera stream. [0] is the camera to stop streaming. [1] is whether to restart the stream.
+        /// [Camera, Restart]
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void ToggleStream(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Restart"></param>
+        public void ToggleStream(byte Camera, byte Restart)
         {
-            _service.Send(12001, [arg1, arg2], _ip);
+            _service.SendBG(12001, [Camera, Restart], _ip);
         }
 
         /// <summary>
-        /// 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast.
+        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast)
         /// </summary>
-        /// <param name="args"></param>
-        public void SetFFMPEGArguments(char[] args)
+        /// <param name="Data"></param>
+        public void SetFFMPEGArguments(char[] Data)
         {
-            _service.Send(12002, [args], _ip);
+            _service.SendBG(12002, [Data], _ip);
         }
 
         /// <summary>
-        /// 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast.
+        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast)
         /// </summary>
-        /// <param name="args"></param>
-        public void SetPictureArguments(char[] args)
+        /// <param name="Data"></param>
+        public void SetPictureArguments(char[] Data)
         {
-            _service.Send(12003, [args], _ip);
+            _service.SendBG(12003, [Data], _ip);
         }
 
         /// <summary>
-        /// Brightness for each camera (-1.0, 1.0)
+        /// [Camera0, Camera1, Camera2, Camera3] (-1.0 - 1.0)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        /// <param name="arg3"></param>
-        /// <param name="arg4"></param>
-        public void SetBrightness(float arg1, float arg2, float arg3, float arg4)
+        /// <param name="Camera0"></param>
+        /// <param name="Camera1"></param>
+        /// <param name="Camera2"></param>
+        /// <param name="Camera3"></param>
+        public void SetBrightness(float Camera0, float Camera1, float Camera2, float Camera3)
         {
-            _service.Send(12004, [arg1, arg2, arg3, arg4], _ip);
+            _service.SendBG(12004, [Camera0, Camera1, Camera2, Camera3], _ip);
         }
 
         /// <summary>
-        /// Contrast for each camera (0, 2)
+        /// [Camera0, Camera1, Camera2, Camera3] (-1.0 - 2.0)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        /// <param name="arg3"></param>
-        /// <param name="arg4"></param>
-        public void SetContrast(float arg1, float arg2, float arg3, float arg4)
+        /// <param name="Camera0"></param>
+        /// <param name="Camera1"></param>
+        /// <param name="Camera2"></param>
+        /// <param name="Camera3"></param>
+        public void SetContrast(float Camera0, float Camera1, float Camera2, float Camera3)
         {
-            _service.Send(12005, [arg1, arg2, arg3, arg4], _ip);
+            _service.SendBG(12005, [Camera0, Camera1, Camera2, Camera3], _ip);
         }
 
+        public byte AvailableCameras { get => _service.UDP._telemetryUInt8[12100][0]; }
         /// <summary>
-        /// Number of detected cameras.
+        /// [AvailableCameras]
         /// </summary>
         public void OnAvailableCameras(RoveCommCallback<byte> handler) { _service.On(12100, handler); }
 
+        public byte StreamingCameras { get => _service.UDP._telemetryUInt8[12101][0]; }
         /// <summary>
-        /// Number of streaming cameras.
+        /// [StreamingCameras]
         /// </summary>
         public void OnStreamingCameras(RoveCommCallback<byte> handler) { _service.On(12101, handler); }
 
@@ -1004,8 +1139,15 @@ private static string _ip = "192.168.4.100";
         /// </summary>
         public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(12102, handler); }
 
+        public byte[] Utilization { get => _service.UDP._telemetryUInt8[12103]; }
+        public byte Utilization_cpu0 { get => _service.UDP._telemetryUInt8[12103][0]; }
+        public byte Utilization_cpu1 { get => _service.UDP._telemetryUInt8[12103][1]; }
+        public byte Utilization_cpu2 { get => _service.UDP._telemetryUInt8[12103][2]; }
+        public byte Utilization_cpu3 { get => _service.UDP._telemetryUInt8[12103][3]; }
+        public byte Utilization_mem { get => _service.UDP._telemetryUInt8[12103][4]; }
+        public byte Utilization_storage { get => _service.UDP._telemetryUInt8[12103][5]; }
         /// <summary>
-        /// [cpu0, cpu1, cpu2, cpu3, mem, storage], (% usage)
+        /// [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
         /// </summary>
         public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(12103, handler); }
     }
@@ -1013,79 +1155,87 @@ private static string _ip = "192.168.4.100";
     public class Camera2
     {
         private RoveCommService _service;
-private static string _ip = "192.168.4.101";
+        private static string _ip = "192.168.4.101";
 
-        internal Camera2(RoveCommService service) => _service = service;
-
-        /// <summary>
-        /// Take a picture with the current camera. [0] is the camera to take a picture with. [1] tells the camera whether to restart the stream afterwards.
-        /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void TakePicture(byte arg1, byte arg2)
+        internal Camera2(RoveCommService service)
         {
-            _service.Send(13000, [arg1, arg2], _ip);
+            _service = service;
+
+            _service.UDP._telemetryUInt8[13100] = new byte[1];
+            _service.UDP._telemetryUInt8[13101] = new byte[1];
+            _service.UDP._telemetryUInt8[13103] = new byte[6];
+        }
+        /// <summary>
+        /// [Camera, Restart]
+        /// </summary>
+        /// <param name="Camera"></param>
+        /// <param name="Restart"></param>
+        public void TakePicture(byte Camera, byte Restart)
+        {
+            _service.SendBG(13000, [Camera, Restart], _ip);
         }
 
         /// <summary>
-        /// Stop the current camera stream. [0] is the camera to stop streaming. [1] is whether to restart the stream.
+        /// [Camera, Restart]
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void ToggleStream(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Restart"></param>
+        public void ToggleStream(byte Camera, byte Restart)
         {
-            _service.Send(13001, [arg1, arg2], _ip);
+            _service.SendBG(13001, [Camera, Restart], _ip);
         }
 
         /// <summary>
-        /// 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast.
+        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast)
         /// </summary>
-        /// <param name="args"></param>
-        public void SetFFMPEGArguments(char[] args)
+        /// <param name="Data"></param>
+        public void SetFFMPEGArguments(char[] Data)
         {
-            _service.Send(13002, [args], _ip);
+            _service.SendBG(13002, [Data], _ip);
         }
 
         /// <summary>
-        /// 0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast.
+        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast)
         /// </summary>
-        /// <param name="args"></param>
-        public void SetPictureArguments(char[] args)
+        /// <param name="Data"></param>
+        public void SetPictureArguments(char[] Data)
         {
-            _service.Send(13003, [args], _ip);
+            _service.SendBG(13003, [Data], _ip);
         }
 
         /// <summary>
-        /// Brightness for each camera (-1.0, 1.0)
+        /// [Camera0, Camera1, Camera2, Camera3] (-1.0 - 1.0)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        /// <param name="arg3"></param>
-        /// <param name="arg4"></param>
-        public void SetBrightness(float arg1, float arg2, float arg3, float arg4)
+        /// <param name="Camera0"></param>
+        /// <param name="Camera1"></param>
+        /// <param name="Camera2"></param>
+        /// <param name="Camera3"></param>
+        public void SetBrightness(float Camera0, float Camera1, float Camera2, float Camera3)
         {
-            _service.Send(13004, [arg1, arg2, arg3, arg4], _ip);
+            _service.SendBG(13004, [Camera0, Camera1, Camera2, Camera3], _ip);
         }
 
         /// <summary>
-        /// Contrast for each camera (0, 2)
+        /// [Camera0, Camera1, Camera2, Camera3] (-1.0 - 2.0)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        /// <param name="arg3"></param>
-        /// <param name="arg4"></param>
-        public void SetContrast(float arg1, float arg2, float arg3, float arg4)
+        /// <param name="Camera0"></param>
+        /// <param name="Camera1"></param>
+        /// <param name="Camera2"></param>
+        /// <param name="Camera3"></param>
+        public void SetContrast(float Camera0, float Camera1, float Camera2, float Camera3)
         {
-            _service.Send(13005, [arg1, arg2, arg3, arg4], _ip);
+            _service.SendBG(13005, [Camera0, Camera1, Camera2, Camera3], _ip);
         }
 
+        public byte AvailableCameras { get => _service.UDP._telemetryUInt8[13100][0]; }
         /// <summary>
-        /// Number of detected cameras.
+        /// [AvailableCameras]
         /// </summary>
         public void OnAvailableCameras(RoveCommCallback<byte> handler) { _service.On(13100, handler); }
 
+        public byte StreamingCameras { get => _service.UDP._telemetryUInt8[13101][0]; }
         /// <summary>
-        /// Number of streaming cameras.
+        /// [StreamingCameras]
         /// </summary>
         public void OnStreamingCameras(RoveCommCallback<byte> handler) { _service.On(13101, handler); }
 
@@ -1094,8 +1244,15 @@ private static string _ip = "192.168.4.101";
         /// </summary>
         public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(13102, handler); }
 
+        public byte[] Utilization { get => _service.UDP._telemetryUInt8[13103]; }
+        public byte Utilization_cpu0 { get => _service.UDP._telemetryUInt8[13103][0]; }
+        public byte Utilization_cpu1 { get => _service.UDP._telemetryUInt8[13103][1]; }
+        public byte Utilization_cpu2 { get => _service.UDP._telemetryUInt8[13103][2]; }
+        public byte Utilization_cpu3 { get => _service.UDP._telemetryUInt8[13103][3]; }
+        public byte Utilization_mem { get => _service.UDP._telemetryUInt8[13103][4]; }
+        public byte Utilization_storage { get => _service.UDP._telemetryUInt8[13103][5]; }
         /// <summary>
-        /// [cpu0, cpu1, cpu2, cpu3, mem, storage], (% usage)
+        /// [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
         /// </summary>
         public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(13103, handler); }
     }
@@ -1103,116 +1260,129 @@ private static string _ip = "192.168.4.101";
     public class CameraServer
     {
         private RoveCommService _service;
-private static string _ip = "192.168.4.102";
+        private static string _ip = "192.168.4.102";
 
-        internal CameraServer(RoveCommService service) => _service = service;
-
-        /// <summary>
-        /// Take a picture with the current camera. [0] is the camera to take a picture with.
-        /// </summary>
-        /// <param name="akeapicturewiththecurrentcamera0"></param>
-        public void TakePhoto(byte akeapicturewiththecurrentcamera0)
+        internal CameraServer(RoveCommService service)
         {
-            _service.Send(14000, [akeapicturewiththecurrentcamera0], _ip);
+            _service = service;
+
+            _service.UDP._telemetryUInt8[14100] = new byte[1];
+            _service.UDP._telemetryUInt8[14101] = new byte[4];
+            _service.UDP._telemetryUInt8[14200] = new byte[1];
+        }
+        /// <summary>
+        /// [Camera]
+        /// </summary>
+        /// <param name="Camera"></param>
+        public void TakePhoto(byte Camera)
+        {
+            _service.SendBG(14000, [Camera], _ip);
         }
 
         /// <summary>
-        /// Stop the current camera stream. [0] is the camera to stop streaming. [1] is the action (0 = Shutdown, 1 = Startup, 2 = Restart).
+        /// [Camera, Action] (id, 0: Shutdown 1: Startup 2: Restart)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void ToggleStream(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Action"></param>
+        public void ToggleStream(byte Camera, byte Action)
         {
-            _service.Send(14001, [arg1, arg2], _ip);
+            _service.SendBG(14001, [Camera, Action], _ip);
         }
 
         /// <summary>
-        /// Adjust brightness level (0-255). [0] is the camera ID, [1] is the brightness level.
+        /// [Camera, Brightness] (id, 0 - 255)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void AdjustBrightness(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Brightness"></param>
+        public void AdjustBrightness(byte Camera, byte Brightness)
         {
-            _service.Send(14002, [arg1, arg2], _ip);
+            _service.SendBG(14002, [Camera, Brightness], _ip);
         }
 
         /// <summary>
-        /// Adjust contrast level (0-255). [0] is the camera ID, [1] is the contrast level.
+        /// [Camera, Contrast] (id, 0 - 255)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void AdjustContrast(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Contrast"></param>
+        public void AdjustContrast(byte Camera, byte Contrast)
         {
-            _service.Send(14003, [arg1, arg2], _ip);
+            _service.SendBG(14003, [Camera, Contrast], _ip);
         }
 
         /// <summary>
-        /// Adjust saturation level (0-255). [0] is the camera ID, [1] is the saturation level.
+        /// [Camera, Saturation] (id, 0 - 255)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void AdjustSaturation(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Saturation"></param>
+        public void AdjustSaturation(byte Camera, byte Saturation)
         {
-            _service.Send(14004, [arg1, arg2], _ip);
+            _service.SendBG(14004, [Camera, Saturation], _ip);
         }
 
         /// <summary>
-        /// Adjust hue level (0-255). [0] is the camera ID, [1] is the hue level.
+        /// [Camera, Hue] (id, 0 - 255)
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void AdjustHue(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Hue"></param>
+        public void AdjustHue(byte Camera, byte Hue)
         {
-            _service.Send(14005, [arg1, arg2], _ip);
+            _service.SendBG(14005, [Camera, Hue], _ip);
         }
 
         /// <summary>
-        /// Set white balance temperature. [0] is the camera ID, [1] is the white balance level.
+        /// [Camera, Temperature]
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void SetWhiteBalance(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Temperature"></param>
+        public void SetWhiteBalance(byte Camera, byte Temperature)
         {
-            _service.Send(14008, [arg1, arg2], _ip);
+            _service.SendBG(14008, [Camera, Temperature], _ip);
         }
 
         /// <summary>
-        /// Adjust backlight contrast level (0-255). [0] is the camera ID, [1] is the backlight contrast level.
+        /// [Camera, BacklightContrast]
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void AdjustBacklightContrast(byte arg1, byte arg2)
+        /// <param name="Camera"></param>
+        /// <param name="BacklightContrast"></param>
+        public void AdjustBacklightContrast(byte Camera, byte BacklightContrast)
         {
-            _service.Send(14009, [arg1, arg2], _ip);
+            _service.SendBG(14009, [Camera, BacklightContrast], _ip);
         }
 
         /// <summary>
-        /// Set exposure level. [0] is the camera ID, [1] is the exposure level.
+        /// [Camera, Exposure]
         /// </summary>
-        /// <param name="arg1"></param>
-        /// <param name="arg2"></param>
-        public void SetExposure(int arg1, int arg2)
+        /// <param name="Camera"></param>
+        /// <param name="Exposure"></param>
+        public void SetExposure(int Camera, int Exposure)
         {
-            _service.Send(14010, [arg1, arg2], _ip);
+            _service.SendBG(14010, [Camera, Exposure], _ip);
         }
 
+        public byte AvailableCameras { get => _service.UDP._telemetryUInt8[14100][0]; }
         /// <summary>
-        /// Bitmask values for which cameras are able to stream. LSB is Camera 0, MSB is Camera 7.
+        /// [Camera0, Camera1, Camera2, Camera3, Camera4, Camera5, Camera6, Camera7] (bitmask able to stream)
         /// </summary>
         public void OnAvailableCameras(RoveCommCallback<byte> handler) { _service.On(14100, handler); }
 
+        public byte[] StreamingCameras { get => _service.UDP._telemetryUInt8[14101]; }
+        public byte StreamingCameras_Port0 { get => _service.UDP._telemetryUInt8[14101][0]; }
+        public byte StreamingCameras_Port1 { get => _service.UDP._telemetryUInt8[14101][1]; }
+        public byte StreamingCameras_Port2 { get => _service.UDP._telemetryUInt8[14101][2]; }
+        public byte StreamingCameras_Port3 { get => _service.UDP._telemetryUInt8[14101][3]; }
         /// <summary>
-        /// Which cameras the system is currently streaming on each port
+        /// [Port0, Port1, Port2, Port3] (currently streaming on each port)
         /// </summary>
         public void OnStreamingCameras(RoveCommCallback<byte> handler) { _service.On(14101, handler); }
 
         /// <summary>
-        /// Picture has been taken.
+        /// Picture has been taken
         /// </summary>
-        public void OnPictureTaken1(RoveCommCallback<byte> handler) { _service.On(14102, handler); }
+        public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(14102, handler); }
 
+        public byte CameraUnavailable { get => _service.UDP._telemetryUInt8[14200][0]; }
         /// <summary>
-        /// Camera has errored and stopped streaming. [0] is ID of camera as an integer (not bitmask).
+        /// [Camera] (id) Camera has errored and stopped streaming
         /// </summary>
         public void OnCameraUnavailable(RoveCommCallback<byte> handler) { _service.On(14200, handler); }
     }
@@ -1220,26 +1390,36 @@ private static string _ip = "192.168.4.102";
     public class Raman
     {
         private RoveCommService _service;
-private static string _ip = "192.168.3.105";
+        private static string _ip = "192.168.3.105";
 
-        internal Raman(RoveCommService service) => _service = service;
+        internal Raman(RoveCommService service)
+        {
+            _service = service;
 
+            _service.UDP._telemetryFloat[16100] = new float[2];
+            _service.UDP._telemetryUInt8[16101] = new byte[1];
+            _service.UDP._telemetryUInt16[16102] = new ushort[512];
+            _service.UDP._telemetryUInt16[16103] = new ushort[512];
+            _service.UDP._telemetryUInt16[16104] = new ushort[512];
+            _service.UDP._telemetryUInt16[16105] = new ushort[512];
+            _service.UDP._telemetryUInt16[16106] = new ushort[1];
+        }
         /// <summary>
         /// [Speed] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
         /// <param name="Speed"></param>
         public void InstrumentsAxis(short Speed)
         {
-            _service.Send(16000, [Speed], _ip);
+            _service.SendBG(16000, [Speed], _ip);
         }
 
         /// <summary>
         /// [InstrumentsAxis+, InstrumentsAxis-] (bitmask override enabled)
         /// </summary>
-        /// <param name="arg1"></param>
-        public void LimitSwitchOverride(byte arg1)
+        /// <param name="Data0"></param>
+        public void LimitSwitchOverride(byte Data0)
         {
-            _service.Send(16001, [arg1], _ip);
+            _service.SendBG(16001, [Data0], _ip);
         }
 
         /// <summary>
@@ -1248,7 +1428,7 @@ private static string _ip = "192.168.3.105";
         
         public void CalibrateEncoder()
         {
-            _service.Send<byte>(16002, [], _ip);
+            _service.SendBG<byte>(16002, [], _ip);
         }
 
         /// <summary>
@@ -1257,16 +1437,16 @@ private static string _ip = "192.168.3.105";
         /// <param name="Enabled"></param>
         public void WatchdogOverride(byte Enabled)
         {
-            _service.Send(16003, [Enabled], _ip);
+            _service.SendBG(16003, [Enabled], _ip);
         }
 
         /// <summary>
-        /// [0-disable, 1-enable]
+        /// [Enabled]
         /// </summary>
-        /// <param name="arg1"></param>
-        public void Laser(byte arg1)
+        /// <param name="Enabled"></param>
+        public void Laser(byte Enabled)
         {
-            _service.Send(16004, [arg1], _ip);
+            _service.SendBG(16004, [Enabled], _ip);
         }
 
         /// <summary>
@@ -1275,41 +1455,50 @@ private static string _ip = "192.168.3.105";
         /// <param name="IntegrationTime"></param>
         public void RequestRamanReading(uint IntegrationTime)
         {
-            _service.Send(16005, [IntegrationTime], _ip);
+            _service.SendBG(16005, [IntegrationTime], _ip);
         }
 
+        public float[] Position { get => _service.UDP._telemetryFloat[16100]; }
+        public float Position_InstrumentsAxis { get => _service.UDP._telemetryFloat[16100][0]; }
+        public float Position_TOF { get => _service.UDP._telemetryFloat[16100][1]; }
         /// <summary>
-        /// [InstrumentsAxis, TOF] (mm)
+        /// [InstrumentsAxis, TOF] (mm, mm)
         /// </summary>
         public void OnPosition(RoveCommCallback<float> handler) { _service.On(16100, handler); }
 
+        public byte LimitSwitch { get => _service.UDP._telemetryUInt8[16101][0]; }
         /// <summary>
         /// [InstrumentsAxis+, InstrumentsAxis-] (bitmask depressed)
         /// </summary>
         public void OnLimitSwitch(RoveCommCallback<byte> handler) { _service.On(16101, handler); }
 
+        public ushort[] RamanReading_Part1 { get => _service.UDP._telemetryUInt16[16102]; }
         /// <summary>
         /// Raman CCD elements 1-512
         /// </summary>
         public void OnRamanReading_Part1(RoveCommCallback<ushort> handler) { _service.On(16102, handler); }
 
+        public ushort[] RamanReading_Part2 { get => _service.UDP._telemetryUInt16[16103]; }
         /// <summary>
         /// Raman CCD elements 513-1024
         /// </summary>
         public void OnRamanReading_Part2(RoveCommCallback<ushort> handler) { _service.On(16103, handler); }
 
+        public ushort[] RamanReading_Part3 { get => _service.UDP._telemetryUInt16[16104]; }
         /// <summary>
         /// Raman CCD elements 1025-1536
         /// </summary>
         public void OnRamanReading_Part3(RoveCommCallback<ushort> handler) { _service.On(16104, handler); }
 
+        public ushort[] RamanReading_Part4 { get => _service.UDP._telemetryUInt16[16105]; }
         /// <summary>
         /// Raman CCD elements 1537-2048
         /// </summary>
         public void OnRamanReading_Part4(RoveCommCallback<ushort> handler) { _service.On(16105, handler); }
 
+        public ushort SMOCOPing { get => _service.UDP._telemetryUInt16[16106][0]; }
         /// <summary>
-        /// [InstrumentsAxis Ping Time] (ms)
+        /// [InstrumentsAxis] (ping time ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(16106, handler); }
     }
@@ -1318,8 +1507,23 @@ private static string _ip = "192.168.3.105";
     {
         private RoveCommService _service;
 
-        internal RoveSoSimulator(RoveCommService service) => _service = service;
+        internal RoveSoSimulator(RoveCommService service)
+        {
+            _service = service;
 
+            _service.UDP._telemetryDouble[99100] = new double[10];
+        }
+        public double[] IMU { get => _service.UDP._telemetryDouble[99100]; }
+        public double IMU_AccelX { get => _service.UDP._telemetryDouble[99100][0]; }
+        public double IMU_AccelY { get => _service.UDP._telemetryDouble[99100][1]; }
+        public double IMU_AccelZ { get => _service.UDP._telemetryDouble[99100][2]; }
+        public double IMU_GyroX { get => _service.UDP._telemetryDouble[99100][3]; }
+        public double IMU_GyroY { get => _service.UDP._telemetryDouble[99100][4]; }
+        public double IMU_GyroZ { get => _service.UDP._telemetryDouble[99100][5]; }
+        public double IMU_QuatX { get => _service.UDP._telemetryDouble[99100][6]; }
+        public double IMU_QuatY { get => _service.UDP._telemetryDouble[99100][7]; }
+        public double IMU_QuatZ { get => _service.UDP._telemetryDouble[99100][8]; }
+        public double IMU_QuatW { get => _service.UDP._telemetryDouble[99100][9]; }
         /// <summary>
         /// [Accel X, Accel Y, Accel Z, Gyro X, Gyro Y, Gyro Z, Quat X, Quat Y, Quat Z, Quat W]
         /// </summary>

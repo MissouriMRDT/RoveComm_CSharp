@@ -29,7 +29,7 @@ def main() -> None:
     with open(json_path, "r") as file:
         manifest = json.load(file)
 
-    with open(manifest_file_path, "w") as file:
+    with open(manifest_file_path, "w", newline="\n") as file:
         file.write(
             """\
 namespace RoveComm;

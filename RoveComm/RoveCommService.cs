@@ -173,6 +173,23 @@ public class RoveCommService : IHostedService
     }
 
     /// <summary>
+    /// Send data over RoveComm UDP in the background.
+    /// </summary>
+    /// <param name="dataId">The DataID of the packet.</param>
+    /// <param name="data">The Data to send.</param>
+    /// <param name="ip">The IP to send to.</param>
+    /// <param name="port">The port to send to.</param>
+    /// <param name="reliable">Send over TCP if true, send over UDP if false.</param>
+    public void SendBG<T>(int dataId, IEnumerable<T> data, string ip, int port)
+    {
+        _ = Task.Run(() => UDP.SendAsync(new RoveCommPacket<T>(dataId, data), ip, port));
+    }
+    public void SendBG<T>(int dataId, IEnumerable<T> data, string ip)
+    {
+        _ = Task.Run(() => UDP.SendAsync(new RoveCommPacket<T>(dataId, data), ip));
+    }
+
+    /// <summary>
     /// Send a command from the Manifest over RoveComm.
     /// </summary>
     /// <param name="boardName">The name of the board as shown in the Manifest.</param>
@@ -246,6 +263,42 @@ public class RoveCommService : IHostedService
         }
 
         return await SendAsync(packetDesc.DataID, dataList, boardDesc.IP, reliable, cancelToken);
+    }
+
+    /// <summary>
+    /// Send a command from the Manifest over RoveComm UDP in the background.
+    /// </summary>
+    /// <param name="boardName">The name of the board as shown in the Manifest.</param>
+    /// <param name="commandName">The name of the command as shown in the Manifest.</param>
+    /// <param name="data">The data to send with the command.</param>
+    /// <exception cref="RoveCommException">
+    /// Thrown if the packet descriptor was not found in the Manifest or did not match the Manifest's schema.
+    /// </exception>
+    public void SendBG<T>(string boardName, string commandName, IEnumerable<T> data)
+    {
+        RoveCommUtils.FindDataIDByName(boardName, commandName, out var boardDesc, out var packetDesc);
+        if (boardDesc is null)
+        {
+            throw new RoveCommException($"Failed to send RoveCommPacket: {boardName} Board not found in RoveCommManifest.");
+        }
+        else if (packetDesc is null)
+        {
+            throw new RoveCommException($"Failed to send RoveCommPacket: {commandName} not found for {boardName} Board.");
+        }
+
+        RoveCommDataType handlerType = RoveCommUtils.DataTypeFromType(typeof(T));
+        if (packetDesc.DataType != handlerType)
+        {
+            throw new RoveCommException($"Failed to send RoveCommPacket: {handlerType} does not match type of {commandName} ({packetDesc.DataType}).");
+        }
+
+        var dataList = data.ToList();
+        if (dataList.Count != packetDesc.DataCount)
+        {
+            throw new RoveCommException($"Failed to send RoveCommPacket: incorrect data size to fill {commandName}.");
+        }
+
+        SendBG(packetDesc.DataID, dataList, boardDesc.IP);
     }
 
     /// <summary>

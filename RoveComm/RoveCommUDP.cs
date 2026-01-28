@@ -1,3 +1,4 @@
+using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
@@ -18,15 +19,25 @@ public class RoveCommUDP : IDisposable
         public void Invoke(RoveCommPacket<T> packet) => Notifier?.Invoke(packet);
     }
 
-    private readonly Dictionary<int, RoveCommEmitter<sbyte>> _callbacksInt8 = [];
-    private readonly Dictionary<int, RoveCommEmitter<byte>> _callbacksUInt8 = [];
-    private readonly Dictionary<int, RoveCommEmitter<short>> _callbacksInt16 = [];
-    private readonly Dictionary<int, RoveCommEmitter<ushort>> _callbacksUInt16 = [];
-    private readonly Dictionary<int, RoveCommEmitter<int>> _callbacksInt32 = [];
-    private readonly Dictionary<int, RoveCommEmitter<uint>> _callbacksUInt32 = [];
-    private readonly Dictionary<int, RoveCommEmitter<float>> _callbacksFloat = [];
-    private readonly Dictionary<int, RoveCommEmitter<double>> _callbacksDouble = [];
-    private readonly Dictionary<int, RoveCommEmitter<char>> _callbacksChar = [];
+    internal Dictionary<int, sbyte[]> _telemetryInt8 = [];
+    internal Dictionary<int, byte[]> _telemetryUInt8 = [];
+    internal Dictionary<int, short[]> _telemetryInt16 = [];
+    internal Dictionary<int, ushort[]> _telemetryUInt16 = [];
+    internal Dictionary<int, int[]> _telemetryInt32 = [];
+    internal Dictionary<int, uint[]> _telemetryUInt32 = [];
+    internal Dictionary<int, float[]> _telemetryFloat = [];
+    internal Dictionary<int, double[]> _telemetryDouble = [];
+    internal Dictionary<int, char[]> _telemetryChar = [];
+
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<sbyte>> _callbacksInt8 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<byte>> _callbacksUInt8 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<short>> _callbacksInt16 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<ushort>> _callbacksUInt16 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<int>> _callbacksInt32 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<uint>> _callbacksUInt32 = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<float>> _callbacksFloat = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<double>> _callbacksDouble = [];
+    private readonly ConcurrentDictionary<int, RoveCommEmitter<char>> _callbacksChar = [];
 
     public RoveCommUDP(int port, ILogger? logger = null)
     {
@@ -84,7 +95,7 @@ public class RoveCommUDP : IDisposable
 
     public void Stop()
     {
-        if (!Running) 
+        if (!Running)
         {
             _logger?.LogWarning("RoveComm UDP already stopped.");
             return;
@@ -115,6 +126,7 @@ public class RoveCommUDP : IDisposable
     /// <seealso cref="SendAsync"/>
     public bool Send<T>(RoveCommPacket<T> packet, string ip, int port)
     {
+
         if (!Running)
         {
             throw new RoveCommException("Failed to send UDP packet: RoveComm UDP not started.");
@@ -127,17 +139,17 @@ public class RoveCommUDP : IDisposable
             int expected = RoveCommConsts.HeaderSize + packet.DataCount * RoveCommUtils.DataTypeSize(packet.DataType);
             if (bytesSent != expected)
             {
-                LoggerCore.LoggerService.Log($"Failed to send UDP packet: {bytesSent} of {expected} bytes sent.", source:$"RoveComm:UDP", channel:$"{dest}");
+                LoggerCore.LoggerService.Log($"Failed to send UDP packet: {bytesSent} of {expected} bytes sent.", source: $"RoveComm:UDP", channel: $"{dest}");
                 return false;
             }
         }
         catch (Exception e)
         {
-            LoggerCore.LoggerService.Log($"Failed to send UDP packet: {e.Message}", source:"RoveComm:UDP", channel:$"{dest}");
+            LoggerCore.LoggerService.Log($"Failed to send UDP packet: {e.Message}", source: "RoveComm:UDP", channel: $"{dest}");
             return false;
         }
 
-        LoggerCore.LoggerService.Log(message:"Sent RoveCommPacket", source:"RoveComm:UDP", channel:$"{dest}", data:$"{packet.DataType}");
+        LoggerCore.LoggerService.Log(message: "Sent RoveCommPacket", source: "RoveComm:UDP", channel: $"{dest}", data: $"{packet.DataType}");
         return true;
     }
     public bool Send<T>(RoveCommPacket<T> packet, string ip) => Send(packet, ip, Port);
@@ -164,13 +176,13 @@ public class RoveCommUDP : IDisposable
             int expected = RoveCommConsts.HeaderSize + packet.DataCount * RoveCommUtils.DataTypeSize(packet.DataType);
             if (bytesSent != expected)
             {
-                LoggerCore.LoggerService.Log($"Failed to send UDP packet: {bytesSent} of {expected} bytes sent.", source:"RoveComm:UDP", channel:$"{dest}");
+                LoggerCore.LoggerService.Log($"Failed to send UDP packet: {bytesSent} of {expected} bytes sent.", source: "RoveComm:UDP", channel: $"{dest}");
                 return false;
             }
         }
         catch (Exception e)
         {
-            LoggerCore.LoggerService.Log($"Failed to send UDP packet: {e.Message}", source:"RoveComm:UDP", channel:$"{dest}");
+            LoggerCore.LoggerService.Log($"Failed to send UDP packet: {e.Message}", source: "RoveComm:UDP", channel: $"{dest}");
             return false;
         }
 
@@ -216,12 +228,12 @@ public class RoveCommUDP : IDisposable
                 case RoveCommDataType.DOUBLE: ProcessPacket(RoveCommUtils.ParsePacket<double>(data)); break;
                 case RoveCommDataType.CHAR: ProcessPacket(RoveCommUtils.ParsePacket<char>(data)); break;
             }
-            LoggerCore.LoggerService.Log("Received RoveCommPacket", source:"RoveComm:UDP", channel:$"{fromIP}", data:$"{dataType}");
+            LoggerCore.LoggerService.Log("Received RoveCommPacket", source: "RoveComm:UDP", channel: $"{fromIP}", data: $"{dataType}");
         }
         // RoveComm couldn't parse something:
         catch (RoveCommException e)
         {
-            LoggerCore.LoggerService.Log($"Failed to read UDP packet: {e.Message}", source:"RoveComm:UDP");
+            LoggerCore.LoggerService.Log($"Failed to read UDP packet: {e.Message}", source: "RoveComm:UDP");
         }
         // Network problems:
         catch (Exception e)
@@ -239,29 +251,32 @@ public class RoveCommUDP : IDisposable
     {
         switch (packet)
         {
-            case RoveCommPacket<sbyte> p: _processPacket(_callbacksInt8, p); break;
-            case RoveCommPacket<byte> p: _processPacket(_callbacksUInt8, p); break;
-            case RoveCommPacket<short> p: _processPacket(_callbacksInt16, p); break;
-            case RoveCommPacket<ushort> p: _processPacket(_callbacksUInt16, p); break;
-            case RoveCommPacket<int> p: _processPacket(_callbacksInt32, p); break;
-            case RoveCommPacket<uint> p: _processPacket(_callbacksUInt32, p); break;
-            case RoveCommPacket<float> p: _processPacket(_callbacksFloat, p); break;
-            case RoveCommPacket<double> p: _processPacket(_callbacksDouble, p); break;
-            case RoveCommPacket<char> p: _processPacket(_callbacksChar, p); break;
+            case RoveCommPacket<sbyte> p: _processPacket(_callbacksInt8, _telemetryInt8, p); break;
+            case RoveCommPacket<byte> p: _processPacket(_callbacksUInt8, _telemetryUInt8, p); break;
+            case RoveCommPacket<short> p: _processPacket(_callbacksInt16, _telemetryInt16, p); break;
+            case RoveCommPacket<ushort> p: _processPacket(_callbacksUInt16, _telemetryUInt16, p); break;
+            case RoveCommPacket<int> p: _processPacket(_callbacksInt32, _telemetryInt32, p); break;
+            case RoveCommPacket<uint> p: _processPacket(_callbacksUInt32, _telemetryUInt32, p); break;
+            case RoveCommPacket<float> p: _processPacket(_callbacksFloat, _telemetryFloat, p); break;
+            case RoveCommPacket<double> p: _processPacket(_callbacksDouble, _telemetryDouble, p); break;
+            case RoveCommPacket<char> p: _processPacket(_callbacksChar, _telemetryChar, p); break;
             default: throw new RoveCommException("Failed to process RoveCommPacket: invalid data type.");
         }
     }
-    private void _processPacket<T>(Dictionary<int, RoveCommEmitter<T>> callbacks, RoveCommPacket<T> packet)
+    private void _processPacket<T>(ConcurrentDictionary<int, RoveCommEmitter<T>> callbacks, Dictionary<int, T[]> telemetry, RoveCommPacket<T> packet)
     {
-        if (callbacks.ContainsKey(packet.DataID))
+#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
+        if (telemetry.TryGetValue(packet.DataID, out T[] t))
         {
-            callbacks[packet.DataID].Invoke(packet);
+            if (packet.Data.Count <= t.Length)
+                packet.Data.CopyTo(t, 0);
+            else
+                packet.Data[0..t.Length].CopyTo(t, 0);
         }
+#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
+        callbacks.GetValueOrDefault(packet.DataID)?.Invoke(packet);
         // Data ID 0 means subscribe to all packets.
-        if (callbacks.ContainsKey(0))
-        {
-            callbacks[0].Invoke(packet);
-        }
+        callbacks.GetValueOrDefault(0)?.Invoke(packet);
     }
 
     /// <summary>
@@ -286,16 +301,10 @@ public class RoveCommUDP : IDisposable
             default: throw new RoveCommException("Failed to add callback: invalid data type.");
         }
     }
-    private void _addCallback<T>(Dictionary<int, RoveCommEmitter<T>> callbacks, int dataId, RoveCommCallback<T> handler)
+    private void _addCallback<T>(ConcurrentDictionary<int, RoveCommEmitter<T>> callbacks, int dataId, RoveCommCallback<T> handler)
     {
-        if (!callbacks.ContainsKey(dataId))
-        {
-            callbacks.Add(dataId, new RoveCommEmitter<T>());
-        }
-
-        callbacks[dataId].Notifier += handler;
+        callbacks.GetOrAdd(dataId, _ => new()).Notifier += handler;
     }
-
 
     /// <summary>
     /// Clear the given callback from all DataID's.
@@ -318,7 +327,7 @@ public class RoveCommUDP : IDisposable
             default: throw new RoveCommException("Failed to add callback: invalid data type.");
         }
     }
-    private void _clearCallback<T>(Dictionary<int, RoveCommEmitter<T>> callbacks, RoveCommCallback<T> handler)
+    private void _clearCallback<T>(ConcurrentDictionary<int, RoveCommEmitter<T>> callbacks, RoveCommCallback<T> handler)
     {
         foreach (var emitter in callbacks.Values)
         {
@@ -348,7 +357,7 @@ public class RoveCommUDP : IDisposable
             default: throw new RoveCommException("Failed to add callback: invalid data type.");
         }
     }
-    private void _clearCallback<T>(Dictionary<int, RoveCommEmitter<T>> callbacks, int dataId, RoveCommCallback<T> handler)
+    private void _clearCallback<T>(ConcurrentDictionary<int, RoveCommEmitter<T>> callbacks, int dataId, RoveCommCallback<T> handler)
     {
         if (!callbacks.ContainsKey(dataId))
         {
