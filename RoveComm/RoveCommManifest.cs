@@ -118,21 +118,21 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Pan, Tilt] (-180deg - 180deg)
+                // [Pan, Tilt] (0 - 180)
                 ["LeftGimbal"] = new RoveCommPacketDesc
                 (
                     3003,
                     2,
                     RoveCommDataType.INT16_T
                 ),
-                // [Pan, Tilt] (-180deg - 180deg)
+                // [Pan, Tilt] (0 - 180)
                 ["RightGimbal"] = new RoveCommPacketDesc
                 (
                     3004,
                     2,
                     RoveCommDataType.INT16_T
                 ),
-                // [Pan, Tilt] (-180deg - 180deg)
+                // [Pan, Tilt] (0 - 180)
                 ["BackGimbal"] = new RoveCommPacketDesc
                 (
                     3005,
@@ -230,6 +230,13 @@ public static class RoveCommManifest
                 ["AccelerometerData"] = new RoveCommPacketDesc
                 (
                     3104,
+                    3,
+                    RoveCommDataType.FLOAT
+                ),
+                // [FanSpeed, BoardTemperature, OtherTemperature] (rpm, C, C)
+                ["Thermal"] = new RoveCommPacketDesc
+                (
+                    3105,
                     3,
                     RoveCommDataType.FLOAT
                 )
@@ -351,7 +358,7 @@ public static class RoveCommManifest
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [Lat, Lon, Alt, HorizontalAccuracy, VerticalAccuracy, HeadingAccuracy, FixType, IsDifferential] (degrees, degrees, meters, meters, meters, degrees, ublox_navpvt fix type http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html, boolean)
+                // [Lat, Lon, Alt, HorizontalAccuracy, VerticalAccuracy, HeadingAccuracy, FixType, IsDifferential] (deg, deg, m, m, m, deg, ublox_navpvt fix type http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html, bool)
                 ["GPSLatLonAlt"] = new RoveCommPacketDesc
                 (
                     6100,
@@ -469,14 +476,14 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Position] (-180 - 180)
+                // [Position] (0 - 180)
                 ["LinearServo"] = new RoveCommPacketDesc
                 (
                     8005,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Position] (-180 - 180)
+                // [Position] (0 - 180)
                 ["Cache"] = new RoveCommPacketDesc
                 (
                     8006,
@@ -518,14 +525,14 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT16_T
                 ),
-                // [Pan, Tilt] (-180deg - 180deg)
+                // [Pan, Tilt] (0 - 180)
                 ["ArmGimbal1"] = new RoveCommPacketDesc
                 (
                     8012,
                     2,
                     RoveCommDataType.INT16_T
                 ),
-                // [Pan, Tilt] (-180deg - 180deg)
+                // [Pan, Tilt] (0 - 180)
                 ["ArmGimbal2"] = new RoveCommPacketDesc
                 (
                     8013,
@@ -616,14 +623,14 @@ public static class RoveCommManifest
                     4,
                     RoveCommDataType.UINT8_T
                 ),
-                // [AFFilters, SoilTrapdoor] (-180deg - 180deg)
+                // [AFFilters, SoilTrapdoor] (0 - 180)
                 ["AugerServo"] = new RoveCommPacketDesc
                 (
                     9006,
                     2,
                     RoveCommDataType.INT16_T
                 ),
-                // [Pan, Tilt] (-180deg - 180deg)
+                // [Pan, Tilt] (0 - 180)
                 ["AugerGimbal"] = new RoveCommPacketDesc
                 (
                     9007,
@@ -654,7 +661,7 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Temperature, Humidity] (degrees C, relative humidity %)
+                // [Temperature, Humidity] (C, relative %)
                 ["Environmental"] = new RoveCommPacketDesc
                 (
                     9103,

@@ -49,6 +49,7 @@ namespace RoveComm.Boards
             _service.UDP._telemetryFloat[3102] = new float[6];
             _service.UDP._telemetryFloat[3103] = new float[2];
             _service.UDP._telemetryFloat[3104] = new float[3];
+            _service.UDP._telemetryFloat[3105] = new float[3];
             _service.UDP._telemetryUInt8[3200] = new byte[2];
         }
         /// <summary>
@@ -85,7 +86,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Pan, Tilt] (-180deg - 180deg)
+        /// [Pan, Tilt] (0 - 180)
         /// </summary>
         /// <param name="Pan"></param>
         /// <param name="Tilt"></param>
@@ -95,7 +96,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Pan, Tilt] (-180deg - 180deg)
+        /// [Pan, Tilt] (0 - 180)
         /// </summary>
         /// <param name="Pan"></param>
         /// <param name="Tilt"></param>
@@ -105,7 +106,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Pan, Tilt] (-180deg - 180deg)
+        /// [Pan, Tilt] (0 - 180)
         /// </summary>
         /// <param name="Pan"></param>
         /// <param name="Tilt"></param>
@@ -242,6 +243,15 @@ namespace RoveComm.Boards
         /// [X, Y, Z] (m/s2)
         /// </summary>
         public void OnAccelerometerData(RoveCommCallback<float> handler) { _service.On(3104, handler); }
+
+        public float[] Thermal { get => _service.UDP._telemetryFloat[3105]; }
+        public float Thermal_FanSpeed { get => _service.UDP._telemetryFloat[3105][0]; }
+        public float Thermal_BoardTemperature { get => _service.UDP._telemetryFloat[3105][1]; }
+        public float Thermal_OtherTemperature { get => _service.UDP._telemetryFloat[3105][2]; }
+        /// <summary>
+        /// [FanSpeed, BoardTemperature, OtherTemperature] (rpm, C, C)
+        /// </summary>
+        public void OnThermal(RoveCommCallback<float> handler) { _service.On(3105, handler); }
 
         public byte[] VESCFault { get => _service.UDP._telemetryUInt8[3200]; }
         public byte VESCFault_MotorID { get => _service.UDP._telemetryUInt8[3200][0]; }
@@ -436,7 +446,7 @@ namespace RoveComm.Boards
         public double GPSLatLonAlt_FixType { get => _service.UDP._telemetryDouble[6100][6]; }
         public double GPSLatLonAlt_IsDifferential { get => _service.UDP._telemetryDouble[6100][7]; }
         /// <summary>
-        /// [Lat, Lon, Alt, HorizontalAccuracy, VerticalAccuracy, HeadingAccuracy, FixType, IsDifferential] (degrees, degrees, meters, meters, meters, degrees, ublox_navpvt fix type http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html, boolean)
+        /// [Lat, Lon, Alt, HorizontalAccuracy, VerticalAccuracy, HeadingAccuracy, FixType, IsDifferential] (deg, deg, m, m, m, deg, ublox_navpvt fix type http://docs.ros.org/en/noetic/api/ublox_msgs/html/msg/NavPVT.html, bool)
         /// </summary>
         public void OnGPSLatLonAlt(RoveCommCallback<double> handler) { _service.On(6100, handler); }
 
@@ -590,7 +600,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Position] (-180 - 180)
+        /// [Position] (0 - 180)
         /// </summary>
         /// <param name="Position"></param>
         public void LinearServo(byte Position)
@@ -599,7 +609,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Position] (-180 - 180)
+        /// [Position] (0 - 180)
         /// </summary>
         /// <param name="Position"></param>
         public void Cache(byte Position)
@@ -653,7 +663,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Pan, Tilt] (-180deg - 180deg)
+        /// [Pan, Tilt] (0 - 180)
         /// </summary>
         /// <param name="Pan"></param>
         /// <param name="Tilt"></param>
@@ -663,7 +673,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Pan, Tilt] (-180deg - 180deg)
+        /// [Pan, Tilt] (0 - 180)
         /// </summary>
         /// <param name="Pan"></param>
         /// <param name="Tilt"></param>
@@ -785,7 +795,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [AFFilters, SoilTrapdoor] (-180deg - 180deg)
+        /// [AFFilters, SoilTrapdoor] (0 - 180)
         /// </summary>
         /// <param name="AFFilters"></param>
         /// <param name="SoilTrapdoor"></param>
@@ -795,7 +805,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Pan, Tilt] (-180deg - 180deg)
+        /// [Pan, Tilt] (0 - 180)
         /// </summary>
         /// <param name="Pan"></param>
         /// <param name="Tilt"></param>
@@ -826,7 +836,7 @@ namespace RoveComm.Boards
         public float Environmental_Temperature { get => _service.UDP._telemetryFloat[9103][0]; }
         public float Environmental_Humidity { get => _service.UDP._telemetryFloat[9103][1]; }
         /// <summary>
-        /// [Temperature, Humidity] (degrees C, relative humidity %)
+        /// [Temperature, Humidity] (C, relative %)
         /// </summary>
         public void OnEnvironmental(RoveCommCallback<float> handler) { _service.On(9103, handler); }
 
