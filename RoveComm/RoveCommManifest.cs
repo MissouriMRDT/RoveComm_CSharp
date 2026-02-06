@@ -460,7 +460,7 @@ public static class RoveCommManifest
                 (
                     8002,
                     1,
-                    RoveCommDataType.FLOAT
+                    RoveCommDataType.INT16_T
                 ),
                 // [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
                 ["IKPosition"] = new RoveCommPacketDesc
@@ -563,11 +563,11 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT16_T
                 ),
-                // [X, J2, J3, J4, P, R] (ping time ms)
+                // [X, J2, J3, J4, P, R, G] (ping time ms)
                 ["SMOCOPing"] = new RoveCommPacketDesc
                 (
                     8103,
-                    6,
+                    7,
                     RoveCommDataType.UINT16_T
                 )
             },

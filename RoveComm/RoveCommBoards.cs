@@ -537,7 +537,7 @@ namespace RoveComm.Boards
             _service.UDP._telemetryFloat[8100] = new float[8];
             _service.UDP._telemetryUInt16[8101] = new ushort[1];
             _service.UDP._telemetryUInt16[8102] = new ushort[1];
-            _service.UDP._telemetryUInt16[8103] = new ushort[6];
+            _service.UDP._telemetryUInt16[8103] = new ushort[7];
         }
         /// <summary>
         /// [X, J2, J3, J4, P, R] (-32768 - 32767) -> (-100% - 100%)
@@ -571,7 +571,7 @@ namespace RoveComm.Boards
         /// [Gripper] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
         /// <param name="Gripper"></param>
-        public void GripperOpenLoop(float Gripper)
+        public void GripperOpenLoop(short Gripper)
         {
             _service.SendBG(8002, [Gripper], _ip);
         }
@@ -715,8 +715,9 @@ namespace RoveComm.Boards
         public ushort SMOCOPing_J4 { get => _service.UDP._telemetryUInt16[8103][3]; }
         public ushort SMOCOPing_P { get => _service.UDP._telemetryUInt16[8103][4]; }
         public ushort SMOCOPing_R { get => _service.UDP._telemetryUInt16[8103][5]; }
+        public ushort SMOCOPing_G { get => _service.UDP._telemetryUInt16[8103][6]; }
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (ping time ms)
+        /// [X, J2, J3, J4, P, R, G] (ping time ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(8103, handler); }
     }
