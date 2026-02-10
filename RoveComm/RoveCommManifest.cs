@@ -441,14 +441,14 @@ public static class RoveCommManifest
             ip: "192.168.2.107",
             commands: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [X, J2, J3, J4, P, R] (-32768 - 32767) -> (-100% - 100%)
+                // [X, J2, J3, J4, J5, J6] (-32768 - 32767) -> (-100% - 100%)
                 ["OpenLoop"] = new RoveCommPacketDesc
                 (
                     8000,
                     6,
                     RoveCommDataType.INT16_T
                 ),
-                // [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
+                // [X, J2, J3, J4, J5, J6] (in, deg, deg, deg, deg, deg)
                 ["TargetAngle"] = new RoveCommPacketDesc
                 (
                     8001,
@@ -462,7 +462,7 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.INT16_T
                 ),
-                // [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
+                // [X, Y, Z, J4, J5, J6] (in, in, in, deg, deg, deg)
                 ["IKPosition"] = new RoveCommPacketDesc
                 (
                     8003,
@@ -497,14 +497,14 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask override enabled)
                 ["LimitSwitchOverride"] = new RoveCommPacketDesc
                 (
                     8008,
                     1,
                     RoveCommDataType.UINT16_T
                 ),
-                // [X, J2, J3, J4, P, R] (bitmask override enabled)
+                // [X, J2, J3, J4, J5, J6] (bitmask override enabled)
                 ["ClosedLoopOverride"] = new RoveCommPacketDesc
                 (
                     8009,
@@ -518,7 +518,7 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask override enabled)
                 ["SoftLimitOverride"] = new RoveCommPacketDesc
                 (
                     8011,
@@ -542,28 +542,28 @@ public static class RoveCommManifest
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [X, J2, J3, J4, P, R, Y, Z] (in, deg, deg, deg, deg, deg, in, in)
+                // [X, J2, J3, J4, J5, J6, Y, Z] (in, deg, deg, deg, deg, deg, in, in)
                 ["Position"] = new RoveCommPacketDesc
                 (
                     8100,
                     8,
                     RoveCommDataType.FLOAT
                 ),
-                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask depressed)
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask depressed)
                 ["LimitSwitch"] = new RoveCommPacketDesc
                 (
                     8101,
                     1,
                     RoveCommDataType.UINT16_T
                 ),
-                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask triggered)
+                // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask triggered)
                 ["SoftLimit"] = new RoveCommPacketDesc
                 (
                     8102,
                     1,
                     RoveCommDataType.UINT16_T
                 ),
-                // [X, J2, J3, J4, P, R, G] (ping time ms)
+                // [X, J2, J3, J4, J5, J6, G] (ping time ms)
                 ["SMOCOPing"] = new RoveCommPacketDesc
                 (
                     8103,

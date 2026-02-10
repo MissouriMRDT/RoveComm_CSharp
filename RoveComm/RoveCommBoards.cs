@@ -540,31 +540,31 @@ namespace RoveComm.Boards
             _service.UDP._telemetryUInt16[8103] = new ushort[7];
         }
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (-32768 - 32767) -> (-100% - 100%)
+        /// [X, J2, J3, J4, J5, J6] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
         /// <param name="X"></param>
         /// <param name="J2"></param>
         /// <param name="J3"></param>
         /// <param name="J4"></param>
-        /// <param name="P"></param>
-        /// <param name="R"></param>
-        public void OpenLoop(short X, short J2, short J3, short J4, short P, short R)
+        /// <param name="J5"></param>
+        /// <param name="J6"></param>
+        public void OpenLoop(short X, short J2, short J3, short J4, short J5, short J6)
         {
-            _service.SendBG(8000, [X, J2, J3, J4, P, R], _ip);
+            _service.SendBG(8000, [X, J2, J3, J4, J5, J6], _ip);
         }
 
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (in, deg, deg, deg, deg, deg)
+        /// [X, J2, J3, J4, J5, J6] (in, deg, deg, deg, deg, deg)
         /// </summary>
         /// <param name="X"></param>
         /// <param name="J2"></param>
         /// <param name="J3"></param>
         /// <param name="J4"></param>
-        /// <param name="P"></param>
-        /// <param name="R"></param>
-        public void TargetAngle(float X, float J2, float J3, float J4, float P, float R)
+        /// <param name="J5"></param>
+        /// <param name="J6"></param>
+        public void TargetAngle(float X, float J2, float J3, float J4, float J5, float J6)
         {
-            _service.SendBG(8001, [X, J2, J3, J4, P, R], _ip);
+            _service.SendBG(8001, [X, J2, J3, J4, J5, J6], _ip);
         }
 
         /// <summary>
@@ -577,17 +577,17 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [X, Y, Z, J4, P, R] (in, in, in, deg, deg, deg)
+        /// [X, Y, Z, J4, J5, J6] (in, in, in, deg, deg, deg)
         /// </summary>
         /// <param name="X"></param>
         /// <param name="Y"></param>
         /// <param name="Z"></param>
         /// <param name="J4"></param>
-        /// <param name="P"></param>
-        /// <param name="R"></param>
-        public void IKPosition(float X, float Y, float Z, float J4, float P, float R)
+        /// <param name="J5"></param>
+        /// <param name="J6"></param>
+        public void IKPosition(float X, float Y, float Z, float J4, float J5, float J6)
         {
-            _service.SendBG(8003, [X, Y, Z, J4, P, R], _ip);
+            _service.SendBG(8003, [X, Y, Z, J4, J5, J6], _ip);
         }
 
         /// <summary>
@@ -627,7 +627,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask override enabled)
         /// </summary>
         /// <param name="Data0"></param>
         public void LimitSwitchOverride(ushort Data0)
@@ -636,7 +636,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [X, J2, J3, J4, P, R] (bitmask override enabled)
+        /// [X, J2, J3, J4, J5, J6] (bitmask override enabled)
         /// </summary>
         /// <param name="Data0"></param>
         public void ClosedLoopOverride(byte Data0)
@@ -654,7 +654,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask override enabled)
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask override enabled)
         /// </summary>
         /// <param name="Data0"></param>
         public void SoftLimitOverride(ushort Data0)
@@ -687,24 +687,24 @@ namespace RoveComm.Boards
         public float Position_J2 { get => _service.UDP._telemetryFloat[8100][1]; }
         public float Position_J3 { get => _service.UDP._telemetryFloat[8100][2]; }
         public float Position_J4 { get => _service.UDP._telemetryFloat[8100][3]; }
-        public float Position_P { get => _service.UDP._telemetryFloat[8100][4]; }
-        public float Position_R { get => _service.UDP._telemetryFloat[8100][5]; }
+        public float Position_J5 { get => _service.UDP._telemetryFloat[8100][4]; }
+        public float Position_J6 { get => _service.UDP._telemetryFloat[8100][5]; }
         public float Position_Y { get => _service.UDP._telemetryFloat[8100][6]; }
         public float Position_Z { get => _service.UDP._telemetryFloat[8100][7]; }
         /// <summary>
-        /// [X, J2, J3, J4, P, R, Y, Z] (in, deg, deg, deg, deg, deg, in, in)
+        /// [X, J2, J3, J4, J5, J6, Y, Z] (in, deg, deg, deg, deg, deg, in, in)
         /// </summary>
         public void OnPosition(RoveCommCallback<float> handler) { _service.On(8100, handler); }
 
         public ushort LimitSwitch { get => _service.UDP._telemetryUInt16[8101][0]; }
         /// <summary>
-        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask depressed)
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask depressed)
         /// </summary>
         public void OnLimitSwitch(RoveCommCallback<ushort> handler) { _service.On(8101, handler); }
 
         public ushort SoftLimit { get => _service.UDP._telemetryUInt16[8102][0]; }
         /// <summary>
-        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, P+, P-] (bitmask triggered)
+        /// [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask triggered)
         /// </summary>
         public void OnSoftLimit(RoveCommCallback<ushort> handler) { _service.On(8102, handler); }
 
@@ -713,11 +713,11 @@ namespace RoveComm.Boards
         public ushort SMOCOPing_J2 { get => _service.UDP._telemetryUInt16[8103][1]; }
         public ushort SMOCOPing_J3 { get => _service.UDP._telemetryUInt16[8103][2]; }
         public ushort SMOCOPing_J4 { get => _service.UDP._telemetryUInt16[8103][3]; }
-        public ushort SMOCOPing_P { get => _service.UDP._telemetryUInt16[8103][4]; }
-        public ushort SMOCOPing_R { get => _service.UDP._telemetryUInt16[8103][5]; }
+        public ushort SMOCOPing_J5 { get => _service.UDP._telemetryUInt16[8103][4]; }
+        public ushort SMOCOPing_J6 { get => _service.UDP._telemetryUInt16[8103][5]; }
         public ushort SMOCOPing_G { get => _service.UDP._telemetryUInt16[8103][6]; }
         /// <summary>
-        /// [X, J2, J3, J4, P, R, G] (ping time ms)
+        /// [X, J2, J3, J4, J5, J6, G] (ping time ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(8103, handler); }
     }
