@@ -455,98 +455,119 @@ public static class RoveCommManifest
                     6,
                     RoveCommDataType.FLOAT
                 ),
+                // [X, J2, J3, J4, J5, J6] (in, deg, deg, deg, deg, deg)
+                ["TargetAngleIncrement"] = new RoveCommPacketDesc
+                (
+                    8002,
+                    6,
+                    RoveCommDataType.FLOAT
+                ),
                 // [Gripper] (-32768 - 32767) -> (-100% - 100%)
                 ["GripperOpenLoop"] = new RoveCommPacketDesc
                 (
-                    8002,
+                    8003,
                     1,
                     RoveCommDataType.INT16_T
                 ),
                 // [X, Y, Z, J4, J5, J6] (in, in, in, deg, deg, deg)
                 ["IKPosition"] = new RoveCommPacketDesc
                 (
-                    8003,
+                    8004,
+                    6,
+                    RoveCommDataType.FLOAT
+                ),
+                // [X, Y, Z, J4, J5, J6] (in, in, in, deg, deg, deg)
+                ["IKPositionIncrement"] = new RoveCommPacketDesc
+                (
+                    8005,
+                    6,
+                    RoveCommDataType.FLOAT
+                ),
+                // [TX, TY, TZ, RX, RY, RZ] (in, in, in, deg, deg, deg)
+                ["IKPoseIncrement"] = new RoveCommPacketDesc
+                (
+                    8006,
                     6,
                     RoveCommDataType.FLOAT
                 ),
                 // [Enabled]
                 ["Laser"] = new RoveCommPacketDesc
                 (
-                    8004,
+                    8007,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // [Position] (0 - 180)
                 ["LinearServo"] = new RoveCommPacketDesc
                 (
-                    8005,
+                    8008,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // [Position] (0 - 180)
                 ["Cache"] = new RoveCommPacketDesc
                 (
-                    8006,
+                    8009,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // [Enabled]
                 ["WatchdogOverride"] = new RoveCommPacketDesc
                 (
-                    8007,
+                    8010,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask override enabled)
                 ["LimitSwitchOverride"] = new RoveCommPacketDesc
                 (
-                    8008,
+                    8011,
                     1,
                     RoveCommDataType.UINT16_T
                 ),
                 // [X, J2, J3, J4, J5, J6] (bitmask override enabled)
                 ["ClosedLoopOverride"] = new RoveCommPacketDesc
                 (
-                    8009,
+                    8012,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // [X, Roll] (bitmask start calibration)
                 ["CalibrateEncoder"] = new RoveCommPacketDesc
                 (
-                    8010,
+                    8013,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
                 // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask override enabled)
                 ["SoftLimitOverride"] = new RoveCommPacketDesc
                 (
-                    8011,
+                    8014,
                     1,
                     RoveCommDataType.UINT16_T
                 ),
                 // [Pan, Tilt] (0 - 180)
                 ["ArmGimbal1"] = new RoveCommPacketDesc
                 (
-                    8012,
+                    8015,
                     2,
                     RoveCommDataType.INT16_T
                 ),
                 // [Pan, Tilt] (0 - 180)
                 ["ArmGimbal2"] = new RoveCommPacketDesc
                 (
-                    8013,
+                    8016,
                     2,
                     RoveCommDataType.INT16_T
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [X, J2, J3, J4, J5, J6, Y, Z] (in, deg, deg, deg, deg, deg, in, in)
+                // [X, J2, J3, J4, J5, J6, GX, GY, GZ] (in, deg, deg, deg, deg, deg, in, in, in)
                 ["Position"] = new RoveCommPacketDesc
                 (
                     8100,
-                    8,
+                    9,
                     RoveCommDataType.FLOAT
                 ),
                 // [X+, X-, J2+, J2-, J3+, J3-, J4+, J4-, J5+, J5-] (bitmask depressed)

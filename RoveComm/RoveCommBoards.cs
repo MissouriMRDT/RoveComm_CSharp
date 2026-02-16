@@ -534,7 +534,7 @@ namespace RoveComm.Boards
         {
             _service = service;
 
-            _service.UDP._telemetryFloat[8100] = new float[8];
+            _service.UDP._telemetryFloat[8100] = new float[9];
             _service.UDP._telemetryUInt16[8101] = new ushort[1];
             _service.UDP._telemetryUInt16[8102] = new ushort[1];
             _service.UDP._telemetryUInt16[8103] = new ushort[7];
@@ -568,12 +568,26 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
+        /// [X, J2, J3, J4, J5, J6] (in, deg, deg, deg, deg, deg)
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="J2"></param>
+        /// <param name="J3"></param>
+        /// <param name="J4"></param>
+        /// <param name="J5"></param>
+        /// <param name="J6"></param>
+        public void TargetAngleIncrement(float X, float J2, float J3, float J4, float J5, float J6)
+        {
+            _service.SendBG(8002, [X, J2, J3, J4, J5, J6], _ip);
+        }
+
+        /// <summary>
         /// [Gripper] (-32768 - 32767) -> (-100% - 100%)
         /// </summary>
         /// <param name="Gripper"></param>
         public void GripperOpenLoop(short Gripper)
         {
-            _service.SendBG(8002, [Gripper], _ip);
+            _service.SendBG(8003, [Gripper], _ip);
         }
 
         /// <summary>
@@ -587,7 +601,35 @@ namespace RoveComm.Boards
         /// <param name="J6"></param>
         public void IKPosition(float X, float Y, float Z, float J4, float J5, float J6)
         {
-            _service.SendBG(8003, [X, Y, Z, J4, J5, J6], _ip);
+            _service.SendBG(8004, [X, Y, Z, J4, J5, J6], _ip);
+        }
+
+        /// <summary>
+        /// [X, Y, Z, J4, J5, J6] (in, in, in, deg, deg, deg)
+        /// </summary>
+        /// <param name="X"></param>
+        /// <param name="Y"></param>
+        /// <param name="Z"></param>
+        /// <param name="J4"></param>
+        /// <param name="J5"></param>
+        /// <param name="J6"></param>
+        public void IKPositionIncrement(float X, float Y, float Z, float J4, float J5, float J6)
+        {
+            _service.SendBG(8005, [X, Y, Z, J4, J5, J6], _ip);
+        }
+
+        /// <summary>
+        /// [TX, TY, TZ, RX, RY, RZ] (in, in, in, deg, deg, deg)
+        /// </summary>
+        /// <param name="TX"></param>
+        /// <param name="TY"></param>
+        /// <param name="TZ"></param>
+        /// <param name="RX"></param>
+        /// <param name="RY"></param>
+        /// <param name="RZ"></param>
+        public void IKPoseIncrement(float TX, float TY, float TZ, float RX, float RY, float RZ)
+        {
+            _service.SendBG(8006, [TX, TY, TZ, RX, RY, RZ], _ip);
         }
 
         /// <summary>
@@ -596,7 +638,7 @@ namespace RoveComm.Boards
         /// <param name="Enabled"></param>
         public void Laser(byte Enabled)
         {
-            _service.SendBG(8004, [Enabled], _ip);
+            _service.SendBG(8007, [Enabled], _ip);
         }
 
         /// <summary>
@@ -605,7 +647,7 @@ namespace RoveComm.Boards
         /// <param name="Position"></param>
         public void LinearServo(byte Position)
         {
-            _service.SendBG(8005, [Position], _ip);
+            _service.SendBG(8008, [Position], _ip);
         }
 
         /// <summary>
@@ -614,7 +656,7 @@ namespace RoveComm.Boards
         /// <param name="Position"></param>
         public void Cache(byte Position)
         {
-            _service.SendBG(8006, [Position], _ip);
+            _service.SendBG(8009, [Position], _ip);
         }
 
         /// <summary>
@@ -623,7 +665,7 @@ namespace RoveComm.Boards
         /// <param name="Enabled"></param>
         public void WatchdogOverride(byte Enabled)
         {
-            _service.SendBG(8007, [Enabled], _ip);
+            _service.SendBG(8010, [Enabled], _ip);
         }
 
         /// <summary>
@@ -632,7 +674,7 @@ namespace RoveComm.Boards
         /// <param name="Data0"></param>
         public void LimitSwitchOverride(ushort Data0)
         {
-            _service.SendBG(8008, [Data0], _ip);
+            _service.SendBG(8011, [Data0], _ip);
         }
 
         /// <summary>
@@ -641,7 +683,7 @@ namespace RoveComm.Boards
         /// <param name="Data0"></param>
         public void ClosedLoopOverride(byte Data0)
         {
-            _service.SendBG(8009, [Data0], _ip);
+            _service.SendBG(8012, [Data0], _ip);
         }
 
         /// <summary>
@@ -650,7 +692,7 @@ namespace RoveComm.Boards
         /// <param name="Data0"></param>
         public void CalibrateEncoder(byte Data0)
         {
-            _service.SendBG(8010, [Data0], _ip);
+            _service.SendBG(8013, [Data0], _ip);
         }
 
         /// <summary>
@@ -659,7 +701,7 @@ namespace RoveComm.Boards
         /// <param name="Data0"></param>
         public void SoftLimitOverride(ushort Data0)
         {
-            _service.SendBG(8011, [Data0], _ip);
+            _service.SendBG(8014, [Data0], _ip);
         }
 
         /// <summary>
@@ -669,7 +711,7 @@ namespace RoveComm.Boards
         /// <param name="Tilt"></param>
         public void ArmGimbal1(short Pan, short Tilt)
         {
-            _service.SendBG(8012, [Pan, Tilt], _ip);
+            _service.SendBG(8015, [Pan, Tilt], _ip);
         }
 
         /// <summary>
@@ -679,7 +721,7 @@ namespace RoveComm.Boards
         /// <param name="Tilt"></param>
         public void ArmGimbal2(short Pan, short Tilt)
         {
-            _service.SendBG(8013, [Pan, Tilt], _ip);
+            _service.SendBG(8016, [Pan, Tilt], _ip);
         }
 
         public float[] Position { get => _service.UDP._telemetryFloat[8100]; }
@@ -689,10 +731,11 @@ namespace RoveComm.Boards
         public float Position_J4 { get => _service.UDP._telemetryFloat[8100][3]; }
         public float Position_J5 { get => _service.UDP._telemetryFloat[8100][4]; }
         public float Position_J6 { get => _service.UDP._telemetryFloat[8100][5]; }
-        public float Position_Y { get => _service.UDP._telemetryFloat[8100][6]; }
-        public float Position_Z { get => _service.UDP._telemetryFloat[8100][7]; }
+        public float Position_GX { get => _service.UDP._telemetryFloat[8100][6]; }
+        public float Position_GY { get => _service.UDP._telemetryFloat[8100][7]; }
+        public float Position_GZ { get => _service.UDP._telemetryFloat[8100][8]; }
         /// <summary>
-        /// [X, J2, J3, J4, J5, J6, Y, Z] (in, deg, deg, deg, deg, deg, in, in)
+        /// [X, J2, J3, J4, J5, J6, GX, GY, GZ] (in, deg, deg, deg, deg, deg, in, in, in)
         /// </summary>
         public void OnPosition(RoveCommCallback<float> handler) { _service.On(8100, handler); }
 
