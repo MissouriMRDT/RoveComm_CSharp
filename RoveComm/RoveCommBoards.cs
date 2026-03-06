@@ -909,6 +909,8 @@ namespace RoveComm.Boards
             _service.UDP._telemetryUInt8[11100] = new byte[1];
             _service.UDP._telemetryUInt8[11101] = new byte[1];
             _service.UDP._telemetryUInt32[11103] = new uint[2];
+            _service.UDP._telemetryDouble[11104] = new double[1000];
+            _service.UDP._telemetryDouble[11105] = new double[1];
         }
         /// <summary>
         /// Start Autonomy_Software
@@ -1049,6 +1051,18 @@ namespace RoveComm.Boards
         /// [Thread, FPS] (AUTONOMYTHREADS, fps)
         /// </summary>
         public void OnThreadFPS(RoveCommCallback<uint> handler) { _service.On(11103, handler); }
+
+        public double[] PathWaypoints { get => _service.UDP._telemetryDouble[11104]; }
+        /// <summary>
+        /// [Lat, Lon, Lat, Lon, ...] (deg, deg, deg, deg, ...)
+        /// </summary>
+        public void OnPathWaypoints(RoveCommCallback<double> handler) { _service.On(11104, handler); }
+
+        public double TimeRemaining { get => _service.UDP._telemetryDouble[11105][0]; }
+        /// <summary>
+        /// [EstimatedTimeToGoal] (s)
+        /// </summary>
+        public void OnTimeRemaining(RoveCommCallback<double> handler) { _service.On(11105, handler); }
 
         public enum AUTONOMYSTATE
         {

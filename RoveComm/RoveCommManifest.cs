@@ -817,6 +817,20 @@ public static class RoveCommManifest
                     11103,
                     2,
                     RoveCommDataType.UINT32_T
+                ),
+                // [Lat, Lon, Lat, Lon, ...] (deg, deg, deg, deg, ...)
+                ["PathWaypoints"] = new RoveCommPacketDesc
+                (
+                    11104,
+                    1000,
+                    RoveCommDataType.DOUBLE
+                ),
+                // [EstimatedTimeToGoal] (s)
+                ["TimeRemaining"] = new RoveCommPacketDesc
+                (
+                    11105,
+                    1,
+                    RoveCommDataType.DOUBLE
                 )
             },
             error: new Dictionary<string, RoveCommPacketDesc>
