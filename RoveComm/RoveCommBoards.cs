@@ -1158,7 +1158,7 @@ namespace RoveComm.Boards
         {
             _service = service;
 
-            _service.UDP._telemetryUInt8[12100] = new byte[1];
+            _service.UDP._telemetryUInt8[12100] = new byte[2];
             _service.UDP._telemetryUInt8[12102] = new byte[6];
         }
         /// <summary>
@@ -1199,7 +1199,9 @@ namespace RoveComm.Boards
             _service.SendBG(12003, [Data], _ip);
         }
 
-        public byte AvailableCameras { get => _service.UDP._telemetryUInt8[12100][0]; }
+        public byte[] AvailableCameras { get => _service.UDP._telemetryUInt8[12100]; }
+        public byte AvailableCameras_Connected { get => _service.UDP._telemetryUInt8[12100][0]; }
+        public byte AvailableCameras_Streaming { get => _service.UDP._telemetryUInt8[12100][1]; }
         /// <summary>
         /// [Connected, Streaming] (bitmask indexes, bitmask indexes)
         /// </summary>
@@ -1232,7 +1234,7 @@ namespace RoveComm.Boards
         {
             _service = service;
 
-            _service.UDP._telemetryUInt8[13100] = new byte[1];
+            _service.UDP._telemetryUInt8[13100] = new byte[2];
             _service.UDP._telemetryUInt8[13102] = new byte[6];
         }
         /// <summary>
@@ -1273,7 +1275,9 @@ namespace RoveComm.Boards
             _service.SendBG(13003, [Data], _ip);
         }
 
-        public byte AvailableCameras { get => _service.UDP._telemetryUInt8[13100][0]; }
+        public byte[] AvailableCameras { get => _service.UDP._telemetryUInt8[13100]; }
+        public byte AvailableCameras_Connected { get => _service.UDP._telemetryUInt8[13100][0]; }
+        public byte AvailableCameras_Streaming { get => _service.UDP._telemetryUInt8[13100][1]; }
         /// <summary>
         /// [Connected, Streaming] (bitmask indexes, bitmask indexes)
         /// </summary>

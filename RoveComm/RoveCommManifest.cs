@@ -899,7 +899,7 @@ public static class RoveCommManifest
                 ["AvailableCameras"] = new RoveCommPacketDesc
                 (
                     12100,
-                    1,
+                    2,
                     RoveCommDataType.UINT8_T
                 ),
                 // Picture has been taken.
@@ -962,7 +962,7 @@ public static class RoveCommManifest
                 ["AvailableCameras"] = new RoveCommPacketDesc
                 (
                     13100,
-                    1,
+                    2,
                     RoveCommDataType.UINT8_T
                 ),
                 // Picture has been taken.
