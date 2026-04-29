@@ -477,14 +477,14 @@ public static class RoveCommManifest
                     RoveCommDataType.FLOAT
                 ),
                 // [X, Y, Z, J4, J5, J6] (in, in, in, deg, deg, deg)
-                ["IKPositionIncrement"] = new RoveCommPacketDesc
+                ["IKWristIncrement"] = new RoveCommPacketDesc
                 (
                     8005,
                     6,
                     RoveCommDataType.FLOAT
                 ),
                 // [TX, TY, TZ, RX, RY, RZ] (in, in, in, deg, deg, deg)
-                ["IKPoseIncrement"] = new RoveCommPacketDesc
+                ["IKWorldIncrement"] = new RoveCommPacketDesc
                 (
                     8006,
                     6,
@@ -559,6 +559,13 @@ public static class RoveCommManifest
                     8016,
                     2,
                     RoveCommDataType.INT16_T
+                ),
+                // [TX, TY, TZ, RX, RY, RZ] (in, in, in, deg, deg, deg)
+                ["IKToolIncrement"] = new RoveCommPacketDesc
+                (
+                    80017,
+                    6,
+                    RoveCommDataType.FLOAT
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
@@ -590,6 +597,13 @@ public static class RoveCommManifest
                     8103,
                     7,
                     RoveCommDataType.UINT16_T
+                ),
+                // [X, J2, J3, J4, J5, J6] (in, deg, deg, deg, deg, deg)
+                ["Target"] = new RoveCommPacketDesc
+                (
+                    8104,
+                    6,
+                    RoveCommDataType.FLOAT
                 )
             },
             error: new Dictionary<string, RoveCommPacketDesc>
@@ -702,6 +716,13 @@ public static class RoveCommManifest
                     9105,
                     1,
                     RoveCommDataType.UINT16_T
+                ),
+                // [LEDTimer] (ms)
+                ["LEDStatus"] = new RoveCommPacketDesc
+                (
+                    9106,
+                    1,
+                    RoveCommDataType.INT32_T
                 )
             }
         ),
@@ -857,62 +878,41 @@ public static class RoveCommManifest
                     2,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast)
+                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
                 ["SetFFMPEGArguments"] = new RoveCommPacketDesc
                 (
                     12002,
                     16384,
                     RoveCommDataType.CHAR
                 ),
-                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast)
+                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
                 ["SetPictureArguments"] = new RoveCommPacketDesc
                 (
                     12003,
                     16384,
                     RoveCommDataType.CHAR
-                ),
-                // [Camera0, Camera1, Camera2, Camera3] (-1.0 - 1.0)
-                ["SetBrightness"] = new RoveCommPacketDesc
-                (
-                    12004,
-                    4,
-                    RoveCommDataType.FLOAT
-                ),
-                // [Camera0, Camera1, Camera2, Camera3] (-1.0 - 2.0)
-                ["SetContrast"] = new RoveCommPacketDesc
-                (
-                    12005,
-                    4,
-                    RoveCommDataType.FLOAT
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [AvailableCameras]
+                // [Connected, Streaming] (bitmask indexes, bitmask indexes)
                 ["AvailableCameras"] = new RoveCommPacketDesc
                 (
                     12100,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [StreamingCameras]
-                ["StreamingCameras"] = new RoveCommPacketDesc
-                (
-                    12101,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
                 // Picture has been taken.
                 ["PictureTaken"] = new RoveCommPacketDesc
                 (
-                    12102,
+                    12101,
                     0,
                     RoveCommDataType.UINT8_T
                 ),
                 // [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
                 ["Utilization"] = new RoveCommPacketDesc
                 (
-                    12103,
+                    12102,
                     6,
                     RoveCommDataType.UINT8_T
                 )
@@ -941,62 +941,41 @@ public static class RoveCommManifest
                     2,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast)
+                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
                 ["SetFFMPEGArguments"] = new RoveCommPacketDesc
                 (
                     13002,
                     16384,
                     RoveCommDataType.CHAR
                 ),
-                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast)
+                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
                 ["SetPictureArguments"] = new RoveCommPacketDesc
                 (
                     13003,
                     16384,
                     RoveCommDataType.CHAR
-                ),
-                // [Camera0, Camera1, Camera2, Camera3] (-1.0 - 1.0)
-                ["SetBrightness"] = new RoveCommPacketDesc
-                (
-                    13004,
-                    4,
-                    RoveCommDataType.FLOAT
-                ),
-                // [Camera0, Camera1, Camera2, Camera3] (-1.0 - 2.0)
-                ["SetContrast"] = new RoveCommPacketDesc
-                (
-                    13005,
-                    4,
-                    RoveCommDataType.FLOAT
                 )
             },
             telemetry: new Dictionary<string, RoveCommPacketDesc>
             {
-                // [AvailableCameras]
+                // [Connected, Streaming] (bitmask indexes, bitmask indexes)
                 ["AvailableCameras"] = new RoveCommPacketDesc
                 (
                     13100,
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [StreamingCameras]
-                ["StreamingCameras"] = new RoveCommPacketDesc
-                (
-                    13101,
-                    1,
-                    RoveCommDataType.UINT8_T
-                ),
                 // Picture has been taken.
                 ["PictureTaken"] = new RoveCommPacketDesc
                 (
-                    13102,
+                    13101,
                     0,
                     RoveCommDataType.UINT8_T
                 ),
                 // [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
                 ["Utilization"] = new RoveCommPacketDesc
                 (
-                    13103,
+                    13102,
                     6,
                     RoveCommDataType.UINT8_T
                 )
@@ -1150,7 +1129,7 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Integration Time] (ms)
+                // [Integration Time, Sample Count] (ms, n)
                 ["RequestRamanReading"] = new RoveCommPacketDesc
                 (
                     16005,
@@ -1174,38 +1153,45 @@ public static class RoveCommManifest
                     1,
                     RoveCommDataType.UINT8_T
                 ),
-                // Raman CCD elements 1-512
+                // Raman CCD elements 0-511
                 ["RamanReading_Part1"] = new RoveCommPacketDesc
                 (
                     16102,
                     512,
                     RoveCommDataType.UINT16_T
                 ),
-                // Raman CCD elements 513-1024
+                // Raman CCD elements 512-1023
                 ["RamanReading_Part2"] = new RoveCommPacketDesc
                 (
                     16103,
                     512,
                     RoveCommDataType.UINT16_T
                 ),
-                // Raman CCD elements 1025-1536
+                // Raman CCD elements 1024-1535
                 ["RamanReading_Part3"] = new RoveCommPacketDesc
                 (
                     16104,
                     512,
                     RoveCommDataType.UINT16_T
                 ),
-                // Raman CCD elements 1537-2048
+                // Raman CCD elements 1536-2047
                 ["RamanReading_Part4"] = new RoveCommPacketDesc
                 (
                     16105,
                     512,
                     RoveCommDataType.UINT16_T
                 ),
+                // Raman CCD elements 2048-2559
+                ["RamanReading_Part5"] = new RoveCommPacketDesc
+                (
+                    16106,
+                    512,
+                    RoveCommDataType.UINT16_T
+                ),
                 // [InstrumentsAxis] (ping time ms)
                 ["SMOCOPing"] = new RoveCommPacketDesc
                 (
-                    16106,
+                    16107,
                     1,
                     RoveCommDataType.UINT16_T
                 )

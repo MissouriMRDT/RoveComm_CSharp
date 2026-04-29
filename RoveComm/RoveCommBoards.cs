@@ -538,6 +538,7 @@ namespace RoveComm.Boards
             _service.UDP._telemetryUInt16[8101] = new ushort[1];
             _service.UDP._telemetryUInt16[8102] = new ushort[1];
             _service.UDP._telemetryUInt16[8103] = new ushort[7];
+            _service.UDP._telemetryFloat[8104] = new float[6];
         }
         /// <summary>
         /// [X, J2, J3, J4, J5, J6] (-32768 - 32767) -> (-100% - 100%)
@@ -613,7 +614,7 @@ namespace RoveComm.Boards
         /// <param name="J4"></param>
         /// <param name="J5"></param>
         /// <param name="J6"></param>
-        public void IKPositionIncrement(float X, float Y, float Z, float J4, float J5, float J6)
+        public void IKWristIncrement(float X, float Y, float Z, float J4, float J5, float J6)
         {
             _service.SendBG(8005, [X, Y, Z, J4, J5, J6], _ip);
         }
@@ -627,7 +628,7 @@ namespace RoveComm.Boards
         /// <param name="RX"></param>
         /// <param name="RY"></param>
         /// <param name="RZ"></param>
-        public void IKPoseIncrement(float TX, float TY, float TZ, float RX, float RY, float RZ)
+        public void IKWorldIncrement(float TX, float TY, float TZ, float RX, float RY, float RZ)
         {
             _service.SendBG(8006, [TX, TY, TZ, RX, RY, RZ], _ip);
         }
@@ -724,6 +725,20 @@ namespace RoveComm.Boards
             _service.SendBG(8016, [Pan, Tilt], _ip);
         }
 
+        /// <summary>
+        /// [TX, TY, TZ, RX, RY, RZ] (in, in, in, deg, deg, deg)
+        /// </summary>
+        /// <param name="TX"></param>
+        /// <param name="TY"></param>
+        /// <param name="TZ"></param>
+        /// <param name="RX"></param>
+        /// <param name="RY"></param>
+        /// <param name="RZ"></param>
+        public void IKToolIncrement(float TX, float TY, float TZ, float RX, float RY, float RZ)
+        {
+            _service.SendBG(80017, [TX, TY, TZ, RX, RY, RZ], _ip);
+        }
+
         public float[] Position { get => _service.UDP._telemetryFloat[8100]; }
         public float Position_X { get => _service.UDP._telemetryFloat[8100][0]; }
         public float Position_J2 { get => _service.UDP._telemetryFloat[8100][1]; }
@@ -763,6 +778,18 @@ namespace RoveComm.Boards
         /// [X, J2, J3, J4, J5, J6, G] (ping time ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(8103, handler); }
+
+        public float[] Target { get => _service.UDP._telemetryFloat[8104]; }
+        public float Target_X { get => _service.UDP._telemetryFloat[8104][0]; }
+        public float Target_J2 { get => _service.UDP._telemetryFloat[8104][1]; }
+        public float Target_J3 { get => _service.UDP._telemetryFloat[8104][2]; }
+        public float Target_J4 { get => _service.UDP._telemetryFloat[8104][3]; }
+        public float Target_J5 { get => _service.UDP._telemetryFloat[8104][4]; }
+        public float Target_J6 { get => _service.UDP._telemetryFloat[8104][5]; }
+        /// <summary>
+        /// [X, J2, J3, J4, J5, J6] (in, deg, deg, deg, deg, deg)
+        /// </summary>
+        public void OnTarget(RoveCommCallback<float> handler) { _service.On(8104, handler); }
     }
 
     public class Auger
@@ -780,6 +807,7 @@ namespace RoveComm.Boards
             _service.UDP._telemetryFloat[9103] = new float[2];
             _service.UDP._telemetryFloat[9104] = new float[1];
             _service.UDP._telemetryUInt16[9105] = new ushort[1];
+            _service.UDP._telemetryInt32[9106] = new int[1];
         }
         /// <summary>
         /// [Speed] (-32768 - 32767) -> (-100% - 100%)
@@ -895,6 +923,12 @@ namespace RoveComm.Boards
         /// [AugerAxis] (ping time ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(9105, handler); }
+
+        public int LEDStatus { get => _service.UDP._telemetryInt32[9106][0]; }
+        /// <summary>
+        /// [LEDTimer] (ms)
+        /// </summary>
+        public void OnLEDStatus(RoveCommCallback<int> handler) { _service.On(9106, handler); }
     }
 
     public class Autonomy
@@ -1125,8 +1159,7 @@ namespace RoveComm.Boards
             _service = service;
 
             _service.UDP._telemetryUInt8[12100] = new byte[1];
-            _service.UDP._telemetryUInt8[12101] = new byte[1];
-            _service.UDP._telemetryUInt8[12103] = new byte[6];
+            _service.UDP._telemetryUInt8[12102] = new byte[6];
         }
         /// <summary>
         /// [Camera, Restart]
@@ -1149,7 +1182,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast)
+        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
         public void SetFFMPEGArguments(char[] Data)
@@ -1158,7 +1191,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast)
+        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
         public void SetPictureArguments(char[] Data)
@@ -1166,58 +1199,28 @@ namespace RoveComm.Boards
             _service.SendBG(12003, [Data], _ip);
         }
 
-        /// <summary>
-        /// [Camera0, Camera1, Camera2, Camera3] (-1.0 - 1.0)
-        /// </summary>
-        /// <param name="Camera0"></param>
-        /// <param name="Camera1"></param>
-        /// <param name="Camera2"></param>
-        /// <param name="Camera3"></param>
-        public void SetBrightness(float Camera0, float Camera1, float Camera2, float Camera3)
-        {
-            _service.SendBG(12004, [Camera0, Camera1, Camera2, Camera3], _ip);
-        }
-
-        /// <summary>
-        /// [Camera0, Camera1, Camera2, Camera3] (-1.0 - 2.0)
-        /// </summary>
-        /// <param name="Camera0"></param>
-        /// <param name="Camera1"></param>
-        /// <param name="Camera2"></param>
-        /// <param name="Camera3"></param>
-        public void SetContrast(float Camera0, float Camera1, float Camera2, float Camera3)
-        {
-            _service.SendBG(12005, [Camera0, Camera1, Camera2, Camera3], _ip);
-        }
-
         public byte AvailableCameras { get => _service.UDP._telemetryUInt8[12100][0]; }
         /// <summary>
-        /// [AvailableCameras]
+        /// [Connected, Streaming] (bitmask indexes, bitmask indexes)
         /// </summary>
         public void OnAvailableCameras(RoveCommCallback<byte> handler) { _service.On(12100, handler); }
-
-        public byte StreamingCameras { get => _service.UDP._telemetryUInt8[12101][0]; }
-        /// <summary>
-        /// [StreamingCameras]
-        /// </summary>
-        public void OnStreamingCameras(RoveCommCallback<byte> handler) { _service.On(12101, handler); }
 
         /// <summary>
         /// Picture has been taken.
         /// </summary>
-        public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(12102, handler); }
+        public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(12101, handler); }
 
-        public byte[] Utilization { get => _service.UDP._telemetryUInt8[12103]; }
-        public byte Utilization_cpu0 { get => _service.UDP._telemetryUInt8[12103][0]; }
-        public byte Utilization_cpu1 { get => _service.UDP._telemetryUInt8[12103][1]; }
-        public byte Utilization_cpu2 { get => _service.UDP._telemetryUInt8[12103][2]; }
-        public byte Utilization_cpu3 { get => _service.UDP._telemetryUInt8[12103][3]; }
-        public byte Utilization_mem { get => _service.UDP._telemetryUInt8[12103][4]; }
-        public byte Utilization_storage { get => _service.UDP._telemetryUInt8[12103][5]; }
+        public byte[] Utilization { get => _service.UDP._telemetryUInt8[12102]; }
+        public byte Utilization_cpu0 { get => _service.UDP._telemetryUInt8[12102][0]; }
+        public byte Utilization_cpu1 { get => _service.UDP._telemetryUInt8[12102][1]; }
+        public byte Utilization_cpu2 { get => _service.UDP._telemetryUInt8[12102][2]; }
+        public byte Utilization_cpu3 { get => _service.UDP._telemetryUInt8[12102][3]; }
+        public byte Utilization_mem { get => _service.UDP._telemetryUInt8[12102][4]; }
+        public byte Utilization_storage { get => _service.UDP._telemetryUInt8[12102][5]; }
         /// <summary>
         /// [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
         /// </summary>
-        public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(12103, handler); }
+        public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(12102, handler); }
     }
 
     public class Camera2
@@ -1230,8 +1233,7 @@ namespace RoveComm.Boards
             _service = service;
 
             _service.UDP._telemetryUInt8[13100] = new byte[1];
-            _service.UDP._telemetryUInt8[13101] = new byte[1];
-            _service.UDP._telemetryUInt8[13103] = new byte[6];
+            _service.UDP._telemetryUInt8[13102] = new byte[6];
         }
         /// <summary>
         /// [Camera, Restart]
@@ -1254,7 +1256,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/ffmpeg_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $ip: output ip, $port: output port, $brightness, $contrast)
+        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
         public void SetFFMPEGArguments(char[] Data)
@@ -1263,7 +1265,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16384 characters for RPi-Camera/config.toml/picture_arguments. Accepts the following substitutions: $index: camera index, $input: input device file, $output: output file without extension, $brightness, $contrast)
+        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
         public void SetPictureArguments(char[] Data)
@@ -1271,58 +1273,28 @@ namespace RoveComm.Boards
             _service.SendBG(13003, [Data], _ip);
         }
 
-        /// <summary>
-        /// [Camera0, Camera1, Camera2, Camera3] (-1.0 - 1.0)
-        /// </summary>
-        /// <param name="Camera0"></param>
-        /// <param name="Camera1"></param>
-        /// <param name="Camera2"></param>
-        /// <param name="Camera3"></param>
-        public void SetBrightness(float Camera0, float Camera1, float Camera2, float Camera3)
-        {
-            _service.SendBG(13004, [Camera0, Camera1, Camera2, Camera3], _ip);
-        }
-
-        /// <summary>
-        /// [Camera0, Camera1, Camera2, Camera3] (-1.0 - 2.0)
-        /// </summary>
-        /// <param name="Camera0"></param>
-        /// <param name="Camera1"></param>
-        /// <param name="Camera2"></param>
-        /// <param name="Camera3"></param>
-        public void SetContrast(float Camera0, float Camera1, float Camera2, float Camera3)
-        {
-            _service.SendBG(13005, [Camera0, Camera1, Camera2, Camera3], _ip);
-        }
-
         public byte AvailableCameras { get => _service.UDP._telemetryUInt8[13100][0]; }
         /// <summary>
-        /// [AvailableCameras]
+        /// [Connected, Streaming] (bitmask indexes, bitmask indexes)
         /// </summary>
         public void OnAvailableCameras(RoveCommCallback<byte> handler) { _service.On(13100, handler); }
-
-        public byte StreamingCameras { get => _service.UDP._telemetryUInt8[13101][0]; }
-        /// <summary>
-        /// [StreamingCameras]
-        /// </summary>
-        public void OnStreamingCameras(RoveCommCallback<byte> handler) { _service.On(13101, handler); }
 
         /// <summary>
         /// Picture has been taken.
         /// </summary>
-        public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(13102, handler); }
+        public void OnPictureTaken(RoveCommCallback<byte> handler) { _service.On(13101, handler); }
 
-        public byte[] Utilization { get => _service.UDP._telemetryUInt8[13103]; }
-        public byte Utilization_cpu0 { get => _service.UDP._telemetryUInt8[13103][0]; }
-        public byte Utilization_cpu1 { get => _service.UDP._telemetryUInt8[13103][1]; }
-        public byte Utilization_cpu2 { get => _service.UDP._telemetryUInt8[13103][2]; }
-        public byte Utilization_cpu3 { get => _service.UDP._telemetryUInt8[13103][3]; }
-        public byte Utilization_mem { get => _service.UDP._telemetryUInt8[13103][4]; }
-        public byte Utilization_storage { get => _service.UDP._telemetryUInt8[13103][5]; }
+        public byte[] Utilization { get => _service.UDP._telemetryUInt8[13102]; }
+        public byte Utilization_cpu0 { get => _service.UDP._telemetryUInt8[13102][0]; }
+        public byte Utilization_cpu1 { get => _service.UDP._telemetryUInt8[13102][1]; }
+        public byte Utilization_cpu2 { get => _service.UDP._telemetryUInt8[13102][2]; }
+        public byte Utilization_cpu3 { get => _service.UDP._telemetryUInt8[13102][3]; }
+        public byte Utilization_mem { get => _service.UDP._telemetryUInt8[13102][4]; }
+        public byte Utilization_storage { get => _service.UDP._telemetryUInt8[13102][5]; }
         /// <summary>
         /// [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
         /// </summary>
-        public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(13103, handler); }
+        public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(13102, handler); }
     }
 
     public class CameraServer
@@ -1470,7 +1442,8 @@ namespace RoveComm.Boards
             _service.UDP._telemetryUInt16[16103] = new ushort[512];
             _service.UDP._telemetryUInt16[16104] = new ushort[512];
             _service.UDP._telemetryUInt16[16105] = new ushort[512];
-            _service.UDP._telemetryUInt16[16106] = new ushort[1];
+            _service.UDP._telemetryUInt16[16106] = new ushort[512];
+            _service.UDP._telemetryUInt16[16107] = new ushort[1];
         }
         /// <summary>
         /// [Speed] (-32768 - 32767) -> (-100% - 100%)
@@ -1518,12 +1491,12 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Integration Time] (ms)
+        /// [Integration Time, Sample Count] (ms, n)
         /// </summary>
-        /// <param name="IntegrationTime"></param>
-        public void RequestRamanReading(uint IntegrationTime)
+        /// <param name="Data0"></param>
+        public void RequestRamanReading(uint Data0)
         {
-            _service.SendBG(16005, [IntegrationTime], _ip);
+            _service.SendBG(16005, [Data0], _ip);
         }
 
         public float[] Position { get => _service.UDP._telemetryFloat[16100]; }
@@ -1542,33 +1515,39 @@ namespace RoveComm.Boards
 
         public ushort[] RamanReading_Part1 { get => _service.UDP._telemetryUInt16[16102]; }
         /// <summary>
-        /// Raman CCD elements 1-512
+        /// Raman CCD elements 0-511
         /// </summary>
         public void OnRamanReading_Part1(RoveCommCallback<ushort> handler) { _service.On(16102, handler); }
 
         public ushort[] RamanReading_Part2 { get => _service.UDP._telemetryUInt16[16103]; }
         /// <summary>
-        /// Raman CCD elements 513-1024
+        /// Raman CCD elements 512-1023
         /// </summary>
         public void OnRamanReading_Part2(RoveCommCallback<ushort> handler) { _service.On(16103, handler); }
 
         public ushort[] RamanReading_Part3 { get => _service.UDP._telemetryUInt16[16104]; }
         /// <summary>
-        /// Raman CCD elements 1025-1536
+        /// Raman CCD elements 1024-1535
         /// </summary>
         public void OnRamanReading_Part3(RoveCommCallback<ushort> handler) { _service.On(16104, handler); }
 
         public ushort[] RamanReading_Part4 { get => _service.UDP._telemetryUInt16[16105]; }
         /// <summary>
-        /// Raman CCD elements 1537-2048
+        /// Raman CCD elements 1536-2047
         /// </summary>
         public void OnRamanReading_Part4(RoveCommCallback<ushort> handler) { _service.On(16105, handler); }
 
-        public ushort SMOCOPing { get => _service.UDP._telemetryUInt16[16106][0]; }
+        public ushort[] RamanReading_Part5 { get => _service.UDP._telemetryUInt16[16106]; }
+        /// <summary>
+        /// Raman CCD elements 2048-2559
+        /// </summary>
+        public void OnRamanReading_Part5(RoveCommCallback<ushort> handler) { _service.On(16106, handler); }
+
+        public ushort SMOCOPing { get => _service.UDP._telemetryUInt16[16107][0]; }
         /// <summary>
         /// [InstrumentsAxis] (ping time ms)
         /// </summary>
-        public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(16106, handler); }
+        public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(16107, handler); }
     }
 
     public class RoveSoSimulator
