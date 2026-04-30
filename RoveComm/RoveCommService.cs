@@ -403,6 +403,11 @@ public class RoveCommService : IHostedService
         }
     }
 
+    public int GetManfiestTime()
+    {
+        return RoveCommConsts.ManifestTime;
+    }
+
     public Task StopAsync(CancellationToken cancelToken)
     {
         UnsubscribeAll();
