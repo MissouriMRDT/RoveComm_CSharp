@@ -130,9 +130,10 @@ namespace RoveComm.Boards
         /// [Color] (RGBA)
         /// </summary>
         /// <param name="Data"></param>
+
         public void BackImage(uint[] Data)
         {
-            _service.SendBG(3007, [Data], _ip);
+            _service.SendBG(3007, Data, _ip);
         }
 
         /// <summary>
@@ -150,9 +151,10 @@ namespace RoveComm.Boards
         /// [Color] (RGBA)
         /// </summary>
         /// <param name="Data"></param>
+
         public void InternalImage(uint[] Data)
         {
-            _service.SendBG(3009, [Data], _ip);
+            _service.SendBG(3009, Data, _ip);
         }
 
         /// <summary>
@@ -186,9 +188,10 @@ namespace RoveComm.Boards
         /// [Message] (null terminated string)
         /// </summary>
         /// <param name="Data"></param>
+
         public void LEDText(char[] Data)
         {
-            _service.SendBG(3013, [Data], _ip);
+            _service.SendBG(3013, Data, _ip);
         }
 
         public float[] MotorSpeeds { get => _service.UDP._telemetryFloat[3100]; }
@@ -326,7 +329,6 @@ namespace RoveComm.Boards
         /// <summary>
         /// Power off all systems except network (PMS will stay on)
         /// </summary>
-        
         public void EStop()
         {
             _service.SendBG<byte>(4000, [], _ip);
@@ -335,7 +337,6 @@ namespace RoveComm.Boards
         /// <summary>
         /// Power off all systems including network, cannot recover without physical reboot (PMS will stay on)
         /// </summary>
-        
         public void Suicide()
         {
             _service.SendBG<byte>(4001, [], _ip);
@@ -344,7 +345,6 @@ namespace RoveComm.Boards
         /// <summary>
         /// Cycle all systems including network off and back on (PMS will stay on)
         /// </summary>
-        
         public void Reboot()
         {
             _service.SendBG<byte>(4002, [], _ip);
@@ -736,7 +736,7 @@ namespace RoveComm.Boards
         /// <param name="RZ"></param>
         public void IKToolIncrement(float TX, float TY, float TZ, float RX, float RY, float RZ)
         {
-            _service.SendBG(80017, [TX, TY, TZ, RX, RY, RZ], _ip);
+            _service.SendBG(8017, [TX, TY, TZ, RX, RY, RZ], _ip);
         }
 
         public float[] Position { get => _service.UDP._telemetryFloat[8100]; }
@@ -830,7 +830,6 @@ namespace RoveComm.Boards
         /// <summary>
         /// Request calibration of the AugerAxis encoder
         /// </summary>
-        
         public void CalibrateEncoder()
         {
             _service.SendBG<byte>(9002, [], _ip);
@@ -1185,18 +1184,20 @@ namespace RoveComm.Boards
         /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
+
         public void SetFFMPEGArguments(char[] Data)
         {
-            _service.SendBG(12002, [Data], _ip);
+            _service.SendBG(12002, Data, _ip);
         }
 
         /// <summary>
         /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
+
         public void SetPictureArguments(char[] Data)
         {
-            _service.SendBG(12003, [Data], _ip);
+            _service.SendBG(12003, Data, _ip);
         }
 
         public byte[] AvailableCameras { get => _service.UDP._telemetryUInt8[12100]; }
@@ -1261,18 +1262,20 @@ namespace RoveComm.Boards
         /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
+
         public void SetFFMPEGArguments(char[] Data)
         {
-            _service.SendBG(13002, [Data], _ip);
+            _service.SendBG(13002, Data, _ip);
         }
 
         /// <summary>
         /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
+
         public void SetPictureArguments(char[] Data)
         {
-            _service.SendBG(13003, [Data], _ip);
+            _service.SendBG(13003, Data, _ip);
         }
 
         public byte[] AvailableCameras { get => _service.UDP._telemetryUInt8[13100]; }
@@ -1470,7 +1473,6 @@ namespace RoveComm.Boards
         /// <summary>
         /// Request calibration of the InstrumentsAxis encoder
         /// </summary>
-        
         public void CalibrateEncoder()
         {
             _service.SendBG<byte>(16002, [], _ip);
@@ -1497,10 +1499,11 @@ namespace RoveComm.Boards
         /// <summary>
         /// [Integration Time, Sample Count] (ms, n)
         /// </summary>
-        /// <param name="Data0"></param>
-        public void RequestRamanReading(uint Data0)
+        /// <param name="IntegrationTime"></param>
+        /// <param name="SampleCount"></param>
+        public void RequestRamanReading(uint IntegrationTime, uint SampleCount)
         {
-            _service.SendBG(16005, [Data0], _ip);
+            _service.SendBG(16005, [IntegrationTime, SampleCount], _ip);
         }
 
         public float[] Position { get => _service.UDP._telemetryFloat[16100]; }

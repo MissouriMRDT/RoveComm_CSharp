@@ -103,7 +103,7 @@ namespace RoveComm.Boards
                     f"""
     public class {board}
     {{
-        private RoveCommService _service;{f"\n        private static string _ip = \"{board_desc["Ip"]}\";" if "Commands" in board_desc and len(board_desc["Commands"].items()) > 0 else ""}
+        private RoveCommService _service;{f'\n        private static string _ip = "{board_desc["Ip"]}";' if "Commands" in board_desc and len(board_desc["Commands"].items()) > 0 else ""}
 
         internal {board}(RoveCommService service)
         {{
@@ -121,30 +121,66 @@ namespace RoveComm.Boards
                 ).values():
                     if packet_desc["dataCount"] > 0:
                         file.write(
-                            f"\n            _service.UDP._telemetry{telemetry_type_lookup[packet_desc["dataType"]]}[{packet_desc["dataId"]}] = new {cs_type_lookup[packet_desc["dataType"]]}[{packet_desc["dataCount"]}];"
+                            f"\n            _service.UDP._telemetry{telemetry_type_lookup[packet_desc['dataType']]}[{packet_desc['dataId']}] = new {cs_type_lookup[packet_desc['dataType']]}[{packet_desc['dataCount']}];"
                         )
                 file.write("\n        }")
 
                 if "Commands" not in board_desc:
                     board_desc["Commands"] = {}
                 for command, packet_desc in board_desc["Commands"].items():
-                    params = get_params(packet_desc)
-                    cs_type = cs_type_lookup[packet_desc["dataType"]]
+                    if packet_desc["dataCount"] > 12:
+                        params = get_params(packet_desc)
+                        cs_type = cs_type_lookup[packet_desc["dataType"]]
 
-                    comment = f"""
+                        comment = f"""
         /// <summary>
         /// {packet_desc["comments"]}
         /// </summary>
-        {"\n        ".join(f"""/// <param name="{params[i]}"></param>""" for i in range(len(params)))}"""
+        /// <param name="Data"></param>
+"""
 
-                    file.write(
-                        f"""{comment}
-        public void {command if command is not board else "Run" + command}({", ".join(f"""{cs_type}{"" if packet_desc["dataCount"] <= 12 else "[]"} {p}""" for p in params) })
+                        file.write(
+                            f"""{comment}
+        public void {command if command is not board else "Run" + command}({cs_type}[] Data)
         {{
-            _service.SendBG{"" if len(params) > 0 else f"<{cs_type}>"}({packet_desc["dataId"]}, [{", ".join(p for p in params)}], _ip);
+            _service.SendBG({packet_desc["dataId"]}, Data, _ip);
         }}
 """
-                    )
+                        )
+                    elif packet_desc["dataCount"] == 0:
+                        cs_type = cs_type_lookup[packet_desc["dataType"]]
+
+                        comment = f"""
+        /// <summary>
+        /// {packet_desc["comments"]}
+        /// </summary>"""
+
+                        file.write(
+                            f"""{comment}
+        public void {command if command is not board else "Run" + command}()
+        {{
+            _service.SendBG<{cs_type}>({packet_desc["dataId"]}, [], _ip);
+        }}
+"""
+                        )
+                    else:
+                        params = get_params(packet_desc)
+                        cs_type = cs_type_lookup[packet_desc["dataType"]]
+
+                        comment = f"""
+        /// <summary>
+        /// {packet_desc["comments"]}
+        /// </summary>
+        {"\n        ".join(f'''/// <param name="{params[i]}"></param>''' for i in range(len(params)))}"""
+
+                        file.write(
+                            f"""{comment}
+        public void {command if command is not board else "Run" + command}({", ".join(f'''{cs_type} {p}''' for p in params)})
+        {{
+            _service.SendBG({packet_desc["dataId"]}, [{", ".join(p for p in params)}], _ip);
+        }}
+"""
+                        )
 
                 for telemetry, packet_desc in (
                     board_desc["Telemetry"] | board_desc["Error"]
@@ -155,19 +191,19 @@ namespace RoveComm.Boards
 
                     if packet_desc["dataCount"] > 12:
                         file.write(
-                            f"\n        public {cs_type}[] {telemetry} {{ get => _service.UDP._telemetry{telemetry_type}[{packet_desc["dataId"]}]; }}"
+                            f"\n        public {cs_type}[] {telemetry} {{ get => _service.UDP._telemetry{telemetry_type}[{packet_desc['dataId']}]; }}"
                         )
                     elif len(params) == 1:
                         file.write(
-                            f"\n        public {cs_type} {telemetry} {{ get => _service.UDP._telemetry{telemetry_type}[{packet_desc["dataId"]}][0]; }}"
+                            f"\n        public {cs_type} {telemetry} {{ get => _service.UDP._telemetry{telemetry_type}[{packet_desc['dataId']}][0]; }}"
                         )
                     elif packet_desc["dataCount"] > 0:
                         file.write(
-                            f"\n        public {cs_type}[] {telemetry} {{ get => _service.UDP._telemetry{telemetry_type}[{packet_desc["dataId"]}]; }}"
+                            f"\n        public {cs_type}[] {telemetry} {{ get => _service.UDP._telemetry{telemetry_type}[{packet_desc['dataId']}]; }}"
                         )
                         for i, param in enumerate(params):
                             file.write(
-                                f"\n        public {cs_type} {telemetry}_{param} {{ get => _service.UDP._telemetry{telemetry_type}[{packet_desc["dataId"]}][{i}]; }}"
+                                f"\n        public {cs_type} {telemetry}_{param} {{ get => _service.UDP._telemetry{telemetry_type}[{packet_desc['dataId']}][{i}]; }}"
                             )
                     file.write(
                         f"""

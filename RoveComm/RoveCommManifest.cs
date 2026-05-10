@@ -563,7 +563,7 @@ public static class RoveCommManifest
                 // [TX, TY, TZ, RX, RY, RZ] (in, in, in, deg, deg, deg)
                 ["IKToolIncrement"] = new RoveCommPacketDesc
                 (
-                    80017,
+                    8017,
                     6,
                     RoveCommDataType.FLOAT
                 )
@@ -1133,7 +1133,7 @@ public static class RoveCommManifest
                 ["RequestRamanReading"] = new RoveCommPacketDesc
                 (
                     16005,
-                    1,
+                    2,
                     RoveCommDataType.UINT32_T
                 )
             },
