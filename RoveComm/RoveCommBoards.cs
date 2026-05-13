@@ -1181,7 +1181,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
+        /// [Arguments] (0x1f delimited, 0x00 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, first byte is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
 
@@ -1191,13 +1191,33 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
+        /// [Arguments] (0x1f delimited, 0x00 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, first byte is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
 
         public void SetPictureArguments(char[] Data)
         {
             _service.SendBG(12003, Data, _ip);
+        }
+
+        /// <summary>
+        /// [Command] (0x1f delimited, 0x00 terminated list of commands, first byte is camera index)
+        /// </summary>
+        /// <param name="Data"></param>
+
+        public void ZMQCommands(char[] Data)
+        {
+            _service.SendBG(12004, Data, _ip);
+        }
+
+        /// <summary>
+        /// [Command] (0x00 terminated argument passed to v4l2-ctl --set-ctrl, first byte is camera index)
+        /// </summary>
+        /// <param name="Data"></param>
+
+        public void V4L2SetControls(char[] Data)
+        {
+            _service.SendBG(12005, Data, _ip);
         }
 
         public byte[] AvailableCameras { get => _service.UDP._telemetryUInt8[12100]; }
@@ -1259,7 +1279,7 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
+        /// [Arguments] (0x1f delimited, 0x00 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, first byte is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
 
@@ -1269,13 +1289,33 @@ namespace RoveComm.Boards
         }
 
         /// <summary>
-        /// [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
+        /// [Arguments] (0x1f delimited, 0x00 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, first byte is camera index. See RPI-Camera/config.toml for substitutions)
         /// </summary>
         /// <param name="Data"></param>
 
         public void SetPictureArguments(char[] Data)
         {
             _service.SendBG(13003, Data, _ip);
+        }
+
+        /// <summary>
+        /// [Command] (0x1f delimited, 0x00 terminated list of commands, first byte is camera index)
+        /// </summary>
+        /// <param name="Data"></param>
+
+        public void ZMQCommands(char[] Data)
+        {
+            _service.SendBG(13004, Data, _ip);
+        }
+
+        /// <summary>
+        /// [Command] (0x00 terminated argument passed to v4l2-ctl --set-ctrl, first byte is camera index)
+        /// </summary>
+        /// <param name="Data"></param>
+
+        public void V4L2SetControls(char[] Data)
+        {
+            _service.SendBG(13004, Data, _ip);
         }
 
         public byte[] AvailableCameras { get => _service.UDP._telemetryUInt8[13100]; }

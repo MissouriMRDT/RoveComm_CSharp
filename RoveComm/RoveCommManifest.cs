@@ -878,17 +878,31 @@ public static class RoveCommManifest
                     2,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
+                // [Arguments] (0x1f delimited, 0x00 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, first byte is camera index. See RPI-Camera/config.toml for substitutions)
                 ["SetFFMPEGArguments"] = new RoveCommPacketDesc
                 (
                     12002,
                     16384,
                     RoveCommDataType.CHAR
                 ),
-                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
+                // [Arguments] (0x1f delimited, 0x00 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, first byte is camera index. See RPI-Camera/config.toml for substitutions)
                 ["SetPictureArguments"] = new RoveCommPacketDesc
                 (
                     12003,
+                    16384,
+                    RoveCommDataType.CHAR
+                ),
+                // [Command] (0x1f delimited, 0x00 terminated list of commands, first byte is camera index)
+                ["ZMQCommands"] = new RoveCommPacketDesc
+                (
+                    12004,
+                    16384,
+                    RoveCommDataType.CHAR
+                ),
+                // [Command] (0x00 terminated argument passed to v4l2-ctl --set-ctrl, first byte is camera index)
+                ["V4L2SetControls"] = new RoveCommPacketDesc
+                (
+                    12005,
                     16384,
                     RoveCommDataType.CHAR
                 )
@@ -941,17 +955,31 @@ public static class RoveCommManifest
                     2,
                     RoveCommDataType.UINT8_T
                 ),
-                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
+                // [Arguments] (0x1f delimited, 0x00 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/ffmpeg_arguments, first byte is camera index. See RPI-Camera/config.toml for substitutions)
                 ["SetFFMPEGArguments"] = new RoveCommPacketDesc
                 (
                     13002,
                     16384,
                     RoveCommDataType.CHAR
                 ),
-                // [Arguments] (0x1f delimited, 0x04 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, byte after 0x04 is camera index. See RPI-Camera/config.toml for substitutions)
+                // [Arguments] (0x1f delimited, 0x00 terminated list with maximum length of 16383 characters for RPi-Camera/config.toml/picture_arguments, first byte is camera index. See RPI-Camera/config.toml for substitutions)
                 ["SetPictureArguments"] = new RoveCommPacketDesc
                 (
                     13003,
+                    16384,
+                    RoveCommDataType.CHAR
+                ),
+                // [Command] (0x1f delimited, 0x00 terminated list of commands, first byte is camera index)
+                ["ZMQCommands"] = new RoveCommPacketDesc
+                (
+                    13004,
+                    16384,
+                    RoveCommDataType.CHAR
+                ),
+                // [Command] (0x00 terminated argument passed to v4l2-ctl --set-ctrl, first byte is camera index)
+                ["V4L2SetControls"] = new RoveCommPacketDesc
+                (
+                    13004,
                     16384,
                     RoveCommDataType.CHAR
                 )
