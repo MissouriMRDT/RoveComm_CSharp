@@ -979,7 +979,7 @@ public static class RoveCommManifest
                 // [Command] (0x00 terminated argument passed to v4l2-ctl --set-ctrl, first byte is camera index)
                 ["V4L2SetControls"] = new RoveCommPacketDesc
                 (
-                    13004,
+                    13005,
                     16384,
                     RoveCommDataType.CHAR
                 )

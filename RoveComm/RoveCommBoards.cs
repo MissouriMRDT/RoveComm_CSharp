@@ -1315,7 +1315,7 @@ namespace RoveComm.Boards
 
         public void V4L2SetControls(char[] Data)
         {
-            _service.SendBG(13004, Data, _ip);
+            _service.SendBG(13005, Data, _ip);
         }
 
         public byte[] AvailableCameras { get => _service.UDP._telemetryUInt8[13100]; }
