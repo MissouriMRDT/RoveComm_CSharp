@@ -1225,6 +1225,24 @@ public static class RoveCommManifest
                 )
             }
         ),
+        ["DroneGPS"] = new RoveCommBoardDesc
+        (
+            ip: "192.168.100.102",
+            commands: new Dictionary<string, RoveCommPacketDesc>
+            {
+
+            },
+            telemetry: new Dictionary<string, RoveCommPacketDesc>
+            {
+                // [Lat, Lon, Alt, HorizontalAccuracy, VerticalAccuracy, HeadingAccuracy, FixType, Heading, Satellites] (deg, deg, m, m, m, deg, Ardupilot GPS fix type https://mavlink.io/en/messages/common.html#GPS_FIX_TYPE, 0 - 360, Satellite number)
+                ["DronePose"] = new RoveCommPacketDesc
+                (
+                    17100,
+                    9,
+                    RoveCommDataType.DOUBLE
+                )
+            }
+        ),
         ["RoveSoSimulator"] = new RoveCommBoardDesc
         (
             ip: "127.0.0.1",

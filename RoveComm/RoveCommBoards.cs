@@ -13,6 +13,7 @@ namespace RoveComm
         public Boards.Camera2 Camera2;
         public Boards.CameraServer CameraServer;
         public Boards.Raman Raman;
+        public Boards.DroneGPS DroneGPS;
         public Boards.RoveSoSimulator RoveSoSimulator;
 
         internal _Boards(RoveCommService service)
@@ -28,6 +29,7 @@ namespace RoveComm
             Camera2 = new(service);
             CameraServer = new(service);
             Raman = new(service);
+            DroneGPS = new(service);
             RoveSoSimulator = new(service);
         }
     }
@@ -1595,6 +1597,32 @@ namespace RoveComm.Boards
         /// [InstrumentsAxis] (ping time ms)
         /// </summary>
         public void OnSMOCOPing(RoveCommCallback<ushort> handler) { _service.On(16107, handler); }
+    }
+
+    public class DroneGPS
+    {
+        private RoveCommService _service;
+
+        internal DroneGPS(RoveCommService service)
+        {
+            _service = service;
+
+            _service.UDP._telemetryDouble[17100] = new double[9];
+        }
+        public double[] DronePose { get => _service.UDP._telemetryDouble[17100]; }
+        public double DronePose_Lat { get => _service.UDP._telemetryDouble[17100][0]; }
+        public double DronePose_Lon { get => _service.UDP._telemetryDouble[17100][1]; }
+        public double DronePose_Alt { get => _service.UDP._telemetryDouble[17100][2]; }
+        public double DronePose_HorizontalAccuracy { get => _service.UDP._telemetryDouble[17100][3]; }
+        public double DronePose_VerticalAccuracy { get => _service.UDP._telemetryDouble[17100][4]; }
+        public double DronePose_HeadingAccuracy { get => _service.UDP._telemetryDouble[17100][5]; }
+        public double DronePose_FixType { get => _service.UDP._telemetryDouble[17100][6]; }
+        public double DronePose_Heading { get => _service.UDP._telemetryDouble[17100][7]; }
+        public double DronePose_Satellites { get => _service.UDP._telemetryDouble[17100][8]; }
+        /// <summary>
+        /// [Lat, Lon, Alt, HorizontalAccuracy, VerticalAccuracy, HeadingAccuracy, FixType, Heading, Satellites] (deg, deg, m, m, m, deg, Ardupilot GPS fix type https://mavlink.io/en/messages/common.html#GPS_FIX_TYPE, 0 - 360, Satellite number)
+        /// </summary>
+        public void OnDronePose(RoveCommCallback<double> handler) { _service.On(17100, handler); }
     }
 
     public class RoveSoSimulator
