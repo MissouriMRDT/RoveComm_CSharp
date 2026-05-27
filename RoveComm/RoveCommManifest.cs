@@ -923,11 +923,11 @@ public static class RoveCommManifest
                     0,
                     RoveCommDataType.UINT8_T
                 ),
-                // [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
+                // [cpu0, cpu1, cpu2, cpu3, mem, storage, temp] (% usage, % usage, % usage, % usage, % usage, C)
                 ["Utilization"] = new RoveCommPacketDesc
                 (
                     12102,
-                    6,
+                    7,
                     RoveCommDataType.UINT8_T
                 )
             },
@@ -1000,11 +1000,11 @@ public static class RoveCommManifest
                     0,
                     RoveCommDataType.UINT8_T
                 ),
-                // [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
+                // [cpu0, cpu1, cpu2, cpu3, mem, storage, temp] (% usage, % usage, % usage, % usage, % usage, C)
                 ["Utilization"] = new RoveCommPacketDesc
                 (
                     13102,
-                    6,
+                    7,
                     RoveCommDataType.UINT8_T
                 )
             },

@@ -1160,7 +1160,7 @@ namespace RoveComm.Boards
             _service = service;
 
             _service.UDP._telemetryUInt8[12100] = new byte[2];
-            _service.UDP._telemetryUInt8[12102] = new byte[6];
+            _service.UDP._telemetryUInt8[12102] = new byte[7];
         }
         /// <summary>
         /// [Camera, Restart]
@@ -1242,8 +1242,9 @@ namespace RoveComm.Boards
         public byte Utilization_cpu3 { get => _service.UDP._telemetryUInt8[12102][3]; }
         public byte Utilization_mem { get => _service.UDP._telemetryUInt8[12102][4]; }
         public byte Utilization_storage { get => _service.UDP._telemetryUInt8[12102][5]; }
+        public byte Utilization_temp { get => _service.UDP._telemetryUInt8[12102][6]; }
         /// <summary>
-        /// [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
+        /// [cpu0, cpu1, cpu2, cpu3, mem, storage, temp] (% usage, % usage, % usage, % usage, % usage, C)
         /// </summary>
         public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(12102, handler); }
     }
@@ -1258,7 +1259,7 @@ namespace RoveComm.Boards
             _service = service;
 
             _service.UDP._telemetryUInt8[13100] = new byte[2];
-            _service.UDP._telemetryUInt8[13102] = new byte[6];
+            _service.UDP._telemetryUInt8[13102] = new byte[7];
         }
         /// <summary>
         /// [Camera, Restart]
@@ -1340,8 +1341,9 @@ namespace RoveComm.Boards
         public byte Utilization_cpu3 { get => _service.UDP._telemetryUInt8[13102][3]; }
         public byte Utilization_mem { get => _service.UDP._telemetryUInt8[13102][4]; }
         public byte Utilization_storage { get => _service.UDP._telemetryUInt8[13102][5]; }
+        public byte Utilization_temp { get => _service.UDP._telemetryUInt8[13102][6]; }
         /// <summary>
-        /// [cpu0, cpu1, cpu2, cpu3, mem, storage] (% usage)
+        /// [cpu0, cpu1, cpu2, cpu3, mem, storage, temp] (% usage, % usage, % usage, % usage, % usage, C)
         /// </summary>
         public void OnUtilization(RoveCommCallback<byte> handler) { _service.On(13102, handler); }
     }
