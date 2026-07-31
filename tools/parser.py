@@ -1,5 +1,6 @@
 import json
 import generate_boards
+import subprocess
 
 data_type_lookup = {
     "INT8_T": "RoveCommDataType.INT8_T",
@@ -24,6 +25,11 @@ manifest_file_path = "RoveComm/RoveCommManifest.cs"
 methods_file_path = "RoveComm/RoveCommBoards.cs"
 json_path = "data/RoveComm/manifest.json"
 
+def get_commit_time():
+    # Get time of last commit
+    commit_time = subprocess.run(["git", "log", "-1", "--format=%ct", "--", "data/RoveComm"], capture_output=True, text=True).stdout.strip()
+
+    return commit_time
 
 def main() -> None:
     with open(json_path, "r") as file:
@@ -36,16 +42,17 @@ namespace RoveComm;
 """
         )
         file.write(
-            """
+            f"""
 public static class RoveCommConsts
-{
+{{
     public static readonly int RoveCommVersion = 3;
     public static readonly int UDPPort = 11000;
     public static readonly int TCPPort = 12000;
     public static readonly int HeaderSize = 6;
     public static readonly int MaxDataSize = 65535 / 3;
     public static readonly int UpdateRate = 100; // milliseconds
-}
+    public static readonly int ManifestTime = {get_commit_time()}; // UNIX
+}}
 """
         )
 
