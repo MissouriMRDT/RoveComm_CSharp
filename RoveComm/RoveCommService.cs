@@ -10,6 +10,10 @@ public class RoveCommService : IHostedService
     public RoveCommTCP TCP;
     public _Boards Boards;
 
+    public string _newRoveCommServiceIp = "";
+    
+    public int _newRoveCommServicePort = 0 ;
+
     private readonly CancellationTokenSource _cts = new();
     private readonly ILogger<RoveCommService> _logger;
 
@@ -143,11 +147,20 @@ public class RoveCommService : IHostedService
     /// <returns>True if the packet was sent successfully.</returns>
     public bool Send<T>(int dataId, IEnumerable<T> data, string ip, int port, bool reliable = false)
     {
+        if (_newRoveCommServiceIp != "")
+        {
+            ip = _newRoveCommServiceIp;
+            port = _newRoveCommServicePort;
+        }
         var packet = new RoveCommPacket<T>(dataId, data);
         return reliable ? TCP.Send(packet, ip, port) : UDP.Send(packet, ip, port);
     }
     public bool Send<T>(int dataId, IEnumerable<T> data, string ip, bool reliable = false)
     {
+        if (_newRoveCommServiceIp != "")
+        {
+            ip = _newRoveCommServiceIp;
+        }
         var packet = new RoveCommPacket<T>(dataId, data);
         return reliable ? TCP.Send(packet, ip) : UDP.Send(packet, ip);
     }
